@@ -1,5 +1,6 @@
 import React, { useState, useEffect, Suspense } from 'react';
-import { Outlet, useNavigate, useLocation, Link } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation, Link, Routes, Route, Navigate } from 'react-router-dom';
+import { getToken } from '../../utils/auth';
 import { 
   FaHome, 
   FaBuilding, 
@@ -15,25 +16,137 @@ import {
   FaUserCircle,
   FaBell,
   FaEnvelope,
-  FaSpinner
+  FaSpinner,
+  FaTachometerAlt
 } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
-import './Dashboard.styles.css';
+import DashboardLayout from '../../components/dashboard/DashboardLayout';
+import api from '../../services/api';
+import styles from './Dashboard.module.css';
 
 // Lazy load dashboard components
 const AdminDashboard = React.lazy(() => import('./components/AdminDashboard'));
 const AgentDashboard = React.lazy(() => import('./components/AgentDashboard'));
 const HotelManagerDashboard = React.lazy(() => import('./components/HotelManagerDashboard'));
 
-const Dashboard = ({ user }) => {
-  const { logout } = useAuth();
+const Dashboard = () => {
+  const { user, loading: authLoading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  // State for sidebar and dropdowns
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [profileOpen, setProfileOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  // State for dashboard data and UI
+  const [dashboardData, setDashboardData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Track navigation state to prevent multiple redirects and throttling
+  const navigationRef = React.useRef({
+    isNavigating: false,
+    lastNavigation: 0,
+    authCheckComplete: false,
+    navigationTimeout: null
+  });
+  
+  // Handle authentication and data fetching in separate effects for better control
+  
+  // Effect for handling authentication state
+  useEffect(() => {
+    if (authLoading) return;
+    
+    // If there's no user but we're not on the login page, navigate to login
+    if (!user && !window.location.pathname.startsWith('/login')) {
+      localStorage.removeItem('token');
+      navigate('/login', { 
+        state: { from: location },
+        replace: true 
+      });
+    }
+  }, [user, authLoading, navigate, location]);
+  
+  // Effect for fetching dashboard data
+  useEffect(() => {
+    let isMounted = true;
+    let timeoutId = null;
+    
+    // Only proceed if we have a user and we're not on the login page
+    if (!user || window.location.pathname.startsWith('/login')) {
+      return;
+    }
+    
+    const fetchDashboardData = async () => {
+      try {
+        // Set loading state after a small delay to prevent flickering
+        timeoutId = setTimeout(() => {
+          if (isMounted) setLoading(true);
+        }, 100);
+
+        // Get the token and verify it exists
+        const token = getToken();
+        if (!token) {
+          throw new Error('No authentication token found');
+        }
+
+        // Determine the correct dashboard endpoint based on user type
+        let endpoint = '/dashboard/';
+        if (user?.user_type === 'admin') {
+          endpoint = '/admin/dashboard/';
+        } else if (user?.user_type === 'agent') {
+          endpoint = '/agent/dashboard/';
+        } else if (user?.user_type === 'hotel_manager') {
+          endpoint = '/hotel/dashboard/';
+        }
+        
+        // Make the API request
+        const response = await api.get(endpoint, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        
+        // Clear the loading timeout
+        clearTimeout(timeoutId);
+        
+        if (isMounted) {
+          // Update state with the fetched data
+          setDashboardData(response.data || {});
+          setError(null);
+          setLoading(false);
+        }
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        clearTimeout(timeoutId);
+        
+        if (isMounted) {
+          if (err.response?.status === 401 || err.response?.status === 403 || err.message === 'No authentication token found') {
+            // If unauthorized, clear token and redirect to login
+            localStorage.removeItem('token');
+            navigate('/login', { 
+              state: { from: location },
+              replace: true 
+            });
+          } else {
+            // For other errors, show error message but keep the UI interactive
+            setError('Failed to load dashboard data. Please try again.');
+            setLoading(false);
+          }
+        }
+      }
+    };
+
+    fetchDashboardData();
+    
+    // Cleanup function
+    return () => {
+      isMounted = false;
+      if (timeoutId) clearTimeout(timeoutId);
+    };
+  }, [user, navigate, location]);
   
   // Toggle sidebar on mobile
   const toggleSidebar = () => {
@@ -49,20 +162,18 @@ const Dashboard = ({ user }) => {
   
   // Close dropdowns when clicking outside
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (profileOpen && !event.target.closest(`.${styles.profileDropdown}`)) {
+    const handleClickOutside = (e) => {
+      if (profileOpen && !e.target.closest(`.${styles.userMenu}`)) {
         setProfileOpen(false);
       }
-      if (notificationsOpen && !event.target.closest(`.${styles.notificationsDropdown}`)) {
+      if (notificationsOpen && !e.target.closest(`.${styles.notifications}`)) {
         setNotificationsOpen(false);
       }
     };
     
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [profileOpen, notificationsOpen]);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [profileOpen, notificationsOpen, styles]);
   
   // Close sidebar on route change (mobile)
   useEffect(() => {
@@ -85,15 +196,15 @@ const Dashboard = ({ user }) => {
   
   // Get user initials for avatar
   const getUserInitials = () => {
-    if (!user) return 'U';
-    const nameParts = user.name ? user.name.split(' ') : [];
-    if (nameParts.length >= 2) {
-      return `${nameParts[0][0]}${nameParts[1][0]}`.toUpperCase();
-    }
-    return user.name ? user.name[0].toUpperCase() : 'U';
+    if (!user?.name) return 'U';
+    return user.name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase();
   };
   
-  // Get user role display name
+  // Format user role for display
   const getUserRole = () => {
     if (!user) return 'User';
     switch(user.user_type) {
@@ -111,8 +222,17 @@ const Dashboard = ({ user }) => {
   // Handle logout
   const handleLogout = async () => {
     try {
+      // Reset navigation state before logout
+      navigationRef.current = {
+        isNavigating: false,
+        lastNavigation: 0,
+        authCheckComplete: false
+      };
+      
       await logout();
-      navigate('/login');
+      // Clear any existing navigation state to prevent loops
+      window.history.replaceState({}, document.title, '/login');
+      navigate('/login', { replace: true });
     } catch (error) {
       console.error('Failed to log out', error);
     }
@@ -223,73 +343,36 @@ const Dashboard = ({ user }) => {
       ? location.pathname === path
       : location.pathname.startsWith(path) && path !== '/dashboard';
   };
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get('/api/v1/dashboard/');
-        setDashboardData(response.data);
-      } catch (err) {
-        console.error('Error fetching dashboard data:', err);
-        setError('Failed to load dashboard data. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
-  }, []);
-
-  // Mock activities - in a real app, these would come from the API
-  const mockActivities = [
-    {
-      id: 1,
-      message: 'New booking request from John Doe',
-      timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
-      type: 'info',
-      action: 'View',
-      actionType: 'primary',
-      onAction: () => window.location.href = '/dashboard/bookings/123'
-    },
-    {
-      id: 2,
-      message: 'Your property "Luxury Villa" was viewed 15 times today',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
-      type: 'success'
-    },
-    {
-      id: 3,
-      message: 'Payment received for booking #4567',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
-      type: 'success',
-      action: 'View Receipt',
-      actionType: 'secondary'
-    },
-    {
-      id: 4,
-      message: 'Your subscription will expire in 7 days',
-      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
-      type: 'warning',
-      action: 'Renew Now',
-      actionType: 'primary'
+  // If we're still checking authentication, show loading
+  if (authLoading) {
+    return (
+      <div className={styles.fullPageLoader}>
+        <FaSpinner className={styles.spinner} />
+        <p>Loading your dashboard...</p>
+      </div>
+    );
+  }
+  
+  // If not authenticated and not on login page, redirect to login
+  if (!user) {
+    if (!window.location.pathname.startsWith('/login')) {
+      return <Navigate to="/login" state={{ from: location }} replace />;
     }
-  ];
+    return null;
+  }
 
+  // Show loading state while fetching dashboard data
   if (loading) {
     return (
-      <DashboardLayout>
-        <div className={styles.loadingContainer}>
-          <div className={styles.loadingSpinner}></div>
-          <p>Loading your dashboard...</p>
-        </div>
-      </DashboardLayout>
+      <div className={styles.fullPageLoader}>
+        <FaSpinner className={styles.spinner} />
+        <p>Loading your dashboard data...</p>
+      </div>
     );
   }
 
+  // Show error state if there's an error
   if (error) {
     return (
       <DashboardLayout>
@@ -381,26 +464,40 @@ const Dashboard = ({ user }) => {
     return 'Good evening';
   };
 
-  // Render the appropriate dashboard based on user role
-  const renderDashboard = () => {
-    if (!user) return null;
-    
-    switch(user.user_type) {
-      case 'admin':
-        return <AdminDashboard user={user} />;
-      case 'agent':
-        return <AgentDashboard user={user} />;
-      case 'hotel_manager':
-        return <HotelManagerDashboard user={user} />;
-      default:
-        return (
-          <div className="default-dashboard">
-            <h2>Welcome to Shiats3</h2>
-            <p>You don't have a specific dashboard assigned. Please contact support.</p>
-          </div>
-        );
+  // Mock activities - in a real app, these would come from the API
+  const mockActivities = [
+    {
+      id: 1,
+      message: 'New booking request from John Doe',
+      timestamp: new Date(Date.now() - 1000 * 60 * 5), // 5 minutes ago
+      type: 'info',
+      action: 'View',
+      actionType: 'primary',
+      onAction: () => navigate('/dashboard/bookings/123')
+    },
+    {
+      id: 2,
+      message: 'Your property "Luxury Villa" was viewed 15 times today',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2), // 2 hours ago
+      type: 'success'
+    },
+    {
+      id: 3,
+      message: 'Payment received for booking #4567',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24), // 1 day ago
+      type: 'success',
+      action: 'View Receipt',
+      actionType: 'secondary'
+    },
+    {
+      id: 4,
+      message: 'Your subscription will expire in 7 days',
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24 * 2), // 2 days ago
+      type: 'warning',
+      action: 'Renew Now',
+      actionType: 'primary'
     }
-  };
+  ];
 
   // Loading component
   const LoadingSpinner = () => (
@@ -445,210 +542,307 @@ const Dashboard = ({ user }) => {
     }
   }
 
+  // Render the appropriate dashboard based on user role
+  const renderDashboardContent = () => {
+    if (loading) {
+      return (
+        <div className={styles.loadingContainer}>
+          <FaSpinner className={styles.spinner} />
+          <p>Loading your dashboard...</p>
+        </div>
+      );
+    }
+
+    if (error) {
+      return (
+        <div className={styles.errorContainer}>
+          <div className={styles.errorIcon}>⚠️</div>
+          <h3>Error Loading Dashboard</h3>
+          <p>{error}</p>
+          <button 
+            className={styles.retryButton}
+            onClick={() => window.location.reload()}
+          >
+            Try Again
+          </button>
+        </div>
+      );
+    }
+
+    // If we have dashboard data, render the appropriate dashboard
+    if (dashboardData) {
+      return (
+        <div className={styles.dashboardContent}>
+          <Routes>
+            <Route 
+              path="/" 
+              element={
+                user?.user_type === 'admin' ? <AdminDashboard user={user} /> :
+                user?.user_type === 'agent' ? <AgentDashboard user={user} /> :
+                user?.user_type === 'hotel_manager' ? <HotelManagerDashboard user={user} /> :
+                <Navigate to="/unauthorized" replace />
+              } 
+            />
+            <Route path="properties/*" element={<div>Properties Management</div>} />
+            <Route path="bookings/*" element={<div>Bookings Management</div>} />
+            <Route path="reports/*" element={<div>Reports</div>} />
+            <Route path="settings/*" element={<div>Settings</div>} />
+          </Routes>
+        </div>
+      );
+    }
+
+    // Default fallback
+    return (
+      <div className={styles.dashboardContent}>
+        <h2>Welcome to Shiats3 Dashboard</h2>
+        <p>Select an option from the sidebar to get started.</p>
+      </div>
+    );
+  };
+
   return (
-    <div className="dashboard-wrapper">
+    <div className={styles.dashboardWrapper}>
       {/* Sidebar */}
-      <div className={`sidebar ${sidebarOpen ? 'sidebar-open' : ''}`}>
-        <div className="sidebar-header">
-          <Link to="/" className="logo">
-            <img src="/logo.png" alt="Shiats3" className="logo-image" />
-            <span className="logo-text">Shiats3</span>
+      <div className={`${styles.sidebar} ${sidebarOpen ? styles.sidebarOpen : ''}`}>
+        <div className={styles.sidebarHeader}>
+          <Link to="/" className={styles.logo}>
+            <span className={styles.logoIcon}>🏠</span>
+            <span className={styles.logoText}>Shiats3</span>
           </Link>
-          <button className="close-sidebar" onClick={toggleSidebar}>
+          <button 
+            className={styles.closeSidebar} 
+            onClick={toggleSidebar}
+            aria-label="Close sidebar"
+          >
             <FaTimes />
           </button>
         </div>
         
-        <div className="user-profile">
-          <div className="avatar">
+        <div className={styles.userProfile}>
+          <div className={styles.avatar}>
             {user?.profile_picture ? (
-              <img src={user.profile_picture} alt={user.name || 'User'} />
+              <img 
+                src={user.profile_picture} 
+                alt={user.name || 'User'} 
+                className={styles.avatarImage}
+              />
             ) : (
-              <span className="avatar-text">{getUserInitials()}</span>
+              <span className={styles.avatarText}>
+                {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
+              </span>
             )}
           </div>
-          <div className="user-info">
-            <h4 className="user-name">{user?.name || 'User'}</h4>
-            <span className="user-role">{getUserRole()}</span>
+          <div className={styles.userInfo}>
+            <h4 className={styles.userName}>{user?.name || 'User'}</h4>
+            <span className={styles.userRole}>
+              {user?.user_type ? user.user_type.replace('_', ' ') : 'User'}
+            </span>
           </div>
         </div>
         
-        <nav className="nav">
-          <ul className="nav-list">
+        <nav className={styles.nav}>
+          <ul className={styles.navList}>
             {navItems.map((item) => (
-              <li key={item.path} className="nav-item">
+              <li key={item.path} className={styles.navItem}>
                 <Link 
                   to={item.path} 
-                  className={`nav-link ${isActive(item.path, item.exact) ? 'active' : ''}`}
+                  className={`${styles.navLink} ${isActive(item.path, item.exact) ? styles.active : ''}`}
+                  onClick={() => setSidebarOpen(false)}
                 >
-                  {item.icon}
-                  <span className="nav-text">{item.title}</span>
+                  <span className={styles.navIcon}>{item.icon}</span>
+                  <span className={styles.navText}>{item.title}</span>
                 </Link>
               </li>
             ))}
           </ul>
         </nav>
         
-        <div className="sidebar-footer">
-          <button className="logout-button" onClick={handleLogout}>
-            <FaSignOutAlt className="logout-icon" />
+        <div className={styles.sidebarFooter}>
+          <button 
+            className={styles.logoutButton} 
+            onClick={handleLogout}
+            aria-label="Logout"
+          >
+            <FaSignOutAlt className={styles.logoutIcon} />
             <span>Logout</span>
           </button>
         </div>
       </div>
       
       {/* Main Content */}
-      <div className="main-content">
+      <main className={styles.mainContent}>
         {/* Top Navigation */}
-        <header className="top-nav">
-          <div className="nav-left">
-            <button className="sidebar-toggle" onClick={toggleSidebar}>
+        <header className={styles.topNav}>
+          <div className={styles.navLeft}>
+            <button 
+              className={styles.menuButton} 
+              onClick={toggleSidebar}
+              aria-label="Toggle sidebar"
+            >
               <FaBars />
             </button>
-            <h1 className="page-title">
-              {navItems.find(item => isActive(item.path, item.exact))?.title || 'Dashboard'}
+            <h1 className={styles.pageTitle}>
+              {getPageTitle()}
             </h1>
           </div>
           
-          <div className="nav-right">
-            <div className={`notifications ${notificationsOpen ? 'notifications-open' : ''}`}>
+          <div className={styles.navRight}>
+            <div className={styles.notifications}>
               <button 
-                className={`notification-button ${unreadCount > 0 ? 'has-unread' : ''}`}
+                className={`${styles.notificationButton} ${unreadCount > 0 ? styles.hasNotifications : ''}`}
                 onClick={() => setNotificationsOpen(!notificationsOpen)}
+                aria-label={`${unreadCount} notifications`}
               >
-                <FaBell className="notification-icon" />
+                <FaBell />
                 {unreadCount > 0 && (
-                  <span className="notification-badge">{unreadCount}</span>
+                  <span className={styles.notificationBadge}>{unreadCount}</span>
                 )}
               </button>
               
               {notificationsOpen && (
-                <div className="notifications-dropdown dropdown">
-                  <div className="dropdown-header">
-                    <h4>Notifications</h4>
+                <div className={styles.notificationsDropdown}>
+                  <div className={styles.notificationsHeader}>
+                    <h3>Notifications ({unreadCount})</h3>
                     <button 
-                      className="mark-all-read"
-                      onClick={() => {
-                        // In a real app, this would mark all as read via API
-                        setNotifications(notifications.map(n => ({ ...n, read: true })));
-                        setUnreadCount(0);
-                      }}
+                      className={styles.markAllRead}
+                      onClick={markAllAsRead}
                     >
                       Mark all as read
                     </button>
                   </div>
-                  <div className="notifications-list">
-                    {notifications.length > 0 ? (
-                      notifications.map(notification => (
+                  
+                  <div className={styles.notificationsList}>
+                    {mockActivities.length > 0 ? (
+                      mockActivities.map((activity) => (
                         <div 
-                          key={notification.id} 
-                          className={`notification-item ${!notification.read ? 'unread' : ''}`}
-                          onClick={() => {
-                            // Handle notification click
-                            if (!notification.read) {
-                              // Mark as read
-                              setNotifications(notifications.map(n => 
-                                n.id === notification.id ? { ...n, read: true } : n
-                              ));
-                              setUnreadCount(prev => Math.max(0, prev - 1));
-                            }
-                            // Navigate based on notification type
-                            // This is just a placeholder - actual navigation would depend on the notification
-                            navigate('/dashboard/notifications');
-                          }}
+                          key={activity.id} 
+                          className={`${styles.notificationItem} ${activity.read ? '' : styles.unread}`}
+                          onClick={() => handleNotificationClick(activity)}
                         >
-                          <div className="notification-content">
-                            <p className="notification-message">{notification.message}</p>
-                            <span className="notification-time">{notification.time}</span>
+                          <div className={styles.notificationIcon}>
+                            {activity.type === 'success' ? '✓' : 'ℹ️'}
                           </div>
-                          {!notification.read && <div className="unread-indicator"></div>}
+                          <div className={styles.notificationContent}>
+                            <p className={styles.notificationMessage}>{activity.message}</p>
+                            <p className={styles.notificationTime}>
+                              {formatDistanceToNow(activity.timestamp, { addSuffix: true })}
+                            </p>
+                            {activity.action && (
+                              <button 
+                                className={`${styles.notificationAction} ${styles[activity.actionType] || ''}`}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  activity.onAction?.();
+                                }}
+                              >
+                                {activity.action}
+                              </button>
+                            )}
+                          </div>
                         </div>
                       ))
                     ) : (
-                      <div className="empty-notifications">
+                      <div className={styles.noNotifications}>
                         <p>No new notifications</p>
                       </div>
                     )}
                   </div>
-                  <div className="dropdown-footer">
-                    <Link to="/dashboard/notifications" className="view-all-link">
-                      View all notifications
-                    </Link>
+                  
+                  <div className={styles.notificationsFooter}>
+                    <Link to="/dashboard/notifications">View all notifications</Link>
                   </div>
                 </div>
               )}
             </div>
             
-            <div className={`profile ${profileOpen ? 'profile-open' : ''}`}>
+            <div className={styles.userMenu}>
               <button 
-                className="profile-button"
+                className={styles.userMenuButton}
                 onClick={() => setProfileOpen(!profileOpen)}
+                aria-expanded={profileOpen}
+                aria-haspopup="true"
               >
-                <div className="avatar-small">
+                <div className={styles.userAvatar}>
                   {user?.profile_picture ? (
-                    <img src={user.profile_picture} alt={user.name || 'User'} />
+                    <img 
+                      src={user.profile_picture} 
+                      alt={user.name || 'User'} 
+                      className={styles.avatarImage}
+                    />
                   ) : (
-                    <span className="avatar-text-small">{getUserInitials()}</span>
+                    <span>{user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
                   )}
                 </div>
-                <span className="user-name">{user?.name || 'User'}</span>
+                <span className={styles.userName}>{user?.name || 'User'}</span>
+                <span className={`${styles.dropdownArrow} ${profileOpen ? styles.open : ''}`} aria-hidden="true">▼</span>
               </button>
               
               {profileOpen && (
-                <div className="profile-dropdown dropdown">
-                  <div className="profile-info">
-                    <div className="avatar-medium">
+                <div className={styles.userDropdown}>
+                  <div className={styles.dropdownHeader}>
+                    <div className={`${styles.userAvatar} ${styles.large}`}>
                       {user?.profile_picture ? (
-                        <img src={user.profile_picture} alt={user.name || 'User'} />
+                        <img 
+                          src={user.profile_picture} 
+                          alt={user.name || 'User'} 
+                          className={styles.avatarImage}
+                        />
                       ) : (
-                        <span className="avatar-text-medium">{getUserInitials()}</span>
+                        <span>{user?.name ? user.name.charAt(0).toUpperCase() : 'U'}</span>
                       )}
                     </div>
-                    <div className="user-info">
-                      <h4 className="user-name">{user?.name || 'User'}</h4>
-                      <span className="user-email">{user?.email || ''}</span>
+                    <div className={styles.userInfo}>
+                      <h4>{user?.name || 'User'}</h4>
+                      <p>{user?.email || ''}</p>
+                      <span className={styles.userRole}>
+                        {user?.user_type ? user.user_type.replace('_', ' ') : 'User'}
+                      </span>
                     </div>
                   </div>
-                  <div className="dropdown-divider"></div>
-                  <Link 
-                    to="/dashboard/profile" 
-                    className="dropdown-item"
-                    onClick={() => setProfileOpen(false)}
-                  >
-                    <FaUserCircle className="dropdown-icon" />
-                    <span>My Profile</span>
-                  </Link>
-                  <Link 
-                    to="/dashboard/settings" 
-                    className="dropdown-item"
-                    onClick={() => setProfileOpen(false)}
-                  >
-                    <FaCog className="dropdown-icon" />
-                    <span>Settings</span>
-                  </Link>
-                  <div className="dropdown-divider"></div>
-                  <button 
-                    className="dropdown-item logout-item"
-                    onClick={handleLogout}
-                  >
-                    <FaSignOutAlt className="dropdown-icon" />
-                    <span>Logout</span>
-                  </button>
+                  
+                  <div className={styles.dropdownLinks}>
+                    <Link 
+                      to="/dashboard/profile" 
+                      className={styles.dropdownLink}
+                      onClick={() => setProfileOpen(false)}
+                    >
+                      <FaUserCircle className={styles.dropdownIcon} /> My Profile
+                    </Link>
+                    <Link 
+                      to="/dashboard/settings" 
+                      className={styles.dropdownLink}
+                      onClick={() => setProfileOpen(false)}
+                    >
+                      <FaCog className={styles.dropdownIcon} /> Settings
+                    </Link>
+                    <button 
+                      className={`${styles.dropdownLink} ${styles.logout}`}
+                      onClick={handleLogout}
+                    >
+                      <FaSignOutAlt className={styles.dropdownIcon} /> Logout
+                    </button>
+                  </div>
                 </div>
               )}
             </div>
           </div>
         </header>
         
-        {/* Page Content */}
-        <div className="content-wrapper">
+        {/* Dashboard Content */}
+        <div className={styles.dashboardMainContent}>
           <ErrorBoundary>
-            <Suspense fallback={<LoadingSpinner />}>
-              {renderDashboard()}
+            <Suspense fallback={
+              <div className={styles.loadingContainer}>
+                <FaSpinner className={styles.spinner} />
+                <p>Loading dashboard...</p>
+              </div>
+            }>
+              {renderDashboardContent()}
             </Suspense>
           </ErrorBoundary>
         </div>
-      </div>
+      </main>
     </div>
   );
 };

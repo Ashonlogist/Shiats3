@@ -3,9 +3,14 @@ import { getApiUrl, DEFAULT_HEADERS } from './config';
 
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: '', // We'll use the full URL from getApiUrl
-  headers: { ...DEFAULT_HEADERS },
-  withCredentials: true, // Important for handling cookies
+  baseURL: getApiUrl(''), // Set base URL
+  headers: { 
+    ...DEFAULT_HEADERS,
+    'X-Requested-With': 'XMLHttpRequest',
+  },
+  withCredentials: true, // Important for handling cookies and sessions
+  xsrfCookieName: 'csrftoken',
+  xsrfHeaderName: 'X-CSRFToken',
 });
 
 // Request interceptor to add auth token to requests

@@ -6,7 +6,9 @@ const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1',
   headers: {
     'Content-Type': 'application/json',
+    'Accept': 'application/json',
   },
+  withCredentials: true, // Include cookies in requests if using session-based auth
 });
 
 // Add a request interceptor to include the auth token
@@ -26,16 +28,70 @@ api.interceptors.request.use(
 // Add a response interceptor to handle common errors
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    // Handle 401 Unauthorized errors (token expired or invalid)
-    if (error.response && error.response.status === 401) {
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // Don't retry if it's a retry request or not a 401 error
+    if (originalRequest._retry || error.response?.status !== 401) {
+      return Promise.reject(error);
+    }
+    
+    // Mark this request as already being retried
+    originalRequest._retry = true;
+    
+    // If this is a refresh token request, log out the user
+    if (originalRequest.url.includes('/auth/jwt/refresh/')) {
+      console.error('Refresh token failed, logging out...');
       removeToken();
-      // Redirect to login page if not already there
-      if (window.location.pathname !== '/login') {
+      if (!window.location.pathname.startsWith('/login')) {
         window.location.href = '/login';
       }
+      return Promise.reject(error);
     }
-    return Promise.reject(error);
+    
+    // Try to refresh the token
+    try {
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) {
+        throw new Error('No refresh token available');
+      }
+      
+      console.log('Attempting to refresh access token...');
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'}/auth/jwt/refresh/`,
+        { refresh: refreshToken }
+      );
+      
+      if (!response.data?.access) {
+        throw new Error('No access token in refresh response');
+      }
+      
+      // Store the new token
+      const { access } = response.data;
+      setTokens(access, refreshToken);
+      
+      // Update the auth header
+      api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+      originalRequest.headers['Authorization'] = `Bearer ${access}`;
+      
+      console.log('Token refreshed successfully, retrying request...');
+      return api(originalRequest);
+    } catch (err) {
+      console.error('Failed to refresh token:', err);
+      
+      // If we're not already on the login page, redirect there
+      if (!window.location.pathname.startsWith('/login')) {
+        // Clear any existing tokens
+        removeToken();
+        
+        // Add a small delay to allow the error to be processed
+        setTimeout(() => {
+          window.location.href = '/login';
+        }, 100);
+      }
+      
+      return Promise.reject(error);
+    }
   }
 );
 

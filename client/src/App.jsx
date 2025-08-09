@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate, Outlet } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, Outlet } from 'react-router-dom';
 import { FaSpinner } from 'react-icons/fa';
-import { AuthProvider } from './contexts';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
 
 // Layout Components
 import Navbar from './components/layout/Navbar';
-import Hero from './components/Hero/Hero';
 import Footer from './components/layout/Footer';
+import ProtectedRoute from './components/auth/ProtectedRoute';
+import Hero from './components/Hero/Hero.jsx';
 
 // Public Pages
 import Home from './pages/Home';
@@ -51,151 +52,31 @@ function App() {
 
 // AppContent component that uses hooks
 function AppContent() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, loading } = useAuth();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
 
-  // Check if user is authenticated on initial load
-  useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        const token = localStorage.getItem('access_token');
-        
-        if (token) {
-          // Verify the token is still valid
-          const response = await fetch('http://localhost:8000/api/v1/auth/users/me/', {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
-
-          if (response.ok) {
-            const userData = await response.json();
-            setIsAuthenticated(true);
-            setUser({
-              ...userData,
-              token,
-              isAdmin: userData.is_staff || userData.is_superuser,
-              // Add user_type to the user object for role-based access
-              user_type: userData.user_type || 'buyer', // Default to 'buyer' if not specified
-            });
-          } else {
-            // Token is invalid, clear it
-            localStorage.removeItem('access_token');
-            localStorage.removeItem('refresh_token');
-          }
-        }
-      } catch (error) {
-        console.error('Authentication check failed:', error);
-        // Clear invalid tokens on error
-        localStorage.removeItem('access_token');
-        localStorage.removeItem('refresh_token');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkAuth();
-  }, []);
-
-  // Handle login
-  const handleLogin = (userData) => {
-    setIsAuthenticated(true);
-    setUser(userData);
-  };
-
-  // Handle logout
-  const handleLogout = async () => {
-    try {
-      // Call the logout endpoint if needed
-      const token = localStorage.getItem('access_token');
-      if (token) {
-        await fetch('http://localhost:8000/api/v1/auth/logout/', {
-          method: 'POST',
-          headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            refresh: localStorage.getItem('refresh_token')
-          }),
-        });
-      }
-    } catch (error) {
-      console.error('Logout error:', error);
-    } finally {
-      // Clear all auth data
-      localStorage.removeItem('access_token');
-      localStorage.removeItem('refresh_token');
-      setIsAuthenticated(false);
-      setUser(null);
-      
-      // Redirect to home page after logout
-      window.location.href = '/';
-    }
-  };
-
-  // Protected Route Wrapper Component
-  const ProtectedRoute = ({ requiredRole = null, children }) => {
-    if (loading) {
-      return (
-        <div className="loading-screen">
-          <FaSpinner className="spinner" />
-          <p>Loading Shiats3...</p>
-        </div>
-      );
-    }
-
-    if (!isAuthenticated) {
-      // Redirect to login if not authenticated
-      return <Navigate to="/login" state={{ from: location.pathname }} replace />;
-    }
-
-    // Check if user has the required role if specified
-    if (requiredRole && user?.user_type !== requiredRole) {
-      return <Unauthorized />;
-    }
-
-    return children || <Outlet />;
-  };
-
-  // Role-based route components
-  const AdminRoute = ({ children }) => (
-    <ProtectedRoute requiredRole="admin">
-      {children}
-    </ProtectedRoute>
-  );
-
-  const AgentRoute = ({ children }) => (
-    <ProtectedRoute requiredRole="agent">
-      {children}
-    </ProtectedRoute>
-  );
-
-  const HotelManagerRoute = ({ children }) => (
-    <ProtectedRoute requiredRole="hotel_manager">
-      {children}
-    </ProtectedRoute>
-  );
-
   if (loading) {
     return (
-      <div className="loading-screen">
-        <FaSpinner className="spinner" />
-        <p>Loading Shiats3...</p>
+      <div className="flex items-center justify-center min-h-screen">
+        <FaSpinner className="animate-spin text-4xl text-primary" />
       </div>
     );
   }
 
+  const { logout } = useAuth();
+
   return (
     <div className="app">
-      <Navbar isAuthenticated={isAuthenticated} user={user} onLogout={handleLogout} />
+      <Navbar 
+        isAuthenticated={!!user}
+        user={user}
+        onLogout={logout}
+      />
       {isHomePage && <Hero />}
       <main className={isHomePage ? 'main--with-hero' : ''}>
         <Routes>
+          {/* Public Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/properties" element={<Properties />} />
           <Route path="/properties/:id" element={<PropertyDetails />} />
@@ -210,18 +91,18 @@ function AppContent() {
           <Route 
             path="/login" 
             element={
-              !isAuthenticated ? (
-                <Login onLogin={handleLogin} />
-              ) : (
+              user ? (
                 <Navigate to="/dashboard" replace />
+              ) : (
+                <Login />
               )
             } 
           />
           <Route 
             path="/register" 
             element={
-              !isAuthenticated ? (
-                <Register onRegister={handleLogin} />
+              user ? (
+                <Navigate to="/dashboard" replace />
               ) : (
                 <Navigate to="/dashboard" replace />
               )
@@ -229,40 +110,87 @@ function AppContent() {
           />
 
           {/* Dashboard Routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route path="/dashboard" element={<Dashboard user={user} />}>
-              {/* Default dashboard based on user role */}
-              <Route 
-                index 
-                element={
-                  user?.user_type === 'admin' ? <AdminDashboard /> :
-                  user?.user_type === 'agent' ? <AgentDashboard /> :
-                  user?.user_type === 'hotel_manager' ? <HotelManagerDashboard /> :
-                  <Navigate to="/" replace />
-                } 
-              />
-              
-              {/* Admin-only routes */}
-              <Route element={<AdminRoute />}>
-                <Route path="admin" element={<AdminDashboard />} />
-                <Route path="users" element={<DashboardUsers />} />
-              </Route>
-              
-              {/* Agent-only routes */}
-              <Route element={<AgentRoute />}>
-                <Route path="agent" element={<AgentDashboard />} />
-                <Route path="properties" element={<DashboardProperties />} />
-              </Route>
-              
-              {/* Hotel Manager-only routes */}
-              <Route element={<HotelManagerRoute />}>
-                <Route path="hotel-manager" element={<HotelManagerDashboard />} />
-              </Route>
-              
-              {/* Shared dashboard routes */}
-              <Route path="bookings" element={<DashboardBookings />} />
-              <Route path="settings" element={<DashboardSettings />} />
-            </Route>
+          <Route 
+            path="/dashboard" 
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          >
+            <Route 
+              index 
+              element={
+                user?.user_type === 'admin' ? <AdminDashboard /> :
+                user?.user_type === 'agent' ? <AgentDashboard /> :
+                user?.user_type === 'hotel_manager' ? <HotelManagerDashboard /> :
+                <Navigate to="/" replace />
+              } 
+            />
+            
+            {/* Admin-only routes */}
+            <Route 
+              path="admin" 
+              element={
+                <ProtectedRoute roles={['admin']}>
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="users" 
+              element={
+                <ProtectedRoute roles={['admin']}>
+                  <DashboardUsers />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Agent-only routes */}
+            <Route 
+              path="agent" 
+              element={
+                <ProtectedRoute roles={['agent', 'admin']}>
+                  <AgentDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="properties" 
+              element={
+                <ProtectedRoute roles={['agent', 'admin']}>
+                  <DashboardProperties />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Hotel Manager-only routes */}
+            <Route 
+              path="hotel-manager" 
+              element={
+                <ProtectedRoute roles={['hotel_manager', 'admin']}>
+                  <HotelManagerDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            
+            {/* Shared dashboard routes */}
+            <Route 
+              path="bookings" 
+              element={
+                <ProtectedRoute>
+                  <DashboardBookings />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="settings" 
+              element={
+                <ProtectedRoute>
+                  <DashboardSettings />
+                </ProtectedRoute>
+              } 
+            />
           </Route>
 
           {/* 404 Route - Must be last */}

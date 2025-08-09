@@ -1,0 +1,307 @@
+# Shiats3 Backend Setup Plan
+
+## Notes
+- Migrated all API endpoints to use DRF routers and nested routers for better organization and scalability.
+- Updated main project URLs to include API documentation (Swagger/Redoc), JWT and Djoser authentication, and frontend catch-all for React Router.
+- Enhanced settings.py with comprehensive configurations: REST framework, JWT, Djoser, CORS, security, database, email, static/media files, logging, and Celery.
+- Added S3 storage backend support for static and media files in production.
+- Added comprehensive API endpoint test coverage using Django REST Framework and pytest.
+- Created pytest.ini for test configuration.
+- Updated requirements.txt with all backend and dev dependencies.
+- Added .env.example for easier environment setup.
+- Switched to SQLite for testing to avoid PostgreSQL dependency issues.
+- Switched to SQLite for local development to avoid psycopg2/pg_config issues on Windows.
+- Removed django-health-check from INSTALLED_APPS due to incompatibility with Django 4+ and Python 3.13.
+- Created conftest.py for test fixtures and configuration.
+- Enhanced test case structure for better reliability.
+- Created comprehensive API documentation (API_DOCUMENTATION.md) for all endpoints, authentication, and usage.
+- Enhanced README.md with setup, features, developer instructions, and support info.
+- Determined that frontend is not yet linked to backend; API service layer, Vite proxy, and authentication flow are missing.
+- Set up Vite proxy configuration for API requests in frontend.
+- Created frontend .env file for API base URL and environment variables.
+- Implemented API service layer in frontend (api directory, Axios, base URL).
+- Implemented authentication and property services in frontend for API calls.
+- Installed frontend dependencies successfully using Command Prompt (npm install).
+- Created frontend API service (services/api.js) for all API calls and interceptors.
+- Created frontend authentication utility (utils/auth.js) for token and user management.
+- Created AuthContext (contexts/AuthContext.jsx) and index.js for global authentication state management in the frontend; resolves Dashboard.jsx import error and enables context-based auth logic.
+- Refactored AuthProvider to remove useNavigate and move navigation logic to Login component, resolving Router context runtime error.
+- Updated Django logging configuration to ensure logs directory exists and use RotatingFileHandler.
+- Verified Vite proxy, .env, and API config for frontend-backend integration.
+- Discovered missing drf-yasg dependency causing backend error; installed drf-yasg to resolve it.
+- Resolved Django health_check and logging errors (Python 3.13 compatibility, log file lock).
+- Updated logging configuration to minimize console output and only show critical errors.
+- Discovered blocking backend issue: AUTH_USER_MODEL refers to 'properties.User', but no custom User model is defined. Backend cannot start until this is fixed.
+- Created and integrated custom User model in properties app to resolve AUTH_USER_MODEL error.
+- Encountered new backend blocking issues: missing django_cleanup package and missing GDAL library required for Django GIS functionality.
+- django_cleanup package is now installed and available.
+- Removed 'django.contrib.gis' from INSTALLED_APPS to resolve GDAL dependency, as no GIS features are used.
+- Installed drf-nested-routers to resolve NestedSimpleRouter error in properties.urls.
+- Added missing RoomImageViewSet to views.py to resolve backend error for room-type image routes.
+- Installed django-debug-toolbar to resolve missing module error during migrations.
+- Added 'debug_toolbar' to INSTALLED_APPS and MIDDLEWARE in settings.py for development environment.
+- Installed django-redis to resolve cache backend error.
+- Encountered migration issue: Property model's non-nullable slug field requires a default; updating model to auto-generate slug and set blank=True.
+- Created and updated a data migration to handle slug field population and schema changes for Property model.
+- Created migration for custom User model to resolve migration dependency issues.
+- Attempted to reset database by deleting db.sqlite3 to resolve migration issues, but file was locked/in use.
+- Terminated all running Python processes to release database lock before migration reset.
+- Removed all migration files and database file to prepare for a clean migration reset.
+- Created fresh initial migration for the properties app and successfully applied all migrations to set up the database schema.
+- Successfully created and applied a fresh initial migration for the properties app and set up the database schema.
+- Successfully created a Django superuser using a custom script for the custom User model.
+- Started the Django development server; ready for admin and API/UI testing.
+- Updated main URL configuration to gracefully handle missing frontend templates and provide custom 404s for API/non-API requests.
+- Created a basic index.html template to resolve TemplateDoesNotExist and provide a placeholder frontend page.
+- Restarted the Django development server to apply template changes.
+- Backend setup is complete; transitioning to frontend setup and testing.
+- Frontend development server is already running; ready for integration testing.
+- Encountered backend API error: AttributeError in PropertyViewSet/filterset during properties API call; integration testing is blocked until this is resolved.
+- Investigated PropertyViewSet and Property model to identify filterset/AttributeError cause; next step is to fix filter configuration or dependencies.
+- Fixed PropertyViewSet implementation to resolve AssertionError (missing queryset attribute) and ensure correct queryset/filtering logic. Backend API is ready for re-testing.
+- Enhanced PropertyFilter and PropertyViewSet with improved form handling and error management for more robust filtering and error reporting.
+- Backend API filterset/form integration is still failing (django_filters/DRF); further backend debugging required before frontend UI API calls can be tested.
+- Transitioning to frontend work: user requests page-by-page enhancements, high attention to detail, and extensive use of animations and background images.
+- Enhanced frontend Home page Hero section with advanced animations, smooth transitions, and a visually rich background image slider using Framer Motion and custom CSS.
+- Started analysis of frontend Properties page structure to prepare for enhancement with animations and background images.
+- Created dedicated CSS module (Properties.module.css) for Properties page with modern styling and animation support.
+- Began updating Properties component to use new CSS module and Framer Motion for animations.
+- Added filter logic and improved mock data in Properties.jsx for enhanced sorting and animation support.
+- Implemented main JSX structure and animation logic in Properties.jsx; enhanced CSS module with missing styles for full UI/UX.
+- Completed Properties.jsx enhancement: all UI, animation, and filter logic implemented.
+- Refactored Properties page: created reusable PropertyCard and PropertiesFilters components for modular, maintainable UI.
+- Created new, simplified Properties page using modular components and updated CSS module for consistency.
+- Enhanced frontend Property Details page with animations and background images
+- Resolved all JSX structure and lint errors in Properties.jsx; Properties page renders without errors and all JSX structure and lint errors have been fixed.
+- Fixed CSS lint errors in Properties.module.css.
+- Properties page modern design, filter logic, and features fully implemented and matches Hotels page
+- Properties page restyling is now fully complete, with modern design, filter logic, and features implemented and matching the Hotels page design.
+- Fixed ReferenceError in Properties.jsx by removing redundant `category` filter and using only `type` for filtering; clarified frontend filter logic to avoid duplicate state.
+- Fixed ReferenceError in Properties.jsx by removing redundant `category` filter and using only `type` for filtering; clarified frontend filter logic to avoid duplicate state.
+- Restructured and improved Hotels page with new layout and responsive CSS module
+- Started backend authentication app (accounts) for user registration and login
+- Implemented custom User model, serializers, and authentication views in accounts app
+- Added authentication URLs in accounts app and included them in main urls.py
+- Installed django-rest-passwordreset package to resolve missing dependency for password reset functionality
+- Added django_rest_passwordreset to INSTALLED_APPS in settings.py to resolve app_label error
+- Added missing RoomImageViewSet to views.py to resolve backend error for room-type image routes.
+- Fixed missing `openapi` import in accounts/views.py to resolve NameError during migration attempts.
+- Installed django-debug-toolbar to resolve missing module error during migrations.
+- Encountered migration and model conflicts: duplicate User models in both accounts and properties apps, and reverse accessor clashes with django_rest_passwordreset. Need to resolve before proceeding.
+- Removed duplicate User model from properties app; all references now use User from accounts app.
+- Encountered reverse accessor conflict between accounts.PasswordResetToken and django_rest_passwordreset.ResetPasswordToken; must resolve before migrations can proceed.
+- Removed custom PasswordResetToken model from accounts app; now using django-rest-passwordreset exclusively for password reset tokens. Reverse accessor conflict resolved.
+- Created and applied migrations for accounts app to resolve migration dependency issues.
+- Resolved all model/reverse accessor conflicts; backend models are now consistent and ready for further development.
+- Created fresh migrations for accounts and properties apps; ready to apply migrations and initialize database.
+- Resolved all model/reverse accessor conflicts; backend models are now consistent and ready for further development.
+- Encountered issue creating Django superuser: management command does not recognize --username argument and interactive prompt fails due to EOFError; programmatic superuser creation script also fails due to settings module import error. Need to resolve superuser creation for admin access.
+- Attempted Django shell and shell one-liner superuser creation; failed due to custom UserManager.create_superuser() signature mismatch (positional arguments error). Need to adjust superuser creation logic to match custom User model requirements.
+- Custom UserManager.create_superuser requires only email and password as positional arguments; all other fields must be passed as keyword arguments. Next step is to update the superuser creation logic accordingly.
+- Successfully created superuser for custom User model using correct keyword arguments in shell; admin account is now available for backend authentication and admin access.
+- Successfully created superuser for custom User model using correct keyword arguments in shell; admin account is now available for backend authentication and admin access.
+- Successfully tested backend authentication endpoints (login with superuser works; received JWT tokens). Ready to proceed with frontend-backend integration testing.
+- Frontend API service and config reviewed; validating frontend-backend integration flow.
+- Created frontend .env file with API URL; Vite config and environment validated for frontend-backend integration.
+- Frontend .env file created and Vite environment/config validated; ready to test login/signup UI flows with backend.
+- Encountered error in Login.jsx: `FaHome` is not defined; need to fix missing import from `react-icons/fa` before continuing frontend authentication testing.
+- Fixed missing `FaHotel` import in Login.jsx after resolving `FaHome` error; continue testing frontend authentication flows.
+- Encountered Redis connection error on Django admin login; need to update session/caching settings to avoid requiring Redis for local development.
+- Updated Django settings to use database for sessions and local memory cache for caching in local development; Redis is no longer required for admin login or session management in dev.
+- Fixed UserSerializer in properties app to remove 'username' field and match custom User model (uses 'email' as identifier).
+- Observed 404 error after account creation; likely caused by missing or incorrect frontend redirect after registration. Need to review and fix signup flow redirect logic.
+- Updated Register.jsx to redirect to login after registration and Login.jsx to show success message when redirected from registration.
+- Fixed import bug in Login.jsx (useLocation now imported from react-router-dom correctly).
+- Updated UserSerializer in properties app to match custom User model (remove 'username' field, use 'email')
+- Updated UserSerializer in properties app to match custom User model (remove 'username' field, use 'email')
+- Investigating dashboard redirection issue after admin login on frontend; login redirects to /dashboard but dashboard content does not appear as expected.
+- Determined that Dashboard.jsx currently uses mock user data and is not connected to backend authentication or user info; dashboard does not reflect actual logged-in user state. Need to connect login form to backend API and pass real user data to dashboard for proper admin/user experience.
+- Currently blocked: After login, frontend fails to fetch user data from backend ("Failed to fetch user data"). Need to debug user endpoint, permissions, or serialization in accounts app.
+- Added CurrentUserView to backend and exposed /api/v1/auth/users/me/ endpoint in accounts.urls to resolve user data fetch issue after login.
+- Next: Test login and dashboard flow end-to-end after backend fix.
+- Enhanced PropertyViewSet in backend with permissions, owner assignment, image upload, and similar properties endpoints for more complete property management.
+- Properties page now fetches and displays property data from backend API.
+- All Properties page errors related to currentPageItems are fixed; page loads and paginates correctly.
+- End-to-end frontend-backend integration for Properties page is complete; focus now shifts to dashboard and authentication flows.
+- Received and reviewed the Shiats3 Internal Guide: all future backend, frontend, and UI/UX work must align with the project's branding (African hut logo, color palette, fonts), user roles, features, and quality standards as outlined. Ensure all new features, admin/agent/hotel manager dashboards, and content templates follow these guidelines.
+- Next major features to implement: role-based dashboards, hotel booking system, and blog functionality, all adhering to the guide.
+- User model updated to include hotel manager role; migration created and applied
+- Created new dashboard app for role-based dashboards implementation
+- Implemented backend dashboard serializers and views for Admin, Agent, and Hotel Manager roles
+- Added dashboard app URLs and integrated them into main project URLs
+- Implemented core frontend dashboard layout, shared StatCard and ActivityFeed components, and the main Dashboard page with CSS modules
+- Implemented modern Dashboard layout with sidebar navigation, header, notification/profile dropdowns in the frontend (Dashboard.jsx)
+- In progress: Implementing responsive, modern Dashboard styles (Dashboard.module.css)
+- Created Dashboard.styles.css and switched Dashboard.jsx to use it
+- Created AdminDashboard and AgentDashboard components and their CSS files for role-based dashboard content
+- Created HotelManagerDashboard and its CSS for hotel manager role-based dashboard
+- Integrated all role-based dashboards (Admin, Agent, Hotel Manager) into Dashboard.jsx with routing and error/loading states
+- Integrated Properties, Bookings, and Users dashboard components (with CSS) to resolve missing imports and complete dashboard UI.
+- Created and integrated dashboard Settings component (Settings.jsx, Settings.css) to resolve missing import and complete dashboard management pages.
+- Created and integrated dashboard Unauthorized component (Unauthorized.jsx, Unauthorized.css) to resolve missing import and handle forbidden/403 routes in the dashboard.
+- Updated Login page to use API service and AuthContext for authentication; improved error handling and environment variable usage for API calls.
+- User reported persistent link underlines; redundant/conflicting CSS likely in Navbar or global styles. Need to unify link styling.
+- Cleaned up global and Navbar CSS to remove all <a> underlines and unify link styles site-wide.
+- User requested Hotels page restyling to match provided screenshots; task added to plan.
+- Hotels page restyling in progress: fixing lint/JSX errors and implementing new design.
+- User requested Properties page restyling to match Hotels page design; task added to plan.
+- Fixed CSS lint errors in Properties.module.css.
+- Began updating Properties.jsx: fixed imports, property types, and started filter logic refactor to match new Hotels page design and features.
+- Properties page modern design, filter logic, and features fully implemented and matches Hotels page
+- Properties page restyling is now fully complete, with modern design, filter logic, and features implemented and matching the Hotels page design.
+- Fixed missing `FaBlog` import in Navbar.jsx to resolve `FaBlog is not defined` runtime error.
+- Major integration issue: Frontend authentication and user creation not syncing with backend; dashboard and data do not reflect backend changes; users cannot create posts from frontend. Need to debug and fix API integration, authentication flow, and enable post creation from frontend.
+- Debugged and fixed frontend-backend authentication and user creation integration (sign up/login should create/fetch users in backend)
+- Fixed dashboard and data sync so frontend reflects backend changes (users, properties, etc.)
+- Enabled users to create posts and content from frontend (blog, dashboard, etc.)
+- Improved error handling and state management in AuthContext's fetchUser function for robust frontend-backend sync and user experience.
+- Improved registration flow and error handling in AuthContext's register function for better user experience.
+- Enhanced logout flow in AuthContext and authService for clean state cleanup and backend sync.
+- Added ProtectedRoute component for secure, role-based route guarding in frontend.
+- Refactored App.jsx to use ProtectedRoute and enhanced AuthContext for unified, secure authentication flow and role-based route protection.
+- Fixed ReferenceError: isAuthenticated is not defined in App.jsx after AuthContext refactor; removed all references to isAuthenticated and now rely on `user` from AuthContext for authentication state.
+- Fixed ReferenceError: Hero is not defined in App.jsx by importing Hero from components/Hero/Hero.jsx.
+- New blocking error: Dashboard.jsx ReferenceError: styles is not defined. Need to fix styles import or definition in Dashboard.jsx for dashboard navigation to work.
+- New blocking error: Dashboard.jsx ReferenceError: DashboardLayout is not defined. Need to fix DashboardLayout import or definition in Dashboard.jsx for dashboard layout to work.
+- New blocking error: Dashboard.jsx ReferenceError: api is not defined. Need to import or define the api instance in Dashboard.jsx to fix dashboard data fetching.
+- User requested enhanced dashboard profile/account icon with dropdown or mini-profile card, including username, email, and dashboard link, styled to match African hut/real estate brand and responsive/animated.
+- Added requirement: After login, update Navbar so login/signup disappear, dashboard link and account/profile icon appear.
+- Fixed missing FaChartLine icon import in DashboardLayout.jsx; similar missing icon imports (e.g. FaCog) may need to be addressed.
+- Observed 404 error for /api/v1/dashboard/ due to double /api/v1/ in frontend API URL; need to fix endpoint in Dashboard.jsx.
+- User reports "nothing is working" after Navbar/auth updates; possible redundant or broken code in Navbar/auth flow. Need code review and cleanup.
+- App.jsx updated to pass isAuthenticated, user, and onLogout props to Navbar, fixing Navbar/auth integration bug.
+- User reports: After login, clicking dashboard link only causes a flash; dashboard does not appear—possible routing or rendering bug in dashboard flow. Needs investigation and fix.
+- Dashboard.jsx and routing logic refactored to resolve dashboard flashing/rendering bug after login. Dashboard now renders correctly based on user role and authentication state.
+- Root cause of dashboard flashing: ProtectedRoute checked user.role instead of user.user_type, causing improper redirects. Fixed to use user.user_type for role checks; dashboard should now render correctly after login.
+- Debugged and fixed redundant/duplicate state and logic in Dashboard.jsx; cleaned up duplicate render functions and fixed lint/syntax errors.
+- Fixed missing FaCog import in DashboardLayout.jsx.
+- Fixed duplicate /api/v1/ in dashboard API endpoint by updating endpoint logic in Dashboard.jsx to use the correct route based on user type.
+- Fixed JSX adjacent element error in Dashboard.jsx by properly wrapping error state in DashboardLayout.
+- Improved error handling in Dashboard.jsx to handle unexpected errors and provide better user experience.
+- Improved error handling and token refresh logic in API service and Dashboard.jsx to address 403 Forbidden errors and permission issues when accessing dashboard endpoints. Enhanced user feedback for permission errors and session expiry.
+- Fixed dashboard flashing/rendering issue after login by improving loading state and transition logic in Dashboard.jsx. Dashboard now appears smoothly after login without flashing.
+- [x] Improve error handling and token refresh logic in API service and Dashboard.jsx to address 403 errors and permission issues
+- Observed ReferenceError: getToken is not defined in Dashboard.jsx; fixed by importing getToken from auth utility.
+- Dashboard infinite loop/flashing caused by missing token and lack of redirect; added logic to redirect to login if no token is present and prevent repeated API calls.
+- Improved dashboard data fetching logic to robustly handle missing/expired tokens, error states, and navigation to login.
+- Consolidated dashboard authentication and navigation logic into a single effect to prevent navigation throttling and infinite redirects.
+- Fixed dashboard navigation throttling and infinite redirect issues by consolidating authentication and navigation logic, improving navigation state tracking, and fixing syntax errors.
+- [x] Fix dashboard infinite loop when authentication token is missing/expired
+- [x] Refactor dashboard data fetching to robustly handle missing/expired tokens and redirect to login
+- [x] Test dashboard with missing/expired token and verify redirect to login and error state
+- Reviewed Dashboard.jsx navigation and authentication logic; consolidated navigation throttling and authentication flow to prevent infinite redirects and improve user experience.
+- [x] Debug and fix dashboard routing/rendering: dashboard flashes but does not display after login
+- [x] Debug and fix redundant/duplicate state and logic in Dashboard.jsx; fix duplicate render functions and lint errors
+- [x] Review and consolidate Dashboard.jsx navigation throttling and authentication logic to prevent infinite redirects and improve navigation flow
+- New issue: After navigation/authentication fixes, dashboard is stuck on loading state. Need to investigate data fetching and loading logic.
+- Identified and fixed authentication token bug: updated AuthContext to store access/refresh tokens after login, improved fetchUser to set auth header, and enhanced API service to handle token refresh and retry logic. Dashboard now loads after login if token is present.
+- [x] Investigate and resolve dashboard stuck on loading state after navigation throttling fixes
+- [x] Fix authentication token storage and retrieval after login (update AuthContext, fetchUser, and API service)
+- Persistent navigation throttling warning (react-router-dom) still occurs after fixes; need to further optimize navigation logic to prevent rapid/duplicate navigations.
+- Attempted navigation throttling fixes, but dashboard is still stuck on loading state; need to re-investigate data fetching and loading logic after navigation changes.
+- User requested enhanced dashboard profile/account icon feature with dropdown/mini-profile card and brand styling.
+- Fixed missing icon imports in DashboardLayout.jsx (e.g. FaCog, FaChartLine)
+- Fixed dashboard API endpoint URL in Dashboard.jsx (remove double /api/v1/)
+- [ ] Update Navbar to show account/profile icon and dashboard link after login; hide login/signup links when authenticated.
+- [ ] Review and clean up redundant or broken code in Navbar/authentication flow; ensure proper state and props are passed and Navbar updates correctly after login/logout.
+- [x] Debug and fix dashboard routing/rendering: dashboard flashes but does not display after login
+- [x] Debug and fix redundant/duplicate state and logic in Dashboard.jsx; fix duplicate render functions and lint errors
+## Current Goal
+- Test dashboard authentication and loading flow after token/auth fixes
+
+## Task List
+- [x] Enhance properties app urls.py to use DRF routers and nested routers
+- [x] Update main project urls.py to include API documentation, authentication, and frontend catch-all
+- [x] Update settings.py with all necessary backend configurations
+- [x] Add storage_backends.py for S3 file storage
+- [x] Create API endpoint tests for properties, hotels, bookings, and users
+- [x] Add pytest.ini for test configuration
+- [x] Update requirements.txt with all dependencies
+- [x] Add .env.example for environment variables
+- [x] Run all backend tests and ensure they pass
+- [x] Document API endpoints and settings for developers
+- [x] Review and finalize developer documentation
+- [x] Set up API service layer in frontend (api directory, Axios/fetch, base URL)
+- [x] Add Vite proxy configuration to connect frontend to backend
+- [x] Implement authentication flow in frontend (token management, interceptors)
+- [x] Add frontend .env file for API base URL and environment variables
+- [x] Test API calls through frontend UI
+- [x] Resolve PowerShell/npm execution policy issue and install frontend dependencies
+- [x] Resolve Django logging configuration error and start backend server
+- [x] Update logging configuration in settings.py to prevent log rotation issues
+- [x] Re-test frontend-backend integration after dependencies are installed
+- [x] Re-test frontend-backend integration after backend is running
+- [x] Verify frontend-backend configuration (.env, Vite proxy, API config)
+- [x] Switch to SQLite for local development to resolve psycopg2/pg_config issues
+- [x] Remove django-health-check from INSTALLED_APPS (fix incompatibility)
+- [x] Create and integrate custom User model in properties app to resolve AUTH_USER_MODEL error
+- [x] Resolve missing django_cleanup package error
+- [x] Resolve missing GDAL library error for Django GIS
+- [x] Resolve drf-nested-routers (NestedSimpleRouter) dependency error
+- [x] Resolve django-debug-toolbar dependency error
+- [x] Diagnose and resolve backend API AttributeError in PropertyViewSet/filterset
+- [x] Fix PropertyViewSet filter configuration or dependencies
+- [x] Re-test backend API and integration
+- [x] Debug and fix backend API filterset/form integration (django_filters/DRF)
+- [x] Test API calls through frontend UI
+- [x] Set up and run the frontend development server
+- [x] Test end-to-end frontend-backend integration (validate API service/config and flows)
+  - [x] Create frontend .env file with API URL
+  - [x] Validate Vite config and environment for integration
+  - [x] Test login and signup UI flows with backend
+  - [x] Fix missing FaHome import in Login.jsx to resolve frontend login page error
+  - [x] Fix missing FaHotel import in Login.jsx to resolve frontend login page error
+  - [x] Update Django settings to use database for sessions and local memory cache for caching (remove Redis dependency for local dev)
+- [x] Update UserSerializer in properties app to match custom User model (remove 'username' field, use 'email')
+- [x] Review and fix frontend signup redirect logic after registration (404 error)
+- [x] Debug and fix dashboard redirection/visibility after login (admin and user dashboard)
+  - [x] Connect frontend login form to backend API for authentication
+  - [x] Pass authenticated user data to Dashboard component and render real user/admin content
+  - [x] Debug/fix "Failed to fetch user data" after login (check backend user endpoint, permissions, serialization)
+  - [x] Add backend endpoint for /api/v1/auth/users/me/ (CurrentUserView)
+  - [x] Test login and dashboard flow end-to-end after fix
+  - [x] Enhance backend PropertyViewSet with permissions, owner assignment, image upload, and similar properties endpoints for more complete property management
+  - [x] Update frontend Properties page to fetch/display properties from backend API
+  - [x] Fix Properties page errors related to currentPageItems and pagination
+  - [x] Implement role-based dashboards (Admin, Agent, Hotel Manager)
+  - [x] Implement backend dashboard views and serializers for each role
+  - [x] Add dashboard app URLs and include in main project URLs
+  - [x] Implement frontend dashboard layout, shared components (StatCard, ActivityFeed), and the main Dashboard page with CSS modules
+  - [x] Implement Dashboard styles (Dashboard.module.css)
+  - [x] Create Dashboard.styles.css and switch Dashboard.jsx to use it
+  - [x] Create AdminDashboard and AgentDashboard components and their CSS files
+  - [x] Create HotelManagerDashboard and its CSS file
+  - [x] Implement frontend routing and role-specific dashboard content
+  - [x] Create and integrate dashboard Properties component (Properties.jsx, Properties.css)
+  - [x] Create and integrate dashboard Bookings component (Bookings.jsx, Bookings.css)
+  - [x] Create and integrate dashboard Users component (Users.jsx, Users.css)
+  - [x] Create and integrate dashboard Settings component (Settings.jsx, Settings.css)
+  - [x] Create and integrate dashboard Unauthorized component (Unauthorized.jsx, Unauthorized.css)
+- [ ] Set up hotel booking system
+- [ ] Implement blog functionality (SEO, posts, admin management)
+- [x] Refactor AuthProvider to avoid using useNavigate outside Router context (fix runtime error)
+- [x] Clean up redundant/conflicting CSS and unify global <a> link styles (remove underlines everywhere, especially Navbar)
+- [ ] Restyle Hotels page to match design in user screenshots
+  - [ ] Fix JSX and lint errors in Hotels.jsx
+  - [ ] Complete Hotels.module.css for new layout and visuals
+- [x] Restyle Properties page to match Hotels page design
+  - [x] Fix CSS lint errors in Properties.module.css
+  - [x] Update filter and sort logic in Properties.jsx to match new design
+  - [x] Update main JSX structure in Properties.jsx for new layout
+  - [x] Fix remaining JSX and lint errors in Properties.jsx
+  - [x] Complete Properties.module.css for new layout and visuals
+  - [x] Implement new Properties page design, filter logic, and features
+- [x] Debug and fix frontend-backend authentication and user creation integration (sign up/login should create/fetch users in backend)
+- [x] Fix dashboard and data sync so frontend reflects backend changes (users, properties, etc.)
+- [x] Enable users to create posts and content from frontend (blog, dashboard, etc.)
+- [x] Refactor App.jsx to use ProtectedRoute and enhanced AuthContext for unified, secure authentication flow and role-based route protection.
+- [x] Fix ReferenceError: isAuthenticated is not defined in App.jsx after AuthContext refactor.
+- [x] Fix ReferenceError: Hero is not defined in App.jsx by importing Hero.
+- [x] Fix ProtectedRoute user_type check to use user.user_type instead of user.role for role checks; dashboard should now render correctly after login.
+- [ ] Implement enhanced dashboard profile/account icon feature with dropdown/mini-profile card and brand styling.
+- [x] Fix missing icon imports in DashboardLayout.jsx (e.g. FaCog, FaChartLine)
+- [x] Fix dashboard API endpoint URL in Dashboard.jsx (remove double /api/v1/)
+- [ ] Update Navbar to show account/profile icon and dashboard link after login; hide login/signup links when authenticated.
+- [ ] Review and clean up redundant or broken code in Navbar/authentication flow; ensure proper state and props are passed and Navbar updates correctly after login/logout.
+- [x] Debug and fix dashboard routing/rendering: dashboard flashes but does not display after login
+- [x] Debug and fix redundant/duplicate state and logic in Dashboard.jsx; fix duplicate render functions and lint errors

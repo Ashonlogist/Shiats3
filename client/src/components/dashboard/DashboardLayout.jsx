@@ -1,11 +1,12 @@
-import React from 'react';
-import { Outlet, Link, useLocation } from 'react-router-dom';
-import { FaHome, FaBuilding, FaHotel, FaUserTie, FaUsers, FaCog, FaSignOutAlt, FaChartLine, FaClipboardList, FaEnvelope, FaBell } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaHome, FaBuilding, FaHotel, FaUserTie, FaUsers, FaClipboardList, FaEnvelope, FaBell, FaBars, FaTimes, FaChartLine, FaCog } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
+import UserProfile from './UserProfile';
 import styles from './DashboardLayout.module.css';
 
 const DashboardLayout = () => {
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
   const location = useLocation();
 
   // Determine user type for navigation
@@ -76,10 +77,46 @@ const DashboardLayout = () => {
     item.roles.includes(user?.user_type)
   );
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const navigate = useNavigate();
+  const { logout: authLogout } = useAuth();
+
+  // Close mobile menu when route changes
+  useEffect(() => {
+    setMobileMenuOpen(false);
+  }, [location.pathname]);
+
+  const handleLogout = async () => {
+    try {
+      await authLogout();
+      navigate('/login');
+    } catch (error) {
+      console.error('Failed to log out', error);
+    }
+  };
+
   return (
     <div className={styles.dashboardContainer}>
+      {/* Mobile Header */}
+      <header className={styles.mobileHeader}>
+        <button 
+          className={styles.menuToggle}
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+        >
+          {mobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
+        <Link to="/" className={styles.mobileLogo}>
+          <FaBuilding className={styles.logoIcon} />
+          <span>Shiats3</span>
+        </Link>
+        <div className={styles.mobileHeaderRight}>
+          <UserProfile />
+        </div>
+      </header>
+
       {/* Sidebar */}
-      <aside className={styles.sidebar}>
+      <aside className={`${styles.sidebar} ${mobileMenuOpen ? styles.sidebarOpen : ''}`}>
         <div className={styles.logoContainer}>
           <Link to="/" className={styles.logo}>
             <FaBuilding className={styles.logoIcon} />
@@ -102,31 +139,6 @@ const DashboardLayout = () => {
             ))}
           </ul>
         </nav>
-        
-        <div className={styles.userSection}>
-          <div className={styles.userInfo}>
-            <div className={styles.userAvatar}>
-              {user?.first_name?.[0]}{user?.last_name?.[0]}
-            </div>
-            <div className={styles.userDetails}>
-              <span className={styles.userName}>
-                {user?.first_name} {user?.last_name}
-              </span>
-              <span className={styles.userRole}>
-                {user?.user_type?.split('_').map(word => 
-                  word.charAt(0).toUpperCase() + word.slice(1)
-                ).join(' ')}
-              </span>
-            </div>
-          </div>
-          <button 
-            onClick={logout} 
-            className={styles.logoutButton}
-            aria-label="Logout"
-          >
-            <FaSignOutAlt className={styles.logoutIcon} />
-          </button>
-        </div>
       </aside>
       
       {/* Main Content */}
@@ -138,18 +150,11 @@ const DashboardLayout = () => {
             </h1>
           </div>
           <div className={styles.headerRight}>
-            <button className={styles.notificationButton}>
+            <button className={styles.notificationButton} aria-label="Notifications">
               <FaBell className={styles.notificationIcon} />
               <span className={styles.notificationBadge}>3</span>
             </button>
-            <div className={styles.userMenu}>
-              <div className={styles.userAvatarSmall}>
-                {user?.first_name?.[0]}{user?.last_name?.[0]}
-              </div>
-              <span className={styles.userNameSmall}>
-                {user?.first_name} {user?.last_name}
-              </span>
-            </div>
+            <UserProfile />
           </div>
         </header>
         

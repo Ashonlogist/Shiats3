@@ -16,7 +16,9 @@ import {
   FaChevronDown,
   FaUserCog,
   FaHeart,
-  FaBlog
+  FaBlog,
+  FaUser,
+  FaTachometerAlt
 } from 'react-icons/fa';
 import './Navbar.css';
 
@@ -199,54 +201,94 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
             {/* User Actions */}
             <div className="navbar__actions">
               {isAuthenticated ? (
-                <div className="user-menu" ref={userMenuRef}>
-                  <button 
-                    className="user-menu__toggle"
-                    onClick={toggleUserMenu}
-                    aria-expanded={showUserMenu}
-                    aria-haspopup="true"
-                    aria-label="User menu"
+                <>
+                  {/* Dashboard Link - Always Visible */}
+                  <Link 
+                    to="/dashboard" 
+                    className="navbar__link navbar__link--dashboard"
+                    title="Dashboard"
                   >
-                    <img 
-                      src={user?.avatar || `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=e74c3c&color=fff`} 
-                      alt={user?.name || 'User'} 
-                      className="user-avatar"
-                      onError={(e) => {
-                        e.target.onerror = null;
-                        e.target.src = 'https://ui-avatars.com/api/?name=User&background=e74c3c&color=fff';
-                      }}
-                    />
-                    <span className="user-name">{user?.name?.split(' ')[0] || 'Account'}</span>
-                    <FaChevronDown className={`dropdown-arrow ${showUserMenu ? 'open' : ''}`} />
-                  </button>
-                  {showUserMenu && (
-                    <div className="user-menu__dropdown">
-                      <Link to="/dashboard" className="user-menu__item">
-                        <FaHome className="user-menu__icon" />
-                        <span>Dashboard</span>
-                      </Link>
-                      <Link to="/profile" className="user-menu__item">
-                        <FaUser className="user-menu__icon" />
-                        <span>My Profile</span>
-                      </Link>
-                      <Link to="/saved" className="user-menu__item">
-                        <FaHeart className="user-menu__icon" />
-                        <span>Saved Items</span>
-                      </Link>
-                      <Link to="/settings" className="user-menu__item">
-                        <FaUserCog className="user-menu__icon" />
-                        <span>Settings</span>
-                      </Link>
-                      <button 
-                        className="user-menu__item user-menu__item--logout"
-                        onClick={handleLogout}
-                      >
-                        <FaSignOutAlt className="user-menu__icon" />
-                        <span>Logout</span>
-                      </button>
-                    </div>
-                  )}
-                </div>
+                    <FaTachometerAlt className="navbar__icon" />
+                    <span className="navbar__link-text">Dashboard</span>
+                  </Link>
+                  
+                  {/* User Profile Dropdown */}
+                  <div className="user-menu" ref={userMenuRef}>
+                    <button 
+                      className="user-menu__toggle"
+                      onClick={toggleUserMenu}
+                      aria-expanded={showUserMenu}
+                      aria-haspopup="true"
+                      aria-label="User menu"
+                    >
+                      {user?.avatar ? (
+                        <img 
+                          src={user.avatar} 
+                          alt={user?.name || 'User'} 
+                          className="user-avatar"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src = `https://ui-avatars.com/api/?name=${user?.name || 'User'}&background=e74c3c&color=fff`;
+                          }}
+                        />
+                      ) : (
+                        <div className="user-avatar user-avatar--default">
+                          <FaUserCircle className="user-avatar__icon" />
+                        </div>
+                      )}
+                      <span className="user-name">{user?.name?.split(' ')[0] || 'Account'}</span>
+                      <FaChevronDown className={`dropdown-arrow ${showUserMenu ? 'open' : ''}`} />
+                    </button>
+                    
+                    {showUserMenu && (
+                      <div className="user-menu__dropdown">
+                        <Link 
+                          to="/dashboard" 
+                          className="user-menu__item"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <FaTachometerAlt className="user-menu__icon" />
+                          <span>Dashboard</span>
+                        </Link>
+                        <Link 
+                          to="/profile" 
+                          className="user-menu__item"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <FaUser className="user-menu__icon" />
+                          <span>My Profile</span>
+                        </Link>
+                        <Link 
+                          to="/saved" 
+                          className="user-menu__item"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <FaHeart className="user-menu__icon" />
+                          <span>Saved Items</span>
+                        </Link>
+                        <Link 
+                          to="/settings" 
+                          className="user-menu__item"
+                          onClick={() => setShowUserMenu(false)}
+                        >
+                          <FaUserCog className="user-menu__icon" />
+                          <span>Settings</span>
+                        </Link>
+                        <div className="user-menu__divider"></div>
+                        <button 
+                          className="user-menu__item user-menu__item--logout"
+                          onClick={() => {
+                            handleLogout();
+                            setShowUserMenu(false);
+                          }}
+                        >
+                          <FaSignOutAlt className="user-menu__icon" />
+                          <span>Logout</span>
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </>
               ) : (
                 <div className="auth-buttons">
                   <Link 

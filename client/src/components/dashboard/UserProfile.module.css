@@ -1,0 +1,238 @@
+/* User Profile Dropdown */
+.userProfile {
+  position: relative;
+  z-index: 1000;
+}
+
+/* Profile Button */
+.profileButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: transparent;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-color, #2d3748);
+}
+
+.profileButton:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Avatar Styles */
+.avatar, .profileAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e2e8f0;
+  border: 2px solid #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.profileAvatar {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 12px;
+}
+
+.avatarImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.avatarFallback {
+  font-size: 32px;
+  color: #718096;
+}
+
+.avatarFallbackLarge {
+  font-size: 60px;
+  color: #718096;
+}
+
+/* User Name */
+.userName {
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-right: 4px;
+  color: var(--text-color, #2d3748);
+}
+
+/* Chevron */
+.chevron {
+  display: flex;
+  align-items: center;
+  font-size: 0.7rem;
+  color: #718096;
+  transition: transform 0.2s ease;
+}
+
+/* Dropdown Menu */
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 280px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 
+              0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 1000;
+  border: 1px solid #e2e8f0;
+}
+
+/* Profile Header */
+.profileHeader {
+  padding: 20px;
+  text-align: center;
+  background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.profileInfo {
+  margin-top: 12px;
+}
+
+.profileName {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+.profileEmail {
+  margin: 4px 0 0;
+  font-size: 0.85rem;
+  color: #718096;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.userRole {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.5px;
+}
+
+/* Role-based colors */
+.userRole.admin {
+  background-color: #e9d8fd;
+  color: #6b46c1;
+}
+
+.userRole.agent {
+  background-color: #bee3f8;
+  color: #2b6cb0;
+}
+
+.userRole.hotel_manager {
+  background-color: #feb2b2;
+  color: #c53030;
+}
+
+/* Menu Divider */
+.menuDivider {
+  height: 1px;
+  background-color: #e2e8f0;
+  margin: 6px 0;
+}
+
+/* Menu Navigation */
+.menuNav {
+  padding: 8px 0;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  padding: 10px 20px;
+  color: #4a5568;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.menuItem:hover {
+  background-color: #f7fafc;
+  color: #2b6cb0;
+}
+
+.menuIcon {
+  margin-right: 12px;
+  font-size: 1rem;
+  color: #718096;
+  width: 20px;
+  text-align: center;
+}
+
+.menuItem:hover .menuIcon {
+  color: #2b6cb0;
+}
+
+/* Logout Button */
+.logoutButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 10px 20px;
+  background: transparent;
+  border: none;
+  color: #e53e3e;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logoutButton:hover {
+  background-color: #fff5f5;
+}
+
+.logoutIcon {
+  margin-right: 8px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .userName {
+    display: none;
+  }
+  
+  .profileButton {
+    padding: 6px;
+  }
+  
+  .dropdownMenu {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+}

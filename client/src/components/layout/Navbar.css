@@ -564,6 +564,40 @@ body {
   border-radius: var(--border-radius);
   transition: var(--transition);
   font-weight: 500;
+  margin-right: 0.5rem;
+}
+
+.navbar__link--dashboard {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: var(--primary-color);
+  margin-right: 1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  transition: var(--transition);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.navbar__link--dashboard:hover {
+  background-color: rgba(231, 76, 60, 0.2);
+  transform: translateY(-1px);
+  color: var(--primary-color);
+}
+
+.navbar__icon {
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+.navbar__link-text {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .navbar__link-text {
+    display: inline-block;
+  }
 }
 
 .navbar__link:hover,
