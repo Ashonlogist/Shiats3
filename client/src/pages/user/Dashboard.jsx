@@ -23,12 +23,12 @@ const Dashboard = () => {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const navigate = useNavigate();
 
-  // Mock data - in a real app, this would come from an API
+  // Use the user data passed from the parent component
   const user = {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    avatar: 'https://randomuser.me/api/portraits/men/1.jpg',
-    role: 'Property Owner'
+    name: `${props.user?.first_name || ''} ${props.user?.last_name || ''}`.trim() || 'User',
+    email: props.user?.email || '',
+    avatar: 'https://randomuser.me/api/portraits/men/1.jpg', // You can add avatar field to your user model if needed
+    role: props.user?.isAdmin ? 'Administrator' : 'User'
   };
 
   const stats = [
@@ -47,7 +47,9 @@ const Dashboard = () => {
   };
 
   const handleLogout = () => {
-    // Handle logout logic
+    if (props.onLogout) {
+      props.onLogout();
+    }
     navigate('/login');
   };
 

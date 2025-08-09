@@ -68,14 +68,16 @@ INSTALLED_APPS = [
     'django_cleanup.apps.CleanupConfig',
     'storages',
     'debug_toolbar',
+    'django_rest_passwordreset',
     
     # Local apps
     'api.apps.ApiConfig',
     'properties.apps.PropertiesConfig',
+    'accounts.apps.AccountsConfig',
 ]
 
 # Custom user model
-AUTH_USER_MODEL = 'properties.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -119,6 +121,7 @@ REST_FRAMEWORK = {
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',
     ),
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
@@ -159,14 +162,18 @@ SIMPLE_JWT = {
 
 # Djoser settings
 DJOSER = {
-    'PASSWORD_RESET_CONFIRM_URL': 'auth/password/reset/confirm/{uid}/{token}',
-    'USERNAME_RESET_CONFIRM_URL': 'auth/username/reset/confirm/{uid}/{token}',
-    'ACTIVATION_URL': 'auth/activate/{uid}/{token}/',
+    'LOGIN_FIELD': 'email',
+    'USER_CREATE_PASSWORD_RETYPE': True,
     'SEND_ACTIVATION_EMAIL': False,
+    'SEND_CONFIRMATION_EMAIL': False,
+    'PASSWORD_CHANGED_EMAIL_CONFIRMATION': False,
+    'PASSWORD_RESET_CONFIRM_URL': 'auth/password/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': 'auth/activate/{uid}/{token}',
     'SERIALIZERS': {
-        'user_create': 'properties.serializers.UserCreateSerializer',
-        'user': 'properties.serializers.UserSerializer',
-        'current_user': 'properties.serializers.UserSerializer',
+        'user_create': 'accounts.serializers.UserCreateSerializer',
+        'user': 'accounts.serializers.UserSerializer',
+        'current_user': 'accounts.serializers.UserSerializer',
+        'user_delete': 'djoser.serializers.UserDeleteSerializer',
     },
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.IsAuthenticated'],
@@ -216,21 +223,16 @@ DATABASES = {
 #     }
 # }
 
-# Cache
+# Cache - Using local memory cache for development
 CACHES = {
     'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': os.getenv('REDIS_URL', 'redis://localhost:6379/1'),
-        'OPTIONS': {
-            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
-        },
-        'KEY_PREFIX': 'shiats3',
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
     }
 }
 
-# Session settings
-SESSION_ENGINE = 'django.contrib.sessions.backends.cached_db'
-SESSION_CACHE_ALIAS = 'default'
+# Session settings - Using database for sessions
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Email settings
 EMAIL_BACKEND = os.getenv(

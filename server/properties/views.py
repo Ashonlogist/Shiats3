@@ -26,50 +26,138 @@ User = get_user_model()
 class PropertyViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows properties to be viewed or edited.
+    Uses basic filtering to avoid issues with django-filter/DRF integration.
     """
     serializer_class = PropertySerializer
-    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
-    filterset_class = PropertyFilter
+    filter_backends = [filters.SearchFilter, filters.OrderingFilter]  # Remove DjangoFilterBackend
     search_fields = ['title', 'description', 'address', 'city', 'country']
     ordering_fields = ['price', 'created_at', 'area']
     lookup_field = 'slug'
     parser_classes = [MultiPartParser, FormParser]
     
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action in ['list', 'retrieve']:
+            permission_classes = [permissions.AllowAny]
+        elif self.action in ['create', 'upload_image']:
+            permission_classes = [permissions.IsAuthenticated, permissions.IsAdminUser]
+        else:
+            permission_classes = [permissions.IsAdminUser]
+        return [permission() for permission in permission_classes]
+
     def get_queryset(self):
         """
-        Get the list of properties for the view.
+        Get the list of properties with basic filtering.
         """
-        queryset = Property.objects.filter(is_published=True).order_by('-created_at')
+        if self.request.user.is_staff:
+            queryset = Property.objects.all().order_by('-created_at')
+        else:
+            queryset = Property.objects.filter(is_published=True).order_by('-created_at')
         
-        # Apply custom filtering
-        try:
-            # This will apply all the filters defined in PropertyFilter
-            queryset = self.filter_queryset(queryset)
+        # Apply basic filtering directly
+        params = self.request.query_params
+        
+        # Price range filtering
+        min_price = params.get('min_price')
+        max_price = params.get('max_price')
+        if min_price:
+            queryset = queryset.filter(price__gte=min_price)
+        if max_price:
+            queryset = queryset.filter(price__lte=max_price)
             
-            # Apply additional filters
-            min_price = self.request.query_params.get('min_price')
-            max_price = self.request.query_params.get('max_price')
+        # Property type filtering
+        property_type = params.get('property_type')
+        if property_type:
+            queryset = queryset.filter(property_type__iexact=property_type)
             
-            if min_price:
-                queryset = queryset.filter(price__gte=min_price)
-            if max_price:
-                queryset = queryset.filter(price__lte=max_price)
-                
-            # Filter by amenities if provided
-            amenities = self.request.query_params.getlist('amenities')
-            if amenities:
-                queryset = queryset.filter(amenities__id__in=amenities).distinct()
-                
-        except Exception as e:
-            # Log the error and return an empty queryset
-            print(f"Error filtering properties: {str(e)}")
-            return Property.objects.none()
+        # Listing type filtering
+        listing_type = params.get('listing_type')
+        if listing_type:
+            queryset = queryset.filter(listing_type__iexact=listing_type)
             
-        return queryset
+        # Bedrooms filtering
+        bedrooms = params.get('bedrooms')
+        if bedrooms:
+            queryset = queryset.filter(bedrooms=bedrooms)
+            
+        # Bathrooms filtering
+        bathrooms = params.get('bathrooms')
+        if bathrooms:
+            queryset = queryset.filter(bathrooms=bathrooms)
+            
+        # City/Country filtering
+        city = params.get('city')
+        if city:
+            queryset = queryset.filter(city__icontains=city)
+            
+        country = params.get('country')
+        if country:
+            queryset = queryset.filter(country__icontains=country)
+            
+        # Featured filtering
+        is_featured = params.get('is_featured')
+        if is_featured is not None:
+            queryset = queryset.filter(is_featured=is_featured.lower() in ['true', '1', 'yes'])
+            
+        # Area filtering
+        min_area = params.get('min_area')
+        max_area = params.get('max_area')
+        if min_area:
+            queryset = queryset.filter(area__gte=min_area)
+        if max_area:
+            queryset = queryset.filter(area__lte=max_area)
+            
+        # Amenities filtering
+        amenities = params.getlist('amenities')
         if amenities:
             queryset = queryset.filter(amenities__id__in=amenities).distinct()
             
-        return queryset
+        return queryset.prefetch_related('images', 'amenities')
+    
+    def perform_create(self, serializer):
+        """Save the property with the current user as the owner."""
+        serializer.save(owner=self.request.user)
+    
+    @action(detail=True, methods=['post'], parser_classes=[MultiPartParser, FormParser])
+    def upload_image(self, request, slug=None):
+        """Upload an image to a property."""
+        property = self.get_object()
+        if 'image' not in request.FILES:
+            return Response(
+                {'error': 'No image file provided'}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+        image = property.images.create(
+            image=request.FILES['image'],
+            caption=request.data.get('caption', '')
+        )
+        
+        return Response(
+            PropertyImageSerializer(image).data,
+            status=status.HTTP_201_CREATED
+        )
+        
+    @action(detail=True, methods=['get'])
+    def similar(self, request, slug=None):
+        """Get similar properties based on property type and location."""
+        property = self.get_object()
+        similar = Property.objects.filter(
+            Q(property_type=property.property_type) | 
+            Q(city=property.city) |
+            Q(amenities__in=property.amenities.all()),
+            is_published=True
+        ).exclude(id=property.id).distinct()[:4]
+        
+        page = self.paginate_queryset(similar)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True) 
+            return self.get_paginated_response(serializer.data)
+            
+        serializer = self.get_serializer(similar, many=True)
+        return Response(serializer.data)
 
     def get_permissions(self):
         """

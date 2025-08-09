@@ -1,22 +1,22 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { 
-  FaUser, 
+  FaUserCircle,
   FaBars, 
-  FaTimes, 
-  FaSearch, 
-  FaHome, 
-  FaBuilding, 
-  FaHotel, 
-  FaInfoCircle, 
-  FaEnvelope, 
-  FaBlog, 
-  FaSignInAlt, 
-  FaUserPlus, 
+  FaTimes,
+  FaSearch,
+  FaHome,
+  FaBuilding,
+  FaHotel,
+  FaInfoCircle,
+  FaEnvelope,
+  FaSignInAlt,
+  FaUserPlus,
   FaSignOutAlt,
   FaChevronDown,
   FaUserCog,
-  FaHeart
+  FaHeart,
+  FaBlog
 } from 'react-icons/fa';
 import './Navbar.css';
 
@@ -31,9 +31,17 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
   const searchRef = useRef(null);
   const mobileMenuRef = useRef(null);
 
-  // Close menus when clicking outside
+  // Handle escape key to close menus
+  const handleEscape = useCallback((e) => {
+    if (e.key === 'Escape') {
+      if (isOpen) setIsOpen(false);
+      if (showUserMenu) setShowUserMenu(false);
+    }
+  }, [isOpen, showUserMenu]);
+
+  // Set up event listeners
   useEffect(() => {
-    function handleClickOutside(event) {
+    const handleClickOutside = (event) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target)) {
         setShowUserMenu(false);
       }
@@ -44,7 +52,7 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
           !event.target.closest('.navbar__toggle')) {
         setIsOpen(false);
       }
-    }
+    };
 
     document.addEventListener('mousedown', handleClickOutside);
     document.addEventListener('keydown', handleEscape);
@@ -53,15 +61,7 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
       document.removeEventListener('mousedown', handleClickOutside);
       document.removeEventListener('keydown', handleEscape);
     };
-  }, [isOpen]);
-
-  // Handle escape key to close menus
-  const handleEscape = (e) => {
-    if (e.key === 'Escape') {
-      if (isOpen) setIsOpen(false);
-      if (showUserMenu) setShowUserMenu(false);
-    }
-  };
+  }, [isOpen, handleEscape]);
 
   // Handle scroll effect for navbar - always solid
   useEffect(() => {

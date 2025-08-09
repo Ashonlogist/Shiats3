@@ -7,6 +7,7 @@ from django.http import JsonResponse, HttpResponseNotFound
 from rest_framework import permissions
 from drf_yasg.views import get_schema_view
 from drf_yasg import openapi
+from rest_framework_simplejwt.views import TokenRefreshView
 
 def custom_404(request, exception=None):
     """Custom 404 handler that returns JSON for API requests"""
@@ -43,13 +44,15 @@ urlpatterns = [
     
     # API v1
     path('api/v1/', include([
-        # Authentication (JWT + Djoser)
-        path('auth/', include('djoser.urls')),
-        path('auth/', include('djoser.urls.jwt')),
-        path('auth/', include('djoser.social.urls')),
+        # Authentication (Custom JWT + Djoser)
+        path('auth/', include('accounts.urls')),  # Our custom auth endpoints
+        path('auth/social/', include('djoser.social.urls')),  # Keep social auth if needed
         
         # Properties app
         path('', include('properties.urls')),
+        
+        # Dashboard
+        path('dashboard/', include('dashboard.urls')),
         
         # API health check
         path('health/', include('health_check.urls')),

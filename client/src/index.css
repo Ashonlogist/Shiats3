@@ -1,5 +1,17 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
 
+/* Global link styles */
+a {
+  text-decoration: none !important;
+  color: var(--color-accent);
+  transition: var(--transition-default);
+}
+
+a:hover {
+  color: var(--color-primary);
+  text-decoration: none !important;
+}
+
 :root {
   /* Brand Colors */
   --color-primary: #5A3825;    /* Earth Brown */
@@ -75,16 +87,7 @@ h4 { font-size: 1.5rem; }
 h5 { font-size: 1.25rem; }
 h6 { font-size: 1rem; }
 
-a {
-  color: var(--color-accent);
-  text-decoration: none;
-  transition: var(--transition-default);
-}
 
-a:hover {
-  color: var(--color-primary);
-  text-decoration: underline;
-}
 
 p {
   margin-bottom: var(--spacing-md);

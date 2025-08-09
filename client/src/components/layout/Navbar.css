@@ -24,6 +24,14 @@ body {
   overflow-x: hidden;
 }
 
+/* Ensure all links have no underlines */
+.navbar a,
+.navbar a:hover,
+.navbar a:focus,
+.navbar a:active {
+  text-decoration: none !important;
+}
+
 /* Navbar Base Styles */
 .navbar {
   position: fixed;
@@ -72,12 +80,13 @@ body {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--text);
-  text-decoration: none;
+  text-decoration: none !important;
   transition: color 0.2s ease;
 }
 
 .logo:hover {
   color: var(--primary-color);
+  text-decoration: none !important;
 }
 
 .logo__icon {

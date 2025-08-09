@@ -1,6 +1,38 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { FaSearch, FaStar, FaMapMarkerAlt, FaFilter, FaArrowLeft, FaArrowRight, FaWifi, FaSwimmingPool, FaParking, FaUtensils, FaSnowflake, FaDumbbell } from 'react-icons/fa';
+import { 
+  FaSearch, 
+  FaStar, 
+  FaMapMarkerAlt, 
+  FaFilter, 
+  FaWifi, 
+  FaSwimmingPool, 
+  FaParking, 
+  FaUtensils, 
+  FaSnowflake, 
+  FaDumbbell,
+  FaCocktail,
+  FaConciergeBell,
+  FaCoffee,
+  FaArrowLeft,
+  FaArrowRight
+} from 'react-icons/fa';
+import styles from './Hotels.module.css';
+
+// Available filters
+const starOptions = [5, 4, 3, 2, 1];
+const amenityOptions = [
+  { id: 'wifi', label: 'Free WiFi', icon: <FaWifi /> },
+  { id: 'pool', label: 'Swimming Pool', icon: <FaSwimmingPool /> },
+  { id: 'parking', label: 'Free Parking', icon: <FaParking /> },
+  { id: 'restaurant', label: 'Restaurant', icon: <FaUtensils /> },
+  { id: 'ac', label: 'Air Conditioning', icon: <FaSnowflake /> },
+  { id: 'gym', label: 'Gym', icon: <FaDumbbell /> },
+  { id: 'bar', label: 'Bar', icon: <FaCocktail /> },
+  { id: 'spa', label: 'Spa', icon: <FaConciergeBell /> },
+  { id: 'breakfast', label: 'Breakfast', icon: <FaCoffee /> },
+  { id: 'beach', label: 'Beach Access', icon: <FaSwimmingPool /> },
+];
 
 // Mock data - in a real app, this would come from an API
 const allHotels = [
@@ -24,7 +56,7 @@ const allHotels = [
     rating: 4.9,
     reviews: 98,
     stars: 5,
-    amenities: ['wifi', 'pool', 'restaurant', 'spa', 'gym', 'parking'],
+    amenities: ['wifi', 'pool', 'restaurant', 'spa', 'gym', 'parking', 'bar', 'breakfast'],
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     featured: true
   },
@@ -36,7 +68,7 @@ const allHotels = [
     rating: 4.7,
     reviews: 156,
     stars: 5,
-    amenities: ['wifi', 'pool', 'restaurant', 'bar', 'ac'],
+    amenities: ['wifi', 'pool', 'restaurant', 'bar', 'ac', 'spa', 'breakfast'],
     image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     featured: true
   },
@@ -48,7 +80,7 @@ const allHotels = [
     rating: 4.5,
     reviews: 87,
     stars: 4,
-    amenities: ['wifi', 'pool', 'restaurant', 'gym', 'parking'],
+    amenities: ['wifi', 'pool', 'restaurant', 'gym', 'parking', 'bar', 'spa'],
     image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     featured: false
   },
@@ -60,7 +92,7 @@ const allHotels = [
     rating: 4.6,
     reviews: 112,
     stars: 5,
-    amenities: ['wifi', 'pool', 'restaurant', 'spa', 'gym', 'beach'],
+    amenities: ['wifi', 'pool', 'restaurant', 'spa', 'gym', 'beach', 'bar', 'breakfast'],
     image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     featured: true
   },
@@ -72,7 +104,7 @@ const allHotels = [
     rating: 4.4,
     reviews: 76,
     stars: 5,
-    amenities: ['wifi', 'restaurant', 'bar', 'gym', 'parking'],
+    amenities: ['wifi', 'restaurant', 'bar', 'gym', 'parking', 'spa'],
     image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     featured: false
   }
@@ -108,469 +140,348 @@ const amenitiesList = [
 ];
 
 const Hotels = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [priceRange, setPriceRange] = useState([0, 100000]);
+  const [selectedStars, setSelectedStars] = useState([]);
+  const [selectedAmenities, setSelectedAmenities] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
-  const [filters, setFilters] = useState({
-    location: searchParams.get('location') || 'all',
-    stars: searchParams.get('stars') || 'all',
-    minPrice: searchParams.get('minPrice') || '',
-    maxPrice: searchParams.get('maxPrice') || '',
-    amenities: searchParams.get('amenities') ? searchParams.get('amenities').split(',') : [],
-    search: searchParams.get('search') || ''
-  });
-
   const hotelsPerPage = 6;
-  
-  // Filter hotels based on search params and filters
+
+  // Filter hotels based on search and filters
   const filteredHotels = allHotels.filter(hotel => {
-    // Filter by location
-    if (filters.location !== 'all' && 
-        hotel.location.toLowerCase() !== filters.location.toLowerCase()) {
-      return false;
-    }
+    // Search filter
+    const matchesSearch = searchTerm === '' || 
+                         hotel.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                         hotel.location.toLowerCase().includes(searchTerm.toLowerCase());
     
-    // Filter by star rating
-    if (filters.stars !== 'all' && 
-        hotel.stars < parseInt(filters.stars, 10)) {
-      return false;
-    }
+    // Price filter
+    const matchesPrice = hotel.price >= priceRange[0] && hotel.price <= priceRange[1];
     
-    // Filter by price range
-    if (filters.minPrice && hotel.price < parseInt(filters.minPrice, 10)) {
-      return false;
-    }
+    // Star rating filter
+    const matchesStars = selectedStars.length === 0 || selectedStars.includes(hotel.stars);
     
-    if (filters.maxPrice && hotel.price > parseInt(filters.maxPrice, 10)) {
-      return false;
-    }
+    // Amenities filter
+    const matchesAmenities = selectedAmenities.length === 0 || 
+                           selectedAmenities.every(amenity => hotel.amenities.includes(amenity));
     
-    // Filter by amenities
-    if (filters.amenities.length > 0) {
-      const hasAllAmenities = filters.amenities.every(amenity => 
-        hotel.amenities.includes(amenity)
-      );
-      if (!hasAllAmenities) return false;
-    }
-    
-    // Filter by search term
-    if (filters.search) {
-      const searchTerm = filters.search.toLowerCase();
-      const nameMatch = hotel.name.toLowerCase().includes(searchTerm);
-      const locationMatch = hotel.location.toLowerCase().includes(searchTerm);
-      
-      if (!nameMatch && !locationMatch) {
-        return false;
-      }
-    }
-    
-    return true;
+    return matchesSearch && matchesPrice && matchesStars && matchesAmenities;
   });
 
-  // Get current hotels
+  // Get current hotels for pagination
   const indexOfLastHotel = currentPage * hotelsPerPage;
   const indexOfFirstHotel = indexOfLastHotel - hotelsPerPage;
   const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
   const totalPages = Math.ceil(filteredHotels.length / hotelsPerPage);
 
   // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Handle filter changes
-  const handleFilterChange = (e) => {
-    const { name, value, type, checked } = e.target;
-    
-    if (type === 'checkbox') {
-      let updatedAmenities = [...filters.amenities];
-      
-      if (checked) {
-        updatedAmenities.push(value);
-      } else {
-        updatedAmenities = updatedAmenities.filter(item => item !== value);
-      }
-      
-      setFilters(prev => ({
-        ...prev,
-        amenities: updatedAmenities
-      }));
-      
-      // Update URL with new filters
-      const newSearchParams = new URLSearchParams(searchParams);
-      if (updatedAmenities.length > 0) {
-        newSearchParams.set('amenities', updatedAmenities.join(','));
-      } else {
-        newSearchParams.delete('amenities');
-      }
-      setSearchParams(newSearchParams);
-    } else {
-      setFilters(prev => ({
-        ...prev,
-        [name]: value
-      }));
-      
-      // Update URL with new filters
-      const newSearchParams = new URLSearchParams(searchParams);
-      if (value) {
-        newSearchParams.set(name, value);
-      } else {
-        newSearchParams.delete(name);
-      }
-      setSearchParams(newSearchParams);
+  const paginate = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    
-    // Reset to first page when filters change
+  };
+
+  // Toggle star filter
+  const toggleStarFilter = (star) => {
+    setSelectedStars(prev => 
+      prev.includes(star) 
+        ? prev.filter(s => s !== star)
+        : [...prev, star]
+    );
+    setCurrentPage(1);
+  };
+
+  // Toggle amenity filter
+  const toggleAmenityFilter = (amenity) => {
+    setSelectedAmenities(prev => 
+      prev.includes(amenity)
+        ? prev.filter(a => a !== amenity)
+        : [...prev, amenity]
+    );
     setCurrentPage(1);
   };
 
   // Reset all filters
   const resetFilters = () => {
-    setFilters({
-      location: 'all',
-      stars: 'all',
-      minPrice: '',
-      maxPrice: '',
-      amenities: [],
-      search: ''
-    });
-    setSearchParams({});
+    setSearchTerm('');
+    setPriceRange([0, 100000]);
+    setSelectedStars([]);
+    setSelectedAmenities([]);
+    setCurrentPage(1);
   };
 
-  // Format price
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'KES',
-      maximumFractionDigits: 0
-    }).format(price);
-  };
-
-  // Render star rating
-  const renderStars = (rating) => {
-    return Array(5).fill(0).map((_, i) => (
-      <FaStar 
-        key={i} 
-        className={`star ${i < rating ? 'star--filled' : 'star--empty'}`} 
-      />
-    ));
-  };
-
-  // Render amenities
-  const renderAmenities = (amenities) => {
-    return amenitiesList
-      .filter(amenity => amenities.includes(amenity.id))
-      .map(amenity => (
-        <span key={amenity.id} className="amenity-tag" title={amenity.name}>
-          {amenity.icon}
-        </span>
-      ));
+  // Get amenity icon by ID
+  const getAmenityIcon = (id) => {
+    const amenity = amenityOptions.find(a => a.id === id);
+    return amenity ? amenity.icon : null;
   };
 
   return (
-    <div className="hotels-page">
-      {/* Page Header */}
-      <header className="page-header">
-        <div className="container">
-          <h1 className="page-title">Hotels & Resorts</h1>
-          <p className="page-subtitle">
-            {filteredHotels.length} {filteredHotels.length === 1 ? 'hotel' : 'hotels'} found
-          </p>
+    <div className={styles.hotelsPage}>
+      {/* Hero Section */}
+      <div className={styles.hero}>
+        <div className={styles.heroContent}>
+          <h1>Find Your Perfect Stay</h1>
+          <p>Discover and book luxury hotels with the best prices and amenities</p>
         </div>
-      </header>
+      </div>
 
-      <div className="container">
-        <div className="hotels-container">
-          {/* Filters Sidebar */}
-          <aside className={`filters-sidebar ${showFilters ? 'filters-sidebar--active' : ''}`}>
-            <div className="filters-header">
-              <h3>Filter Hotels</h3>
-              <button 
-                className="filters-close"
-                onClick={() => setShowFilters(false)}
-                aria-label="Close filters"
-              >
-                &times;
-              </button>
+      {/* Search and Filters */}
+      <div className={styles.searchContainer}>
+        <div className={styles.searchBar}>
+          <div className={styles.searchInput}>
+            <FaSearch className={styles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Search by hotel name or location..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+          <button 
+            className={`${styles.filterButton} ${showFilters ? styles.active : ''}`}
+            onClick={() => setShowFilters(!showFilters)}
+            type="button"
+          >
+            <FaFilter /> {showFilters ? 'Hide Filters' : 'Show Filters'}
+          </button>
+        </div>
+
+        {showFilters && (
+          <div className={styles.filters}>
+            <div className={styles.filterSection}>
+              <h3>Price Range</h3>
+              <div className={styles.rangeSlider}>
+                <input
+                  type="range"
+                  min="0"
+                  max="100000"
+                  step="1000"
+                  value={priceRange[1]}
+                  onChange={(e) => {
+                    setPriceRange([priceRange[0], parseInt(e.target.value)]);
+                    setCurrentPage(1);
+                  }}
+                />
+                <div className={styles.priceRange}>
+                  <span>Ksh 0</span>
+                  <span>Ksh {priceRange[1].toLocaleString()}</span>
+                </div>
+              </div>
             </div>
-            
-            <div className="filters-group">
-              <h4 className="filters-group__title">Location</h4>
-              <div className="filters-group__content">
-                <div className="form-group">
-                  <select 
-                    name="location" 
-                    className="form-control"
-                    value={filters.location}
-                    onChange={handleFilterChange}
+
+            <div className={styles.filterSection}>
+              <h3>Star Rating</h3>
+              <div className={styles.starFilters}>
+                {starOptions.map(star => (
+                  <button
+                    key={star}
+                    type="button"
+                    className={`${styles.starFilter} ${selectedStars.includes(star) ? styles.active : ''}`}
+                    onClick={() => toggleStarFilter(star)}
                   >
-                    {locations.map(location => (
-                      <option key={location.id} value={location.id}>
-                        {location.name}
-                      </option>
+                    {[...Array(5)].map((_, i) => (
+                      <FaStar 
+                        key={i} 
+                        className={`${styles.starIcon} ${i < star ? styles.filled : ''}`} 
+                      />
                     ))}
-                  </select>
-                </div>
+                    {star === 5 ? ' 5 Stars' : `${star}+`}
+                  </button>
+                ))}
               </div>
             </div>
-            
-            <div className="filters-group">
-              <h4 className="filters-group__title">Price Range (KES)</h4>
-              <div className="filters-group__content">
-                <div className="form-row">
-                  <div className="form-group">
+
+            <div className={styles.filterSection}>
+              <h3>Amenities</h3>
+              <div className={styles.amenityGrid}>
+                {amenityOptions.map(({ id, label, icon }) => (
+                  <label key={id} className={styles.amenityFilter}>
                     <input
-                      type="number"
-                      name="minPrice"
-                      placeholder="Min Price"
-                      className="form-control"
-                      value={filters.minPrice}
-                      onChange={handleFilterChange}
+                      type="checkbox"
+                      checked={selectedAmenities.includes(id)}
+                      onChange={() => toggleAmenityFilter(id)}
+                      style={{ display: 'none' }}
                     />
-                  </div>
-                  <div className="form-group">
-                    <input
-                      type="number"
-                      name="maxPrice"
-                      placeholder="Max Price"
-                      className="form-control"
-                      value={filters.maxPrice}
-                      onChange={handleFilterChange}
-                    />
-                  </div>
-                </div>
+                    <span className={styles.amenityIcon}>{icon}</span>
+                    {label}
+                  </label>
+                ))}
               </div>
             </div>
-            
-            <div className="filters-group">
-              <h4 className="filters-group__title">Star Rating</h4>
-              <div className="filters-group__content">
-                <div className="star-rating-filters">
-                  {starRatings.map(rating => (
-                    <div key={rating.id} className="form-check">
-                      <input
-                        type="radio"
-                        id={`stars-${rating.id}`}
-                        name="stars"
-                        value={rating.id}
-                        checked={filters.stars === rating.id}
-                        onChange={handleFilterChange}
-                        className="form-check-input"
-                      />
-                      <label htmlFor={`stars-${rating.id}`} className="form-check-label">
-                        {rating.name}
-                        {rating.value > 0 && (
-                          <div className="stars-preview">
-                            {Array(5).fill(0).map((_, i) => (
-                              <FaStar 
-                                key={i} 
-                                className={`star-sm ${i < rating.value ? 'star--filled' : 'star--empty'}`} 
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <div className="filters-group">
-              <h4 className="filters-group__title">Amenities</h4>
-              <div className="filters-group__content">
-                <div className="amenities-filters">
-                  {amenitiesList.map(amenity => (
-                    <div key={amenity.id} className="form-check">
-                      <input
-                        type="checkbox"
-                        id={`amenity-${amenity.id}`}
-                        name="amenities"
-                        value={amenity.id}
-                        checked={filters.amenities.includes(amenity.id)}
-                        onChange={handleFilterChange}
-                        className="form-check-input"
-                      />
-                      <label htmlFor={`amenity-${amenity.id}`} className="form-check-label">
-                        <span className="amenity-icon">{amenity.icon}</span>
-                        <span>{amenity.name}</span>
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-            
-            <div className="filters-actions">
+
+            <div className={styles.filterActions}>
               <button 
-                type="button" 
-                className="button button--primary"
+                type="button"
+                className={styles.resetButton}
+                onClick={resetFilters}
+              >
+                Reset All Filters
+              </button>
+              <button 
+                type="button"
+                className={styles.applyButton}
                 onClick={() => setShowFilters(false)}
               >
                 Apply Filters
               </button>
-              <button 
-                type="button" 
-                className="button button--outline"
-                onClick={resetFilters}
-              >
-                Reset All
-              </button>
             </div>
-          </aside>
-          
-          {/* Hotels Grid */}
-          <main className="hotels-main">
-            {/* Search and Filter Bar */}
-            <div className="hotels-toolbar">
-              <div className="hotels-search">
-                <div className="search-input">
-                  <FaSearch className="search-icon" />
-                  <input
-                    type="text"
-                    placeholder="Search by hotel name, location, or keyword..."
-                    name="search"
-                    value={filters.search}
-                    onChange={handleFilterChange}
-                  />
+          </div>
+        )}
+
+        <div className={styles.resultsHeader}>
+          <h2>Available Hotels</h2>
+          <p>{filteredHotels.length} {filteredHotels.length === 1 ? 'property' : 'properties'} found</p>
+        </div>
+
+        {currentHotels.length > 0 ? (
+          <div className={styles.hotelsGrid}>
+            {currentHotels.map(hotel => (
+              <div key={hotel.id} className={`${styles.hotelCard} ${hotel.featured ? styles.featured : ''}`}>
+                <div className={styles.hotelImage}>
+                  <img src={hotel.image} alt={hotel.name} />
+                  {hotel.featured && <span className={styles.featuredTag}>Featured</span>}
+                  <div className={styles.hotelRating}>
+                    <FaStar className={styles.starIcon} />
+                    <span className={styles.ratingValue}>{hotel.rating}</span>
+                    <span className={styles.reviews}>({hotel.reviews} reviews)</span>
+                  </div>
                 </div>
-              </div>
-              
-              <div className="hotels-actions">
-                <div className="hotels-sort">
-                  <label htmlFor="sort" className="sort-label">Sort by:</label>
-                  <select id="sort" className="sort-select">
-                    <option value="featured">Featured</option>
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                    <option value="rating">Rating</option>
-                  </select>
-                </div>
-                
-                <button 
-                  className="button button--outline filters-toggle"
-                  onClick={() => setShowFilters(!showFilters)}
-                >
-                  <FaFilter className="filters-icon" />
-                  <span>Filters</span>
-                </button>
-              </div>
-            </div>
-            
-            {/* Hotels Grid */}
-            {currentHotels.length > 0 ? (
-              <>
-                <div className="hotels-grid">
-                  {currentHotels.map(hotel => (
-                    <div key={hotel.id} className="hotel-card">
-                      <div className="hotel-card__image-container">
-                        <img 
-                          src={hotel.image} 
-                          alt={hotel.name} 
-                          className="hotel-card__image"
-                          loading="lazy"
+                <div className={styles.hotelDetails}>
+                  <div className={styles.hotelHeader}>
+                    <h3>{hotel.name}</h3>
+                    <div className={styles.hotelStars}>
+                      {[...Array(5)].map((_, i) => (
+                        <FaStar 
+                          key={i} 
+                          className={`${styles.starIcon} ${i < hotel.stars ? styles.filled : ''}`} 
                         />
-                        {hotel.featured && (
-                          <span className="hotel-card__badge">Featured</span>
-                        )}
-                        <div className="hotel-card__rating">
-                          <FaStar className="hotel-card__star" />
-                          <span>{hotel.rating}</span>
-                          <span className="hotel-card__reviews">({hotel.reviews} reviews)</span>
-                        </div>
-                      </div>
-                      <div className="hotel-card__content">
-                        <div className="hotel-card__header">
-                          <h3 className="hotel-card__name">
-                            <Link to={`/hotels/${hotel.id}`}>
-                              {hotel.name}
-                            </Link>
-                          </h3>
-                          <p className="hotel-card__location">
-                            <FaMapMarkerAlt className="hotel-card__location-icon" />
-                            {hotel.location}
-                          </p>
-                          <div className="hotel-card__stars">
-                            {renderStars(hotel.stars)}
-                            <span className="hotel-card__stars-text">{hotel.stars}-star hotel</span>
-                          </div>
-                        </div>
-                        
-                        <div className="hotel-card__amenities">
-                          <p className="amenities-title">Popular Amenities:</p>
-                          <div className="amenities-list">
-                            {renderAmenities(hotel.amenities.slice(0, 4))}
-                            {hotel.amenities.length > 4 && (
-                              <span className="amenity-more">+{hotel.amenities.length - 4} more</span>
-                            )}
-                          </div>
-                        </div>
-                        
-                        <div className="hotel-card__footer">
-                          <div className="hotel-card__price">
-                            <span className="price-amount">{formatPrice(hotel.price)}</span>
-                            <span className="price-period">per night</span>
-                            <span className="price-inclusive">Includes taxes & fees</span>
-                          </div>
-                          <Link 
-                            to={`/hotels/${hotel.id}`} 
-                            className="button button--primary button--sm"
-                          >
-                            View Deal
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                
-                {/* Pagination */}
-                {totalPages > 1 && (
-                  <div className="pagination">
-                    <button 
-                      className={`pagination-button ${currentPage === 1 ? 'disabled' : ''}`}
-                      onClick={() => paginate(currentPage - 1)}
-                      disabled={currentPage === 1}
-                    >
-                      <FaArrowLeft />
-                      <span>Previous</span>
-                    </button>
-                    
-                    <div className="pagination-pages">
-                      {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
-                        <button
-                          key={number}
-                          className={`pagination-page ${currentPage === number ? 'active' : ''}`}
-                          onClick={() => paginate(number)}
-                        >
-                          {number}
-                        </button>
                       ))}
                     </div>
-                    
-                    <button 
-                      className={`pagination-button ${currentPage === totalPages ? 'disabled' : ''}`}
-                      onClick={() => paginate(currentPage + 1)}
-                      disabled={currentPage === totalPages}
-                    >
-                      <span>Next</span>
-                      <FaArrowRight />
-                    </button>
                   </div>
-                )}
-              </>
-            ) : (
-              <div className="no-results">
-                <h3>No hotels found</h3>
-                <p>Try adjusting your search or filter criteria</p>
-                <button 
-                  className="button button--primary"
-                  onClick={resetFilters}
-                >
-                  Reset All Filters
-                </button>
+                  
+                  <div className={styles.hotelLocation}>
+                    <FaMapMarkerAlt className={styles.locationIcon} />
+                    <span>{hotel.location}</span>
+                  </div>
+                  
+                  <div className={styles.hotelAmenities}>
+                    {hotel.amenities.slice(0, 5).map((amenity, index) => (
+                      <span key={index} className={styles.amenity} title={amenity}>
+                        {getAmenityIcon(amenity) || amenity.charAt(0).toUpperCase() + amenity.slice(1).charAt(0)}
+                      </span>
+                    ))}
+                    {hotel.amenities.length > 5 && (
+                      <span className={styles.moreAmenities}>
+                        +{hotel.amenities.length - 5}
+                      </span>
+                    )}
+                  </div>
+                  
+                  <div className={styles.hotelFooter}>
+                    <div className={styles.priceContainer}>
+                      <span className={styles.priceLabel}>Starting from</span>
+                      <div className={styles.priceValue}>
+                        Ksh {hotel.price.toLocaleString()}
+                        <span className={styles.pricePeriod}>/night</span>
+                      </div>
+                    </div>
+                    <Link 
+                      to={`/hotels/${hotel.id}`} 
+                      className={styles.viewDetails}
+                    >
+                      View Details
+                    </Link>
+                  </div>
+                </div>
               </div>
-            )}
-          </main>
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className={styles.noResults}>
+            <h3>No hotels found matching your criteria</h3>
+            <p>Try adjusting your search or filters</p>
+            <button 
+              className={styles.resetButton}
+              onClick={resetFilters}
+              type="button"
+            >
+              Reset All Filters
+            </button>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {filteredHotels.length > hotelsPerPage && (
+          <div className={styles.pagination}>
+            <button 
+              className={`${styles.pageButton} ${currentPage === 1 ? styles.disabled : ''}`}
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              type="button"
+            >
+              <FaArrowLeft /> Previous
+            </button>
+            
+            <div className={styles.pageNumbers}>
+              {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                // Show first page, last page, and pages around current page
+                let pageNum;
+                if (totalPages <= 5) {
+                  pageNum = i + 1;
+                } else if (currentPage <= 3) {
+                  pageNum = i + 1;
+                } else if (currentPage >= totalPages - 2) {
+                  pageNum = totalPages - 4 + i;
+                } else {
+                  pageNum = currentPage - 2 + i;
+                }
+                
+                if (i === 3 && currentPage < totalPages - 3) {
+                  return <span key="ellipsis" className={styles.ellipsis}>...</span>;
+                }
+                
+                if (i === 4 && currentPage < totalPages - 3) {
+                  return (
+                    <button
+                      key={totalPages}
+                      onClick={() => paginate(totalPages)}
+                      className={`${styles.pageNumber} ${currentPage === totalPages ? styles.active : ''}`}
+                      type="button"
+                    >
+                      {totalPages}
+                    </button>
+                  );
+                }
+                
+                return (
+                  <button
+                    key={pageNum}
+                    onClick={() => paginate(pageNum)}
+                    className={`${styles.pageNumber} ${currentPage === pageNum ? styles.active : ''}`}
+                    type="button"
+                  >
+                    {pageNum}
+                  </button>
+                );
+              })}
+            </div>
+            
+            <button 
+              className={`${styles.pageButton} ${currentPage === totalPages ? styles.disabled : ''}`}
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              type="button"
+            >
+              Next <FaArrowRight />
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

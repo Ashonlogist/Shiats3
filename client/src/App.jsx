@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link, useLocation, Navigate, Outlet } from 'react-router-dom';
+import { FaSpinner } from 'react-icons/fa';
+import { AuthProvider } from './contexts';
 import './App.css';
 
-// Components
+// Layout Components
 import Navbar from './components/layout/Navbar';
 import Hero from './components/Hero/Hero';
 import Footer from './components/layout/Footer';
+
+// Public Pages
 import Home from './pages/Home';
 import Properties from './pages/Properties';
 import PropertyDetails from './pages/PropertyDetails';
@@ -15,17 +19,33 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
-import Dashboard from './pages/user/Dashboard';
+
+// Auth Pages
 import Login from './pages/auth/Login';
 import Register from './pages/auth/Register';
+
+// Dashboard Pages
+import Dashboard from './pages/dashboard/Dashboard';
+import AdminDashboard from './pages/dashboard/AdminDashboard';
+import AgentDashboard from './pages/dashboard/AgentDashboard';
+import HotelManagerDashboard from './pages/dashboard/HotelManagerDashboard';
+import DashboardProperties from './pages/dashboard/Properties';
+import DashboardBookings from './pages/dashboard/Bookings';
+import DashboardUsers from './pages/dashboard/Users';
+import DashboardSettings from './pages/dashboard/Settings';
+
+// Error Pages
 import NotFound from './pages/NotFound';
+import Unauthorized from './pages/Unauthorized';
 
 // Main App component with Router
 function App() {
   return (
-    <Router>
-      <AppContent />
-    </Router>
+    <AuthProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </AuthProvider>
   );
 }
 
@@ -41,15 +61,38 @@ function AppContent() {
   useEffect(() => {
     const checkAuth = async () => {
       try {
-        // TODO: Implement actual authentication check
-        // const response = await fetch('/api/auth/verify');
-        // const data = await response.json();
-        // if (data.authenticated) {
-        //   setIsAuthenticated(true);
-        //   setUser(data.user);
-        // }
+        const token = localStorage.getItem('access_token');
+        
+        if (token) {
+          // Verify the token is still valid
+          const response = await fetch('http://localhost:8000/api/v1/auth/users/me/', {
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            const userData = await response.json();
+            setIsAuthenticated(true);
+            setUser({
+              ...userData,
+              token,
+              isAdmin: userData.is_staff || userData.is_superuser,
+              // Add user_type to the user object for role-based access
+              user_type: userData.user_type || 'buyer', // Default to 'buyer' if not specified
+            });
+          } else {
+            // Token is invalid, clear it
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+          }
+        }
       } catch (error) {
         console.error('Authentication check failed:', error);
+        // Clear invalid tokens on error
+        localStorage.removeItem('access_token');
+        localStorage.removeItem('refresh_token');
       } finally {
         setLoading(false);
       }
@@ -65,17 +108,83 @@ function AppContent() {
   };
 
   // Handle logout
-  const handleLogout = () => {
-    // TODO: Implement actual logout
-    // await fetch('/api/auth/logout');
-    setIsAuthenticated(false);
-    setUser(null);
+  const handleLogout = async () => {
+    try {
+      // Call the logout endpoint if needed
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        await fetch('http://localhost:8000/api/v1/auth/logout/', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            refresh: localStorage.getItem('refresh_token')
+          }),
+        });
+      }
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      // Clear all auth data
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      setIsAuthenticated(false);
+      setUser(null);
+      
+      // Redirect to home page after logout
+      window.location.href = '/';
+    }
   };
+
+  // Protected Route Wrapper Component
+  const ProtectedRoute = ({ requiredRole = null, children }) => {
+    if (loading) {
+      return (
+        <div className="loading-screen">
+          <FaSpinner className="spinner" />
+          <p>Loading Shiats3...</p>
+        </div>
+      );
+    }
+
+    if (!isAuthenticated) {
+      // Redirect to login if not authenticated
+      return <Navigate to="/login" state={{ from: location.pathname }} replace />;
+    }
+
+    // Check if user has the required role if specified
+    if (requiredRole && user?.user_type !== requiredRole) {
+      return <Unauthorized />;
+    }
+
+    return children || <Outlet />;
+  };
+
+  // Role-based route components
+  const AdminRoute = ({ children }) => (
+    <ProtectedRoute requiredRole="admin">
+      {children}
+    </ProtectedRoute>
+  );
+
+  const AgentRoute = ({ children }) => (
+    <ProtectedRoute requiredRole="agent">
+      {children}
+    </ProtectedRoute>
+  );
+
+  const HotelManagerRoute = ({ children }) => (
+    <ProtectedRoute requiredRole="hotel_manager">
+      {children}
+    </ProtectedRoute>
+  );
 
   if (loading) {
     return (
       <div className="loading-screen">
-        <div className="spinner"></div>
+        <FaSpinner className="spinner" />
         <p>Loading Shiats3...</p>
       </div>
     );
@@ -97,42 +206,66 @@ function AppContent() {
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           
-          {/* Protected Routes */}
-          <Route 
-            path="/dashboard" 
-            element={
-              isAuthenticated ? (
-                <Dashboard user={user} />
-              ) : (
-                <Login onLogin={handleLogin} />
-              )
-            } 
-          />
-          
           {/* Auth Routes */}
           <Route 
             path="/login" 
             element={
-              isAuthenticated ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
+              !isAuthenticated ? (
                 <Login onLogin={handleLogin} />
+              ) : (
+                <Navigate to="/dashboard" replace />
               )
             } 
           />
-          
           <Route 
             path="/register" 
             element={
-              isAuthenticated ? (
-                <Navigate to="/dashboard" replace />
-              ) : (
+              !isAuthenticated ? (
                 <Register onRegister={handleLogin} />
+              ) : (
+                <Navigate to="/dashboard" replace />
               )
             } 
           />
-          
-          {/* 404 Route */}
+
+          {/* Dashboard Routes */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard user={user} />}>
+              {/* Default dashboard based on user role */}
+              <Route 
+                index 
+                element={
+                  user?.user_type === 'admin' ? <AdminDashboard /> :
+                  user?.user_type === 'agent' ? <AgentDashboard /> :
+                  user?.user_type === 'hotel_manager' ? <HotelManagerDashboard /> :
+                  <Navigate to="/" replace />
+                } 
+              />
+              
+              {/* Admin-only routes */}
+              <Route element={<AdminRoute />}>
+                <Route path="admin" element={<AdminDashboard />} />
+                <Route path="users" element={<DashboardUsers />} />
+              </Route>
+              
+              {/* Agent-only routes */}
+              <Route element={<AgentRoute />}>
+                <Route path="agent" element={<AgentDashboard />} />
+                <Route path="properties" element={<DashboardProperties />} />
+              </Route>
+              
+              {/* Hotel Manager-only routes */}
+              <Route element={<HotelManagerRoute />}>
+                <Route path="hotel-manager" element={<HotelManagerDashboard />} />
+              </Route>
+              
+              {/* Shared dashboard routes */}
+              <Route path="bookings" element={<DashboardBookings />} />
+              <Route path="settings" element={<DashboardSettings />} />
+            </Route>
+          </Route>
+
+          {/* 404 Route - Must be last */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </main>

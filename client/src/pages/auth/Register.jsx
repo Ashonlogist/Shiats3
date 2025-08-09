@@ -92,14 +92,36 @@ const Register = () => {
     setIsLoading(true);
     
     try {
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      // Call the registration API endpoint
+      const response = await fetch('http://localhost:8000/api/v1/auth/register/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          phone_number: formData.phone,
+          user_type: formData.userType
+        }),
+      });
+
+      const data = await response.json();
       
-      // In a real app, you would handle the registration logic here
-      console.log('Registration form submitted:', formData);
+      if (!response.ok) {
+        throw new Error(data.detail || 'Registration failed. Please try again.');
+      }
       
-      // Redirect to verification page on successful registration
-      navigate('/verify-email', { state: { email: formData.email } });
+      // Redirect to login page with success message
+      navigate('/login', { 
+        state: { 
+          registrationSuccess: true,
+          message: 'Registration successful! Please log in to continue.' 
+        } 
+      });
+      
     } catch (error) {
       console.error('Registration error:', error);
       setErrors({

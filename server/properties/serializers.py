@@ -12,17 +12,17 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = [
-            'id', 'username', 'email', 'first_name', 'last_name',
+            'id', 'email', 'first_name', 'last_name',
             'phone_number', 'avatar', 'role', 'date_joined'
         ]
-        read_only_fields = ['id', 'date_joined']
+        read_only_fields = ['id', 'date_joined', 'email']
     
     def get_role(self, obj):
         if obj.is_superuser:
             return 'admin'
-        elif obj.groups.filter(name='Hotel Managers').exists():
+        elif hasattr(obj, 'groups') and obj.groups.filter(name='Hotel Managers').exists():
             return 'hotel_manager'
-        elif obj.groups.filter(name='Agents').exists():
+        elif hasattr(obj, 'groups') and obj.groups.filter(name='Agents').exists():
             return 'agent'
         return 'user'
 

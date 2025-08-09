@@ -1,35 +1,31 @@
 import django_filters
-from django import forms
 from django.db import models
 from .models import Property
 
 class PropertyFilter(django_filters.FilterSet):
-    # Custom filters
-    min_price = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
-    max_price = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
-    min_bedrooms = django_filters.NumberFilter(field_name='bedrooms', lookup_expr='gte')
-    min_bathrooms = django_filters.NumberFilter(field_name='bathrooms', lookup_expr='gte')
-    min_area = django_filters.NumberFilter(field_name='area', lookup_expr='gte')
-    max_area = django_filters.NumberFilter(field_name='area', lookup_expr='lte')
+    """
+    Simple filter for Property model that avoids complex form handling.
+    This is a workaround for compatibility issues with django-filter and DRF.
+    """
+    # Define explicit filters instead of using Meta.fields
+    property_type = django_filters.CharFilter(lookup_expr='iexact')
+    listing_type = django_filters.CharFilter(lookup_expr='iexact')
+    bedrooms = django_filters.NumberFilter()
+    bathrooms = django_filters.NumberFilter()
+    city = django_filters.CharFilter(lookup_expr='icontains')
+    country = django_filters.CharFilter(lookup_expr='icontains')
+    is_featured = django_filters.BooleanFilter()
+    price = django_filters.NumberFilter()
+    price__gt = django_filters.NumberFilter(field_name='price', lookup_expr='gt')
+    price__lt = django_filters.NumberFilter(field_name='price', lookup_expr='lt')
+    price__gte = django_filters.NumberFilter(field_name='price', lookup_expr='gte')
+    price__lte = django_filters.NumberFilter(field_name='price', lookup_expr='lte')
+    area = django_filters.NumberFilter()
+    area__gt = django_filters.NumberFilter(field_name='area', lookup_expr='gt')
+    area__lt = django_filters.NumberFilter(field_name='area', lookup_expr='lt')
+    area__gte = django_filters.NumberFilter(field_name='area', lookup_expr='gte')
+    area__lte = django_filters.NumberFilter(field_name='area', lookup_expr='lte')
     
     class Meta:
         model = Property
-        form = forms.Form  # Use a basic form to avoid issues with model forms
-        fields = {
-            'property_type': ['exact'],
-            'listing_type': ['exact'],
-            'bedrooms': ['exact', 'gte', 'lte'],
-            'bathrooms': ['exact', 'gte', 'lte'],
-            'city': ['exact', 'icontains'],
-            'country': ['exact', 'icontains'],
-            'is_featured': ['exact'],
-            'price': ['exact', 'lt', 'gt', 'lte', 'gte'],
-            'area': ['exact', 'lt', 'gt', 'lte', 'gte'],
-        }
-    
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        # Ensure all filters have a field_class
-        for name, filter_ in self.filters.items():
-            if not hasattr(filter_, 'field_class'):
-                filter_.field_class = forms.CharField  # Default to CharField if not set
+        fields = []  # We're defining all fields explicitly above
