@@ -1,0 +1,65 @@
+/* Global Styles */
+
+/* Reset default margins and padding */
+html, body, #root, .app {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Ensure the app takes full viewport height */
+#root, .app {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Remove any default spacing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Make sure the navbar is flush with the top */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+/* Add padding to the top of the main content to account for fixed navbar */
+main {
+  margin-top: 70px; /* Height of your navbar */
+  flex: 1;
+  width: 100%;
+}
+
+/* Remove any extra spacing from the top of the page */
+body {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* Ensure no extra space in the layout */
+.app {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Reset any conflicting styles */
+h1, h2, h3, h4, h5, h6, p, ul, ol, li {
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure images don't have extra space below them */
+img {
+  vertical-align: middle;
+  max-width: 100%;
+  height: auto;
+}

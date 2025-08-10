@@ -33,9 +33,15 @@
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background: #0a0a0a;
+  background: #000; /* Fallback color */
   box-sizing: border-box;
   perspective: 1000px;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  display: block;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
 }
 
 /* Hero Slider */
@@ -65,6 +71,9 @@
   transform: translateX(100%) scale(0.95);
   z-index: 1;
   overflow: hidden;
+  background-color: transparent;
+  background-origin: border-box;
+  background-clip: border-box;
 }
 
 .hero-slide::before {
@@ -76,12 +85,13 @@
   bottom: 0;
   background: linear-gradient(
     to bottom right, 
-    rgba(0, 0, 0, 0.7) 0%, 
-    rgba(0, 0, 0, 0.4) 50%, 
-    rgba(0, 0, 0, 0.7) 100%
+    rgba(0, 0, 0, 0.4) 0%, 
+    rgba(0, 0, 0, 0.2) 50%, 
+    rgba(0, 0, 0, 0.4) 100%
   );
   z-index: 1;
   transition: all 1.2s ease;
+  pointer-events: none; /* Allow clicks to pass through */
 }
 
 .hero-slide.active {

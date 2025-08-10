@@ -1,5 +1,5 @@
-import { Link, useNavigate, useLocation } from 'react-router-dom';
 import React, { useState, useEffect, useRef } from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { 
   FaSearch, 
   FaUserCircle, 
@@ -100,7 +100,7 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
     <div className="navbar-wrapper">
       <nav 
         ref={navbarRef}
-        className="navbar"
+        className={`navbar ${!scrolled && isTransparent ? 'navbar--transparent' : 'navbar--solid'}`}
       >
         <div className="navbar__container">
           {/* Logo */}
@@ -293,6 +293,22 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
             >
               <FaTimes />
             </button>
+          </div>
+          
+          <div className="mobile-menu__search">
+            <form onSubmit={handleSearch} className="search-form">
+              <input
+                type="text"
+                placeholder="Search properties, hotels..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+                aria-label="Search"
+              />
+              <button type="submit" className="search-button" aria-label="Search">
+                <FaSearch />
+              </button>
+            </form>
           </div>
           
           <nav className="mobile-nav">

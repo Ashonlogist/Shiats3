@@ -1,0 +1,79 @@
+/* Layout Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* App container */
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+}
+
+/* Navbar positioning */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  height: 70px;
+  background-color: var(--color-background);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Main content area */
+main {
+  flex: 1;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+  background-color: var(--color-background);
+}
+
+/* For pages with hero (homepage) */
+.main--with-hero {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+/* For pages without hero */
+.app > main:not(.main--with-hero) {
+  padding-top: 70px; /* Height of the navbar */
+}
+
+/* Ensure all direct children of body have proper spacing */
+body > *:not(.navbar) {
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+/* Reset any conflicting styles */
+body, h1, h2, h3, h4, h5, h6, p, div, section, article, header, footer {
+  margin: 0;
+  padding: 0;
+}
+
+/* Ensure full viewport height for hero sections */
+.hero-section {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  margin: 0;
+  padding: 0;
+}

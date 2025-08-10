@@ -1,0 +1,92 @@
+/* PageHero.css */
+.page-hero {
+  position: relative;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.page-hero__button {
+  display: inline-block;
+  padding: 0.8rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  text-align: center;
+}
+
+.page-hero__button--primary {
+  background-color: #e74c3c;
+  color: #fff;
+  border: 2px solid #e74c3c;
+}
+
+.page-hero__button--primary:hover {
+  background-color: #c0392b;
+  border-color: #c0392b;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.page-hero__button--secondary {
+  background-color: transparent;
+  color: #fff;
+  border: 2px solid #fff;
+}
+
+.page-hero__button--secondary:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .page-hero h1 {
+    font-size: 2.5rem !important;
+  }
+  
+  .page-hero p {
+    font-size: 1.2rem !important;
+  }
+  
+  .page-hero__button {
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-hero {
+    min-height: 500px !important;
+    height: auto !important;
+    padding: 100px 20px !important;
+  }
+  
+  .page-hero h1 {
+    font-size: 2rem !important;
+    margin-bottom: 0.8rem !important;
+  }
+  
+  .page-hero p {
+    font-size: 1.1rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+  
+  .page-hero__button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+  
+  .page-hero__button:last-child {
+    margin-bottom: 0;
+  }
+}

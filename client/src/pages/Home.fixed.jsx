@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt, FaStar, FaArrowRight } from 'react-icons/fa';
-import HomeHero from '../components/home/HomeHero';
 
 // Generate dynamic layout for featured properties
 const generateLayout = (items) => {
@@ -303,67 +302,55 @@ const Home = () => {
 
   return (
     <div className="home">
-      <HomeHero />
-
-      {/* Featured Properties Section */}
-      <section className="section" style={{ 
-        padding: '80px 0',
-        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)',
+      {/* Hero Section */}
+      <section className="hero" style={{
+        height: '80vh',
+        background: 'linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(https://images.unsplash.com/photo-1512917774080-9991f1c4c750?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         color: 'white',
-        position: 'relative'
+        textAlign: 'center',
+        padding: '0 20px'
       }}>
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="section__header" style={{ 
-            marginBottom: '50px', 
-            textAlign: 'center',
-            maxWidth: '800px',
-            marginLeft: 'auto',
-            marginRight: 'auto'
-          }}>
-            <h2 className="section__title" style={{ 
-              fontSize: '2.8rem', 
-              marginBottom: '15px', 
-              color: '#fff',
-              fontWeight: '700',
-              textShadow: '0 2px 4px rgba(0,0,0,0.3)'
+        <div>
+          <h1 style={{ fontSize: '3rem', marginBottom: '1rem' }}>Find Your Dream Property</h1>
+          <p style={{ fontSize: '1.2rem', marginBottom: '2rem' }}>Discover the perfect place to call home</p>
+          <Link 
+            to="/properties" 
+            style={{
+              display: 'inline-block',
+              padding: '12px 30px',
+              backgroundColor: '#3498db',
+              color: 'white',
+              textDecoration: 'none',
+              borderRadius: '4px',
+              fontWeight: 'bold',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseOver={(e) => (e.currentTarget.style.backgroundColor = '#2980b9')}
+            onMouseOut={(e) => (e.currentTarget.style.backgroundColor = '#3498db')}
+          >
+            Browse Properties
+          </Link>
+        </div>
+      </section>
+
+      {/* Featured Properties Section */}
+      <section className="section" style={{ padding: '60px 0' }}>
+        <div className="container">
+          <div className="section__header" style={{ marginBottom: '40px', textAlign: 'center' }}>
+            <h2 className="section__title" style={{ fontSize: '2.5rem', marginBottom: '15px', color: '#2c3e50' }}>Featured Properties</h2>
+            <Link to="/properties" className="section__link" style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center',
+              color: '#3498db',
+              textDecoration: 'none',
+              fontWeight: '500',
+              transition: 'all 0.3s ease'
             }}>
-              Featured Properties
-            </h2>
-            <p style={{ 
-              fontSize: '1.1rem', 
-              color: 'rgba(255,255,255,0.9)',
-              marginBottom: '20px',
-              lineHeight: '1.6'
-            }}>
-              Discover our handpicked selection of premium properties
-            </p>
-            <Link 
-              to="/properties" 
-              className="section__link" 
-              style={{ 
-                display: 'inline-flex', 
-                alignItems: 'center',
-                color: '#fff',
-                textDecoration: 'none',
-                fontWeight: '500',
-                padding: '10px 25px',
-                backgroundColor: 'rgba(52, 152, 219, 0.9)',
-                borderRadius: '4px',
-                transition: 'all 0.3s ease',
-                border: '2px solid rgba(255,255,255,0.2)'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(41, 128, 185, 0.9)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
               View All Properties <FaArrowRight style={{ marginLeft: '8px' }} />
             </Link>
           </div>
@@ -373,12 +360,10 @@ const Home = () => {
             style={{
               display: 'grid',
               gridTemplateAreas: `'big big small1' 'big big small2' 'medium1 medium2 medium3'`,
-              gap: '25px',
+              gap: '20px',
               gridTemplateColumns: 'repeat(3, 1fr)',
-              gridAutoRows: 'minmax(300px, auto)',
-              marginBottom: '40px',
-              maxWidth: '1400px',
-              margin: '0 auto'
+              gridAutoRows: 'minmax(250px, auto)',
+              marginBottom: '40px'
             }}
           >
             {featuredProperties.items.map((property, index) => (

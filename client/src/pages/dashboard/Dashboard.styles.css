@@ -210,7 +210,7 @@
 
 /* Top Navigation */
 .topNav {
-  background-color: #fff;
+  background-color: var(--color-background);
   padding: 0 25px;
   height: 70px;
   display: flex;

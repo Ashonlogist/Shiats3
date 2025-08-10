@@ -1,9 +1,9 @@
 import axios from 'axios';
-import { getToken, removeToken } from '../utils/auth';
+import { getToken, getRefreshToken, setTokens, removeToken } from '../utils/auth';
 
 // Create an axios instance with default config
 const api = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1',
+  baseURL: `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1`,
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json',
@@ -11,12 +11,34 @@ const api = axios.create({
   withCredentials: true, // Include cookies in requests if using session-based auth
 });
 
+// Request queue for failed requests due to token refresh
+let isRefreshing = false;
+let failedQueue = [];
+
+const processQueue = (error, token = null) => {
+  failedQueue.forEach(prom => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
 // Add a request interceptor to include the auth token
 api.interceptors.request.use(
   (config) => {
+    // Skip adding auth header for login/refresh endpoints
+    if (config.url.includes('/auth/jwt/')) {
+      return config;
+    }
+    
     const token = getToken();
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers['Authorization'] = `Bearer ${token}`;
+      config.headers['Content-Type'] = 'application/json';
+      config.headers['Accept'] = 'application/json';
     }
     return config;
   },
@@ -25,31 +47,45 @@ api.interceptors.request.use(
   }
 );
 
-// Add a response interceptor to handle common errors
+// Add a response interceptor to handle token refresh
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config;
     
-    // Don't retry if it's a retry request or not a 401 error
-    if (originalRequest._retry || error.response?.status !== 401) {
+    // Return any error that is not related to authentication
+    if (error.response?.status !== 401 || originalRequest._retry) {
       return Promise.reject(error);
     }
     
-    // Mark this request as already being retried
-    originalRequest._retry = true;
-    
-    // If this is a refresh token request, log out the user
+    // Don't retry refresh token requests
     if (originalRequest.url.includes('/auth/jwt/refresh/')) {
-      console.error('Refresh token failed, logging out...');
+      // Clear tokens and redirect to login
       removeToken();
-      if (!window.location.pathname.startsWith('/login')) {
+      if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/signup')) {
         window.location.href = '/login';
       }
       return Promise.reject(error);
     }
     
-    // Try to refresh the token
+    // If we're already refreshing the token, add the request to the queue
+    if (isRefreshing) {
+      return new Promise((resolve, reject) => {
+        failedQueue.push({ resolve, reject });
+      })
+      .then(token => {
+        originalRequest.headers['Authorization'] = 'Bearer ' + token;
+        return api(originalRequest);
+      })
+      .catch(err => {
+        return Promise.reject(err);
+      });
+    }
+    
+    // Mark that we're refreshing the token
+    originalRequest._retry = true;
+    isRefreshing = true;
+    
     try {
       const refreshToken = getRefreshToken();
       if (!refreshToken) {
@@ -59,38 +95,56 @@ api.interceptors.response.use(
       console.log('Attempting to refresh access token...');
       const response = await axios.post(
         `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'}/auth/jwt/refresh/`,
-        { refresh: refreshToken }
+        { refresh: refreshToken },
+        { 
+          headers: { 
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          withCredentials: true
+        }
       );
       
-      if (!response.data?.access) {
-        throw new Error('No access token in refresh response');
+      const { access, refresh: newRefreshToken } = response.data;
+      
+      if (!access) {
+        throw new Error('No access token received');
       }
       
-      // Store the new token
-      const { access } = response.data;
-      setTokens(access, refreshToken);
+      // Store the new tokens
+      setTokens(access, newRefreshToken);
       
-      // Update the auth header
+      // Update the default authorization header
       api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
+      
+      // Update the original request with the new token
       originalRequest.headers['Authorization'] = `Bearer ${access}`;
       
       console.log('Token refreshed successfully, retrying request...');
-      return api(originalRequest);
-    } catch (err) {
-      console.error('Failed to refresh token:', err);
       
-      // If we're not already on the login page, redirect there
-      if (!window.location.pathname.startsWith('/login')) {
-        // Clear any existing tokens
-        removeToken();
-        
-        // Add a small delay to allow the error to be processed
-        setTimeout(() => {
-          window.location.href = '/login';
-        }, 100);
+      // Process any queued requests
+      processQueue(null, access);
+      
+      // Retry the original request
+      return api(originalRequest);
+    } catch (refreshError) {
+      console.error('Failed to refresh token:', refreshError);
+      
+      // Process any queued requests with the error
+      processQueue(refreshError, null);
+      
+      // Clear auth data
+      removeToken();
+      localStorage.removeItem('user_data');
+      
+      // Redirect to login if not already there
+      if (!window.location.pathname.startsWith('/login') && !window.location.pathname.startsWith('/signup')) {
+        window.location.href = '/login';
       }
       
-      return Promise.reject(error);
+      return Promise.reject(refreshError);
+    } finally {
+      isRefreshing = false;
     }
   }
 );

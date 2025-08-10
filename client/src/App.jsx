@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, Outlet }
 import { FaSpinner } from 'react-icons/fa';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
 import './App.css';
+import './styles/global.css';
 
 // Layout Components
 import Navbar from './components/layout/Navbar';
@@ -73,8 +74,7 @@ function AppContent() {
         user={user}
         onLogout={logout}
       />
-      {isHomePage && <Hero />}
-      <main className={isHomePage ? 'main--with-hero' : ''}>
+      <main className={isHomePage ? 'main--with-hero' : 'main-content'}>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
@@ -104,7 +104,7 @@ function AppContent() {
               user ? (
                 <Navigate to="/dashboard" replace />
               ) : (
-                <Navigate to="/dashboard" replace />
+                <Register />
               )
             } 
           />

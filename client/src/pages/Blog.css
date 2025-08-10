@@ -12,8 +12,21 @@
               url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
   color: white;
   text-align: center;
-  padding: 100px 20px 80px;
-  margin-bottom: 60px;
+  padding: 120px 20px 80px;
+  margin: 0;
+  min-height:80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  top: -70px; /* Negative margin to account for fixed navbar */
+  margin-bottom: -70px; /* Compensate for the negative top margin */
+}
+
+/* Ensure content starts below the hero */
+.blog-page {
+  padding-top: 0;
+  margin-top: 0;
 }
 
 .blog-hero h1 {

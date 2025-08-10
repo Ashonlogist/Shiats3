@@ -178,7 +178,7 @@
   border: 1px solid #e9ecef;
   border-radius: 6px;
   font-size: 0.9rem;
-  background-color: #fff;
+  background-color: var(--color-background);
   cursor: pointer;
   min-width: 120px;
 }

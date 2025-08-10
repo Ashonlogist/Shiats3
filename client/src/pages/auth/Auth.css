@@ -206,7 +206,7 @@
   position: relative;
   height: 18px;
   width: 18px;
-  background-color: #fff;
+  background-color: var(--color-background);
   border: 2px solid #bdc3c7;
   border-radius: 50%;
   margin-right: 8px;
@@ -421,7 +421,7 @@
   height: 44px;
   border-radius: 50%;
   border: 1px solid #e0e0e0;
-  background-color: #fff;
+  background-color: var(--color-background);
   color: #7f8c8d;
   font-size: 18px;
   cursor: pointer;

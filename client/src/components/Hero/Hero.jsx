@@ -37,12 +37,126 @@ const heroImages = [
   },
 ];
 
-const Hero = () => {
+const Hero = ({ pageType = 'home' }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchLocation, setSearchLocation] = useState('');
   const [searchType, setSearchType] = useState('all');
+
+  // Get page-specific content
+  const getPageContent = () => {
+    switch(pageType) {
+      case 'properties':
+        return {
+          title: 'Find Your Perfect Property',
+          subtitle: 'Browse our exclusive selection of homes and apartments',
+          cta: 'View All Listings',
+          ctaLink: '/properties',
+          secondaryCta: 'Contact an Agent',
+          secondaryCtaLink: '/contact'
+        };
+      case 'hotels':
+        return {
+          title: 'Luxury Accommodations',
+          subtitle: 'Discover the finest hotels and resorts for your next stay',
+          cta: 'Book Now',
+          ctaLink: '/hotels',
+          secondaryCta: 'Special Offers',
+          secondaryCtaLink: '/special-offers'
+        };
+      case 'about':
+        return {
+          title: 'About Our Company',
+          subtitle: 'Your trusted partner in real estate and hospitality',
+          cta: 'Our Services',
+          ctaLink: '/services',
+          secondaryCta: 'Meet the Team',
+          secondaryCtaLink: '/team'
+        };
+      case 'contact':
+        return {
+          title: 'Get In Touch',
+          subtitle: 'We\'d love to hear from you',
+          cta: 'Contact Us',
+          ctaLink: '/contact',
+          secondaryCta: 'Visit Our Office',
+          secondaryCtaLink: '/locations'
+        };
+      case 'blog':
+        return {
+          title: 'Latest News & Insights',
+          subtitle: 'Stay updated with the latest trends and tips',
+          cta: 'Read Our Blog',
+          ctaLink: '/blog',
+          secondaryCta: 'Subscribe',
+          secondaryCtaLink: '/subscribe'
+        };
+      default: // home
+        return {
+          title: 'Discover Your Dream Property',
+          subtitle: 'Luxury homes and apartments in the most desirable locations',
+          cta: 'Explore Properties',
+          ctaLink: '/properties',
+          secondaryCta: 'Learn More',
+          secondaryCtaLink: '/about'
+        };
+    }
+  };
+
+  const pageContent = getPageContent();
+
+  // Use different images based on page type
+  const getHeroImages = () => {
+    const commonImages = [...heroImages];
+    
+    if (pageType === 'properties') {
+      return [
+        {
+          ...commonImages[0],
+          title: pageContent.title,
+          subtitle: pageContent.subtitle,
+          cta: pageContent.cta,
+          ctaLink: pageContent.ctaLink,
+          secondaryCta: pageContent.secondaryCta,
+          secondaryCtaLink: pageContent.secondaryCtaLink
+        },
+        ...commonImages.slice(1)
+      ];
+    }
+    
+    if (pageType === 'hotels') {
+      return [
+        {
+          ...commonImages[1],
+          title: pageContent.title,
+          subtitle: pageContent.subtitle,
+          cta: pageContent.cta,
+          ctaLink: pageContent.ctaLink,
+          secondaryCta: pageContent.secondaryCta,
+          secondaryCtaLink: pageContent.secondaryCtaLink
+        },
+        ...commonImages.filter((_, i) => i !== 1)
+      ];
+    }
+    
+    return commonImages.map((img, index) => ({
+      ...img,
+      title: index === 0 ? pageContent.title : img.title,
+      subtitle: index === 0 ? pageContent.subtitle : img.subtitle,
+      cta: index === 0 ? pageContent.cta : img.cta,
+      ctaLink: index === 0 ? pageContent.ctaLink : img.ctaLink,
+      secondaryCta: index === 0 ? pageContent.secondaryCta : img.secondaryCta,
+      secondaryCtaLink: index === 0 ? pageContent.secondaryCtaLink : img.secondaryCtaLink
+    }));
+  };
+
+  const [currentImages, setCurrentImages] = useState(getHeroImages());
+
+  // Update images when pageType changes
+  useEffect(() => {
+    setCurrentImages(getHeroImages());
+  }, [pageType]);
 
   // Preload images for better performance
   useEffect(() => {
@@ -82,34 +196,11 @@ const Hero = () => {
 
   // Auto slide with pause on hover
   useEffect(() => {
-    let timer;
-    const slider = document.querySelector('.hero-slider');
-    
-    const startTimer = () => {
-      timer = setInterval(() => {
-        nextSlide();
-      }, 7000);
-    };
-    
-    const pauseTimer = () => {
-      clearInterval(timer);
-    };
-    
-    startTimer();
-    
-    if (slider) {
-      slider.addEventListener('mouseenter', pauseTimer);
-      slider.addEventListener('mouseleave', startTimer);
-    }
-    
-    return () => {
-      clearInterval(timer);
-      if (slider) {
-        slider.removeEventListener('mouseenter', pauseTimer);
-        slider.removeEventListener('mouseleave', startTimer);
-      }
-    };
-  }, [nextSlide]);
+    const timer = setInterval(() => {
+      nextSlide();
+    }, 8000);
+    return () => clearInterval(timer);
+  }, [currentSlide, currentImages]);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -121,7 +212,7 @@ const Hero = () => {
     <div className="hero">
       <div className="hero-slider">
         <AnimatePresence initial={false} custom={currentSlide}>
-          {heroImages.map((image, index) => {
+          {currentImages.map((image, index) => {
             if (index !== currentSlide) return null;
             
             return (

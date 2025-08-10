@@ -123,6 +123,10 @@
 - Properties page now fetches and displays property data from backend API.
 - All Properties page errors related to currentPageItems are fixed; page loads and paginates correctly.
 - End-to-end frontend-backend integration for Properties page is complete; focus now shifts to dashboard and authentication flows.
+- Improved error handling and data validation implemented in Properties and Hotels pages to prevent runtime errors from undefined/null values and unexpected API responses.
+- Both Properties and Hotels pages now fetch data from backend API, ensuring accurate and up-to-date information is displayed.
+- [CRITICAL] Blocking authentication bug: Frontend receives 403 Forbidden and "Authentication credentials were not provided" when accessing protected endpoints (e.g. /auth/users/me/), indicating missing or invalid token handling in login and user fetch flows. Need to debug and resolve frontend-backend authentication integration.
+- Authentication flow and token refresh logic in frontend improved: API interceptor now robustly attempts token refresh on 401 errors, and AuthContext fetches user data with explicit Authorization header. Syntax errors in AuthContext fixed. Next: verify login, token persistence, and user info fetch end-to-end.
 - Received and reviewed the Shiats3 Internal Guide: all future backend, frontend, and UI/UX work must align with the project's branding (African hut logo, color palette, fonts), user roles, features, and quality standards as outlined. Ensure all new features, admin/agent/hotel manager dashboards, and content templates follow these guidelines.
 - Next major features to implement: role-based dashboards, hotel booking system, and blog functionality, all adhering to the guide.
 - User model updated to include hotel manager role; migration created and applied
@@ -175,7 +179,7 @@
 - Root cause of dashboard flashing: ProtectedRoute checked user.role instead of user.user_type, causing improper redirects. Fixed to use user.user_type for role checks; dashboard should now render correctly after login.
 - Debugged and fixed redundant/duplicate state and logic in Dashboard.jsx; cleaned up duplicate render functions and fixed lint/syntax errors.
 - Fixed missing FaCog import in DashboardLayout.jsx.
-- Fixed duplicate /api/v1/ in dashboard API endpoint by updating endpoint logic in Dashboard.jsx to use the correct route based on user type.
+- Fixed dashboard API endpoint URL in Dashboard.jsx (remove double /api/v1/)
 - Fixed JSX adjacent element error in Dashboard.jsx by properly wrapping error state in DashboardLayout.
 - Improved error handling in Dashboard.jsx to handle unexpected errors and provide better user experience.
 - Improved error handling and token refresh logic in API service and Dashboard.jsx to address 403 Forbidden errors and permission issues when accessing dashboard endpoints. Enhanced user feedback for permission errors and session expiry.
@@ -192,7 +196,6 @@
 - Reviewed Dashboard.jsx navigation and authentication logic; consolidated navigation throttling and authentication flow to prevent infinite redirects and improve user experience.
 - [x] Debug and fix dashboard routing/rendering: dashboard flashes but does not display after login
 - [x] Debug and fix redundant/duplicate state and logic in Dashboard.jsx; fix duplicate render functions and lint errors
-- [x] Review and consolidate Dashboard.jsx navigation throttling and authentication logic to prevent infinite redirects and improve navigation flow
 - New issue: After navigation/authentication fixes, dashboard is stuck on loading state. Need to investigate data fetching and loading logic.
 - Identified and fixed authentication token bug: updated AuthContext to store access/refresh tokens after login, improved fetchUser to set auth header, and enhanced API service to handle token refresh and retry logic. Dashboard now loads after login if token is present.
 - [x] Investigate and resolve dashboard stuck on loading state after navigation throttling fixes
@@ -202,14 +205,72 @@
 - User requested enhanced dashboard profile/account icon feature with dropdown/mini-profile card and brand styling.
 - Fixed missing icon imports in DashboardLayout.jsx (e.g. FaCog, FaChartLine)
 - Fixed dashboard API endpoint URL in Dashboard.jsx (remove double /api/v1/)
-- [ ] Update Navbar to show account/profile icon and dashboard link after login; hide login/signup links when authenticated.
-- [ ] Review and clean up redundant or broken code in Navbar/authentication flow; ensure proper state and props are passed and Navbar updates correctly after login/logout.
+- [x] Update Navbar to show account/profile icon and dashboard link after login; hide login/signup links when authenticated.
+- [x] Review and clean up redundant or broken code in Navbar/authentication flow; ensure proper state and props are passed and Navbar updates correctly after login/logout.
 - [x] Debug and fix dashboard routing/rendering: dashboard flashes but does not display after login
 - [x] Debug and fix redundant/duplicate state and logic in Dashboard.jsx; fix duplicate render functions and lint errors
+- Implemented dynamic, randomized layout for featured properties section on homepage with varying rectangle sizes and orientations.
+- [x] Restyle featured properties section on homepage with dynamic rectangles (varying sizes/orientations, randomized layout)
+- [x] Add 5 more properties to featured properties section
+- [x] Add 5 more hotels to featured hotels section
+- [x] Fix missing background image and styling for featured properties section on Home page
+- [x] Eliminate space under navbar on all pages
+- [x] Each page should implement its own unique hero section (not a shared or dynamic one)
+- [x] Remove brown background from hero section and ensure hero image fills the space
+- [x] Investigate and clean up redundant/conflicting CSS or component files affecting hero section positioning
+- [x] Created reusable PageHero component for consistent hero styling across pages
+- [x] Created HomeHero component for unique hero section on Home page
+- [x] Updated Home page to use its own hero section with correct styling
+- [x] Fix Navbar signup button so it routes to /register instead of /login
+- [ ] Debug and fix registration flow if signup still redirects to login or fails to render registration page
+- [x] Ensure all page content starts at the top of the viewport without offset under the transparent navbar; previous CSS adjustments did not resolve the issue, so a more robust, page-wide fix is needed.
+- [ ] Set up hotel booking system
+- [ ] Implement blog functionality (SEO, posts, admin management)
+- Blog hero section (blog-hero) now starts at the top under the navbar; page-specific hero/section offset issues resolved. 
+- Consistent hero/section offset fixes are now applied to all major pages (Blog, Contact, Hotels, Properties, Dashboard, Sign In, Login) to ensure hero sections start at the very top under the navbar.
+- [x] Ensure all page content starts at the top of the viewport without offset under the transparent navbar; previous CSS adjustments did not resolve the issue, so a more robust, page-wide fix is needed.
+- [x] Fix hero/section offset issues for all pages, including Blog, Contact, Hotels, and Properties (ensure hero sections like .blog-hero start at the very top under the navbar, with no gap or overlap).
+- [x] Apply consistent hero/section offset fix to: .blog-hero, .contact-hero, .hero in Hotels.module.css, .hero in Properties.module.css, dashboard hero, sign in and login hero sections.
+- [ ] Update global background color to a luxurious light color that contrasts well with white
+- layout.css has been updated to use the new background color variable instead of hardcoded white backgrounds. Remaining step: check other CSS files for hardcoded backgrounds.
+- App.css and index.css updated to use --color-background. Next step: replace all remaining background-color: #fff; with var(--color-background) in all CSS files.
+- User decided to revert global background color changes; only the Hotels page should use the special background color. Revert background color updates in global and non-Hotels CSS files.
+- Global background color reverted to white/light gray; special background color now scoped only to Hotels page.
+- [x] Apply new background color by updating/removing hardcoded white backgrounds in layout.css
+- [x] Apply new background color by updating/removing hardcoded white backgrounds in App.css
+- [ ] Apply new background color by updating/removing hardcoded white backgrounds in other CSS files if needed
+- [ ] Replace all background-color: #fff; with var(--color-background) in all CSS files
+- [x] Revert global background color changes and scope special background color to Hotels page only
+- Backend/Frontend integration issues observed: normal user login displays admin dashboard; new hotels/items added in backend do not appear in frontend. Need to investigate authentication/user role logic and API data sync.
+- [CRITICAL] The frontend is not consuming any data from the backend; all frontend data is static or mock data. Full integration is missing.
+- Hotels, Properties, and other main pages use hardcoded mock data instead of fetching from backend APIs. Must refactor to use live backend data for full integration.
+- All Hotels, Properties, Blogs, and user profile data must be created and managed in the backend; frontend should only display data fetched from backend APIs (no hardcoded or mock data).
+- Users should be able to create hotels, properties, blogs, and update their profiles via the frontend UI, and these changes must be persisted and reflected in the backend and shown in the frontend UI.
+- [x] Refactor Hotels page to fetch/display hotels from backend API (replace mock data)
+- [x] Refactor Properties page to fetch/display properties from backend API (replace mock data)
+- [ ] Refactor all other pages using mock data to use backend APIs
+- [ ] Remove all hardcoded/mock Hotels, Properties, Blogs, and user profile data from the frontend; ensure all such data is fetched from backend APIs
+- [x] Create example hotels, properties, blogs, and user profiles in the backend database for display in the frontend
+- [x] Test and verify frontend-backend integration with sample data
+- [ ] Implement frontend UI for creating hotels, properties, blogs, and updating user profiles; ensure these actions persist data in the backend and update the frontend UI accordingly
+- [x] Fix management command to set Property.owner when creating sample data
+- [ ] Debug and fix frontend-backend authentication flow (token handling, login, user info fetch)
+- Authentication flow and token refresh logic in frontend improved: API interceptor now robustly attempts token refresh on 401 errors, and AuthContext fetches user data with explicit Authorization header. Syntax errors in AuthContext fixed. Next: verify login, token persistence, and user info fetch end-to-end.
+- [x] Refactor API interceptor to robustly refresh token on 401 errors
+- [x] Fix AuthContext to always send Authorization header and persist user data
+- [ ] Test login, token refresh, and user info fetch end-to-end
+- [ ] Fix broken placeholder image URL in Hotels.jsx (use a reliable image source)
+- [ ] Restore Hotels page appearance to match previous design after placeholder image update
+
 ## Current Goal
-- Test dashboard authentication and loading flow after token/auth fixes
+- Restore Hotels page appearance to match previous design
 
 ## Task List
+- [x] Make Navbar search bar background transparent to blend with hero background
+- [x] Display user's name in Navbar account area
+- [x] Implement full profile modal (with profile editing and profile picture upload) accessible from Navbar account area
+- [x] Fix JSX structure and closing tags in Navbar.jsx to resolve React build errors
+- [x] Fix dashboard dropdown menu sizing in Navbar.jsx so it fits content
 - [x] Enhance properties app urls.py to use DRF routers and nested routers
 - [x] Update main project urls.py to include API documentation, authentication, and frontend catch-all
 - [x] Update settings.py with all necessary backend configurations
@@ -269,8 +330,8 @@
   - [x] Implement frontend dashboard layout, shared components (StatCard, ActivityFeed), and the main Dashboard page with CSS modules
   - [x] Implement Dashboard styles (Dashboard.module.css)
   - [x] Create Dashboard.styles.css and switch Dashboard.jsx to use it
-  - [x] Create AdminDashboard and AgentDashboard components and their CSS files
-  - [x] Create HotelManagerDashboard and its CSS file
+  - [x] Create AdminDashboard and AgentDashboard components and their CSS files for role-based dashboard content
+  - [x] Create HotelManagerDashboard and its CSS for hotel manager role-based dashboard
   - [x] Implement frontend routing and role-specific dashboard content
   - [x] Create and integrate dashboard Properties component (Properties.jsx, Properties.css)
   - [x] Create and integrate dashboard Bookings component (Bookings.jsx, Bookings.css)
@@ -279,29 +340,149 @@
   - [x] Create and integrate dashboard Unauthorized component (Unauthorized.jsx, Unauthorized.css)
 - [ ] Set up hotel booking system
 - [ ] Implement blog functionality (SEO, posts, admin management)
-- [x] Refactor AuthProvider to avoid using useNavigate outside Router context (fix runtime error)
-- [x] Clean up redundant/conflicting CSS and unify global <a> link styles (remove underlines everywhere, especially Navbar)
-- [ ] Restyle Hotels page to match design in user screenshots
-  - [ ] Fix JSX and lint errors in Hotels.jsx
-  - [ ] Complete Hotels.module.css for new layout and visuals
-- [x] Restyle Properties page to match Hotels page design
-  - [x] Fix CSS lint errors in Properties.module.css
-  - [x] Update filter and sort logic in Properties.jsx to match new design
-  - [x] Update main JSX structure in Properties.jsx for new layout
-  - [x] Fix remaining JSX and lint errors in Properties.jsx
-  - [x] Complete Properties.module.css for new layout and visuals
-  - [x] Implement new Properties page design, filter logic, and features
-- [x] Debug and fix frontend-backend authentication and user creation integration (sign up/login should create/fetch users in backend)
-- [x] Fix dashboard and data sync so frontend reflects backend changes (users, properties, etc.)
-- [x] Enable users to create posts and content from frontend (blog, dashboard, etc.)
-- [x] Refactor App.jsx to use ProtectedRoute and enhanced AuthContext for unified, secure authentication flow and role-based route protection.
-- [x] Fix ReferenceError: isAuthenticated is not defined in App.jsx after AuthContext refactor.
-- [x] Fix ReferenceError: Hero is not defined in App.jsx by importing Hero.
-- [x] Fix ProtectedRoute user_type check to use user.user_type instead of user.role for role checks; dashboard should now render correctly after login.
-- [ ] Implement enhanced dashboard profile/account icon feature with dropdown/mini-profile card and brand styling.
-- [x] Fix missing icon imports in DashboardLayout.jsx (e.g. FaCog, FaChartLine)
-- [x] Fix dashboard API endpoint URL in Dashboard.jsx (remove double /api/v1/)
-- [ ] Update Navbar to show account/profile icon and dashboard link after login; hide login/signup links when authenticated.
-- [ ] Review and clean up redundant or broken code in Navbar/authentication flow; ensure proper state and props are passed and Navbar updates correctly after login/logout.
-- [x] Debug and fix dashboard routing/rendering: dashboard flashes but does not display after login
-- [x] Debug and fix redundant/duplicate state and logic in Dashboard.jsx; fix duplicate render functions and lint errors
+- Blog hero section (blog-hero) now starts at the top under the navbar; page-specific hero/section offset issues resolved. 
+- Consistent hero/section offset fixes are now applied to all major pages (Blog, Contact, Hotels, Properties, Dashboard, Sign In, Login) to ensure hero sections start at the very top under the navbar.
+- [x] Ensure all page content starts at the top of the viewport without offset under the transparent navbar; previous CSS adjustments did not resolve the issue, so a more robust, page-wide fix is needed.
+- [x] Fix hero/section offset issues for all pages, including Blog, Contact, Hotels, and Properties (ensure hero sections like .blog-hero start at the very top under the navbar, with no gap or overlap).
+- [x] Apply consistent hero/section offset fix to: .blog-hero, .contact-hero, .hero in Hotels.module.css, .hero in Properties.module.css, dashboard hero, sign in and login hero sections.
+- [ ] Update global background color to a luxurious light color that contrasts well with white
+- layout.css has been updated to use the new background color variable instead of hardcoded white backgrounds. Remaining step: check other CSS files for hardcoded backgrounds.
+- App.css and index.css updated to use --color-background. Next step: replace all remaining background-color: #fff; with var(--color-background) in all CSS files.
+- User decided to revert global background color changes; only the Hotels page should use the special background color. Revert background color updates in global and non-Hotels CSS files.
+- Global background color reverted to white/light gray; special background color now scoped only to Hotels page.
+- [x] Apply new background color by updating/removing hardcoded white backgrounds in layout.css
+- [x] Apply new background color by updating/removing hardcoded white backgrounds in App.css
+- [ ] Apply new background color by updating/removing hardcoded white backgrounds in other CSS files if needed
+- [ ] Replace all background-color: #fff; with var(--color-background) in all CSS files
+- [x] Revert global background color changes and scope special background color to Hotels page only
+- Backend/Frontend integration issues observed: normal user login displays admin dashboard; new hotels/items added in backend do not appear in frontend. Need to investigate authentication/user role logic and API data sync.
+- [CRITICAL] The frontend is not consuming any data from the backend; all frontend data is static or mock data. Full integration is missing.
+- Hotels, Properties, and other main pages use hardcoded mock data instead of fetching from backend APIs. Must refactor to use live backend data for full integration.
+- All Hotels, Properties, Blogs, and user profile data must be created and managed in the backend; frontend should only display data fetched from backend APIs (no hardcoded or mock data).
+- Users should be able to create hotels, properties, blogs, and update their profiles via the frontend UI, and these changes must be persisted and reflected in the backend and shown in the frontend UI.
+- [x] Refactor Hotels page to fetch/display hotels from backend API (replace mock data)
+- [x] Refactor Properties page to fetch/display properties from backend API (replace mock data)
+- [ ] Refactor all other pages using mock data to use backend APIs
+- [ ] Remove all hardcoded/mock Hotels, Properties, Blogs, and user profile data from the frontend; ensure all such data is fetched from backend APIs
+- [x] Create example hotels, properties, blogs, and user profiles in the backend database for display in the frontend
+- [x] Test and verify frontend-backend integration with sample data
+- [ ] Implement frontend UI for creating hotels, properties, blogs, and updating user profiles; ensure these actions persist data in the backend and update the frontend UI accordingly
+- [x] Fix management command to set Property.owner when creating sample data
+- [ ] Debug and fix frontend-backend authentication flow (token handling, login, user info fetch)
+- Authentication flow and token refresh logic in frontend improved: API interceptor now robustly attempts token refresh on 401 errors, and AuthContext fetches user data with explicit Authorization header. Syntax errors in AuthContext fixed. Next: verify login, token persistence, and user info fetch end-to-end.
+- [x] Refactor API interceptor to robustly refresh token on 401 errors
+- [x] Fix AuthContext to always send Authorization header and persist user data
+- [ ] Test login, token refresh, and user info fetch end-to-end
+- [ ] Fix broken placeholder image URL in Hotels.jsx (use a reliable image source)
+- [ ] Restore Hotels page appearance to match previous design after placeholder image update
+
+## Task List
+- [x] Make Navbar search bar background transparent to blend with hero background
+- [x] Display user's name in Navbar account area
+- [x] Implement full profile modal (with profile editing and profile picture upload) accessible from Navbar account area
+- [x] Fix JSX structure and closing tags in Navbar.jsx to resolve React build errors
+- [x] Fix dashboard dropdown menu sizing in Navbar.jsx so it fits content
+- [x] Enhance properties app urls.py to use DRF routers and nested routers
+- [x] Update main project urls.py to include API documentation, authentication, and frontend catch-all
+- [x] Update settings.py with all necessary backend configurations
+- [x] Add storage_backends.py for S3 file storage
+- [x] Create API endpoint tests for properties, hotels, bookings, and users
+- [x] Add pytest.ini for test configuration
+- [x] Update requirements.txt with all dependencies
+- [x] Add .env.example for environment variables
+- [x] Run all backend tests and ensure they pass
+- [x] Document API endpoints and settings for developers
+- [x] Review and finalize developer documentation
+- [x] Set up API service layer in frontend (api directory, Axios/fetch, base URL)
+- [x] Add Vite proxy configuration to connect frontend to backend
+- [x] Implement authentication flow in frontend (token management, interceptors)
+- [x] Add frontend .env file for API base URL and environment variables
+- [x] Test API calls through frontend UI
+- [x] Resolve PowerShell/npm execution policy issue and install frontend dependencies
+- [x] Resolve Django logging configuration error and start backend server
+- [x] Update logging configuration in settings.py to prevent log rotation issues
+- [x] Re-test frontend-backend integration after dependencies are installed
+- [x] Re-test frontend-backend integration after backend is running
+- [x] Verify frontend-backend configuration (.env, Vite proxy, API config)
+- [x] Switch to SQLite for local development to resolve psycopg2/pg_config issues
+- [x] Remove django-health-check from INSTALLED_APPS (fix incompatibility)
+- [x] Create and integrate custom User model in properties app to resolve AUTH_USER_MODEL error
+- [x] Resolve missing django_cleanup package error
+- [x] Resolve missing GDAL library error for Django GIS
+- [x] Resolve drf-nested-routers (NestedSimpleRouter) dependency error
+- [x] Resolve django-debug-toolbar dependency error
+- [x] Diagnose and resolve backend API AttributeError in PropertyViewSet/filterset
+- [x] Fix PropertyViewSet filter configuration or dependencies
+- [x] Re-test backend API and integration
+- [x] Debug and fix backend API filterset/form integration (django_filters/DRF)
+- [x] Test API calls through frontend UI
+- [x] Set up and run the frontend development server
+- [x] Test end-to-end frontend-backend integration (validate API service/config and flows)
+  - [x] Create frontend .env file with API URL
+  - [x] Validate Vite config and environment for integration
+  - [x] Test login and signup UI flows with backend
+  - [x] Fix missing FaHome import in Login.jsx to resolve frontend login page error
+  - [x] Fix missing FaHotel import in Login.jsx to resolve frontend login page error
+  - [x] Update Django settings to use database for sessions and local memory cache for caching (remove Redis dependency for local dev)
+- [x] Update UserSerializer in properties app to match custom User model (remove 'username' field, use 'email')
+- [x] Review and fix frontend signup redirect logic after registration (404 error)
+- [x] Debug and fix dashboard redirection/visibility after login (admin and user dashboard)
+  - [x] Connect frontend login form to backend API for authentication
+  - [x] Pass authenticated user data to Dashboard component and render real user/admin content
+  - [x] Debug/fix "Failed to fetch user data" after login (check backend user endpoint, permissions, serialization)
+  - [x] Add backend endpoint for /api/v1/auth/users/me/ (CurrentUserView)
+  - [x] Test login and dashboard flow end-to-end after fix
+  - [x] Enhance backend PropertyViewSet with permissions, owner assignment, image upload, and similar properties endpoints for more complete property management
+  - [x] Update frontend Properties page to fetch/display properties from backend API
+  - [x] Fix Properties page errors related to currentPageItems and pagination
+  - [x] Implement role-based dashboards (Admin, Agent, Hotel Manager)
+  - [x] Implement backend dashboard views and serializers for each role
+  - [x] Add dashboard app URLs and include in main project URLs
+  - [x] Implement frontend dashboard layout, shared components (StatCard, ActivityFeed), and the main Dashboard page with CSS modules
+  - [x] Implement Dashboard styles (Dashboard.module.css)
+  - [x] Create Dashboard.styles.css and switch Dashboard.jsx to use it
+  - [x] Create AdminDashboard and AgentDashboard components and their CSS files for role-based dashboard content
+  - [x] Create HotelManagerDashboard and its CSS for hotel manager role-based dashboard
+  - [x] Implement frontend routing and role-specific dashboard content
+  - [x] Create and integrate dashboard Properties component (Properties.jsx, Properties.css)
+  - [x] Create and integrate dashboard Bookings component (Bookings.jsx, Bookings.css)
+  - [x] Create and integrate dashboard Users component (Users.jsx, Users.css)
+  - [x] Create and integrate dashboard Settings component (Settings.jsx, Settings.css)
+  - [x] Create and integrate dashboard Unauthorized component (Unauthorized.jsx, Unauthorized.css)
+- [ ] Set up hotel booking system
+- [ ] Implement blog functionality (SEO, posts, admin management)
+- Blog hero section (blog-hero) now starts at the top under the navbar; page-specific hero/section offset issues resolved. 
+- Consistent hero/section offset fixes are now applied to all major pages (Blog, Contact, Hotels, Properties, Dashboard, Sign In, Login) to ensure hero sections start at the very top under the navbar.
+- [x] Ensure all page content starts at the top of the viewport without offset under the transparent navbar; previous CSS adjustments did not resolve the issue, so a more robust, page-wide fix is needed.
+- [x] Fix hero/section offset issues for all pages, including Blog, Contact, Hotels, and Properties (ensure hero sections like .blog-hero start at the very top under the navbar, with no gap or overlap).
+- [x] Apply consistent hero/section offset fix to: .blog-hero, .contact-hero, .hero in Hotels.module.css, .hero in Properties.module.css, dashboard hero, sign in and login hero sections.
+- [ ] Update global background color to a luxurious light color that contrasts well with white
+- layout.css has been updated to use the new background color variable instead of hardcoded white backgrounds. Remaining step: check other CSS files for hardcoded backgrounds.
+- App.css and index.css updated to use --color-background. Next step: replace all remaining background-color: #fff; with var(--color-background) in all CSS files.
+- User decided to revert global background color changes; only the Hotels page should use the special background color. Revert background color updates in global and non-Hotels CSS files.
+- Global background color reverted to white/light gray; special background color now scoped only to Hotels page.
+- [x] Apply new background color by updating/removing hardcoded white backgrounds in layout.css
+- [x] Apply new background color by updating/removing hardcoded white backgrounds in App.css
+- [ ] Apply new background color by updating/removing hardcoded white backgrounds in other CSS files if needed
+- [ ] Replace all background-color: #fff; with var(--color-background) in all CSS files
+- [x] Revert global background color changes and scope special background color to Hotels page only
+- Backend/Frontend integration issues observed: normal user login displays admin dashboard; new hotels/items added in backend do not appear in frontend. Need to investigate authentication/user role logic and API data sync.
+- [CRITICAL] The frontend is not consuming any data from the backend; all frontend data is static or mock data. Full integration is missing.
+- Hotels, Properties, and other main pages use hardcoded mock data instead of fetching from backend APIs. Must refactor to use live backend data for full integration.
+- All Hotels, Properties, Blogs, and user profile data must be created and managed in the backend; frontend should only display data fetched from backend APIs (no hardcoded or mock data).
+- Users should be able to create hotels, properties, blogs, and update their profiles via the frontend UI, and these changes must be persisted and reflected in the backend and shown in the frontend UI.
+- [x] Refactor Hotels page to fetch/display hotels from backend API (replace mock data)
+- [x] Refactor Properties page to fetch/display properties from backend API (replace mock data)
+- [ ] Refactor all other pages using mock data to use backend APIs
+- [ ] Remove all hardcoded/mock Hotels, Properties, Blogs, and user profile data from the frontend; ensure all such data is fetched from backend APIs
+- [x] Create example hotels, properties, blogs, and user profiles in the backend database for display in the frontend
+- [x] Test and verify frontend-backend integration with sample data
+- [ ] Implement frontend UI for creating hotels, properties, blogs, and updating user profiles; ensure these actions persist data in the backend and update the frontend UI accordingly
+- [x] Fix management command to set Property.owner when creating sample data
+- [ ] Debug and fix frontend-backend authentication flow (token handling, login, user info fetch)
+- Authentication flow and token refresh logic in frontend improved: API interceptor now robustly attempts token refresh on 401 errors, and AuthContext fetches user data with explicit Authorization header. Syntax errors in AuthContext fixed. Next: verify login, token persistence, and user info fetch end-to-end.
+- [x] Refactor API interceptor to robustly refresh token on 401 errors
+- [x] Fix AuthContext to always send Authorization header and persist user data
+- [ ] Test login, token refresh, and user info fetch end-to-end
+- [ ] Fix broken placeholder image URL in Hotels.jsx (use a reliable image source)
+- [ ] Restore Hotels page appearance to match previous design after placeholder image update

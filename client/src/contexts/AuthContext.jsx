@@ -34,16 +34,7 @@ export const AuthProvider = ({ children }) => {
   // Fetch user data from API
   const fetchUser = async () => {
     try {
-      // First check if we have a token
-      const token = authUtils.getToken();
-      if (!token) {
-        throw new Error('No authentication token found');
-      }
-      
-      // Set the authorization header
-      api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      
-      // Make the API request
+      // The API interceptor will handle token management
       const response = await authAPI.getCurrentUser();
       
       if (!response || !response.data) {
@@ -89,27 +80,18 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       
-      // Call login API
+      // Make login request
       const response = await authAPI.login(credentials);
-      
-      if (!response || !response.data) {
-        throw new Error('No response from server');
-      }
-      
-      // The backend should return both access and refresh tokens
       const { access, refresh } = response.data;
       
       if (!access) {
         throw new Error('No access token received');
       }
       
-      // Store the tokens
+      // Store the tokens - the API interceptor will handle the header
       authUtils.setTokens(access, refresh);
       
-      // Set the default Authorization header for future requests
-      api.defaults.headers.common['Authorization'] = `Bearer ${access}`;
-      
-      // Fetch user data
+      // Fetch user data - this will use the token we just stored
       const userData = await fetchUser();
       
       return userData;

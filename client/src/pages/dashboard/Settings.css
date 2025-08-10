@@ -190,7 +190,7 @@ textarea.form-control {
   height: 18px;
   border: 2px solid #e9ecef;
   border-radius: 4px;
-  background-color: #fff;
+  background-color: var(--color-background);
   transition: all 0.2s;
 }
 

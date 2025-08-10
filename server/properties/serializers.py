@@ -13,9 +13,9 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = [
             'id', 'email', 'first_name', 'last_name',
-            'phone_number', 'avatar', 'role', 'date_joined'
+            'phone_number', 'user_type', 'role', 'date_joined', 'is_active'
         ]
-        read_only_fields = ['id', 'date_joined', 'email']
+        read_only_fields = ['id', 'date_joined', 'email', 'is_active']
     
     def get_role(self, obj):
         if obj.is_superuser:
@@ -24,7 +24,8 @@ class UserSerializer(serializers.ModelSerializer):
             return 'hotel_manager'
         elif hasattr(obj, 'groups') and obj.groups.filter(name='Agents').exists():
             return 'agent'
-        return 'user'
+        # Return the user_type from the model if no specific role is found
+        return obj.get_user_type_display().lower() if obj.user_type else 'user'
 
 class PropertyImageSerializer(serializers.ModelSerializer):
     image_url = serializers.SerializerMethodField()
