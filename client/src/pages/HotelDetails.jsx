@@ -4,6 +4,7 @@ import { FaStar, FaMapMarkerAlt, FaBed, FaWifi, FaSwimmingPool, FaParking, FaUte
 import { FiShare2, FiHeart } from 'react-icons/fi';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import './HotelDetail.css';
 
 // Mock data - in a real app, this would come from an API
 const hotelData = {
@@ -144,7 +145,7 @@ const HotelDetail = () => {
       if (navigator.share) {
         await navigator.share({
           title: hotelData.name,
-          text: `Check out ${hotelData.name} on Shiats3 - ${hotelData.rating}★`,
+          text: `Check out ${hotelData.name} on 2PJ Reality - ${hotelData.rating}★`,
           url: window.location.href,
         });
       } else {

@@ -1,6 +1,7 @@
 import React from 'react';
 import { FaBuilding, FaUsers, FaHandshake, FaGlobeAfrica } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
+import './About.css';
 
 const About = () => {
   return (
@@ -8,7 +9,7 @@ const About = () => {
       {/* Hero Section */}
       <section className="about-hero">
         <div className="container">
-          <h1>About Shiats3</h1>
+          <h1>About 2PJ Reality</h1>
           <p className="subtitle">Rooted in Culture. Driven by Trust.</p>
         </div>
       </section>
@@ -24,7 +25,7 @@ const About = () => {
           <div className="about-content">
             <div className="about-text">
               <p>
-                Founded in 2023, Shiats3 has quickly become a leading real estate and hospitality platform in Africa. 
+                Founded in 2023, 2PJ Reality has quickly become a leading real estate and hospitality platform in Africa. 
                 Our mission is to connect people with their dream properties while celebrating the rich cultural 
                 heritage of the African continent.
               </p>
@@ -94,7 +95,7 @@ const About = () => {
           <div className="section-header">
             <h2>Meet Our Team</h2>
             <div className="divider"></div>
-            <p className="section-description">The people behind Shiats3's success</p>
+            <p className="section-description">The people behind 2PJ Reality's success</p>
           </div>
           
           <div className="team-grid">

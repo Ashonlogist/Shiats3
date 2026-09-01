@@ -17,7 +17,7 @@
 
 .users-header h1 {
   font-size: 1.8rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0;
 }
 
@@ -41,18 +41,18 @@
 }
 
 .btn-primary {
-  background-color: #3498db;
+  background-color: #228B22;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: #228B22;
   transform: translateY(-1px);
 }
 
 .btn-export {
   background-color: #f8f9fa;
-  color: #2c3e50;
+  color: #2E2E2E;
   border: 1px solid #e9ecef;
 }
 
@@ -101,14 +101,14 @@
   color: white;
 }
 
-.stat-icon.total { background-color: #3498db; }
+.stat-icon.total { background-color: #228B22; }
 .stat-icon.active { background-color: #2ecc71; }
 .stat-icon.pending { background-color: #f39c12; }
 .stat-icon.roles { background-color: #9b59b6; }
 
 .stat-details h3 {
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0 0 5px 0;
   line-height: 1.2;
 }
@@ -157,7 +157,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #228B22;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -185,7 +185,7 @@
 
 .filter-select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #228B22;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -265,8 +265,8 @@
   border: 2px solid #fff;
 }
 
-.role-icon.admin { background-color: #e74c3c; }
-.role-icon.agent { background-color: #3498db; }
+.role-icon.admin { background-color: #5A3825; }
+.role-icon.agent { background-color: #228B22; }
 .role-icon.hotel-manager { background-color: #9b59b6; }
 .role-icon.user { background-color: #95a5a6; }
 
@@ -276,7 +276,7 @@
 
 .user-name {
   font-weight: 600;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .user-id {
@@ -294,7 +294,7 @@
   align-items: center;
   gap: 8px;
   font-size: 0.9rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 5px;
 }
 
@@ -317,12 +317,12 @@
 
 .role-admin {
   background-color: #fde8e8;
-  color: #e74c3c;
+  color: #5A3825;
 }
 
 .role-agent {
   background-color: #e8f4fd;
-  color: #3498db;
+  color: #228B22;
 }
 
 .role-hotel_manager {
@@ -366,7 +366,7 @@
 .last-login {
   white-space: nowrap;
   font-size: 0.9rem;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .last-login {
@@ -402,7 +402,7 @@
 
 .dropdown-toggle:hover {
   background-color: #f8f9fa;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .dropdown-menu {
@@ -435,7 +435,7 @@
   text-align: left;
   background: none;
   border: none;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -450,11 +450,11 @@
 
 .dropdown-item:hover {
   background-color: #f8f9fa;
-  color: #3498db;
+  color: #228B22;
 }
 
 .dropdown-item.text-danger {
-  color: #e74c3c;
+  color: #5A3825;
 }
 
 .dropdown-item.text-danger:hover {
@@ -485,7 +485,7 @@
 }
 
 .no-results h3 {
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 10px;
 }
 
@@ -512,7 +512,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 0.9rem;
   transition: all 0.2s;
 }
@@ -523,9 +523,9 @@
 }
 
 .pagination-btn.active {
-  background: #3498db;
+  background: #228B22;
   color: #fff;
-  border-color: #3498db;
+  border-color: #228B22;
 }
 
 .pagination-btn:disabled {
@@ -553,7 +553,7 @@
   height: 40px;
   border: 3px solid rgba(52, 152, 219, 0.2);
   border-radius: 50%;
-  border-top-color: #3498db;
+  border-top-color: #228B22;
   animation: spin 1s ease-in-out infinite;
   margin-bottom: 15px;
 }

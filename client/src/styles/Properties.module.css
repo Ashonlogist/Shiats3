@@ -70,7 +70,7 @@
 
 .searchInput input:focus {
   outline: none;
-  border-color: #3b82f6;
+  border-color: #5A3825;
   box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
 }
 
@@ -85,7 +85,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
-  background-color: #3b82f6;
+  background-color: #5A3825;
   color: white;
   border: none;
   border-radius: 4px;
@@ -95,7 +95,7 @@
 }
 
 .filterButton:hover {
-  background-color: #2563eb;
+  background-color: #5A3825;
 }
 
 .filterButton.active {
@@ -151,7 +151,7 @@
   appearance: none;
   width: 20px;
   height: 20px;
-  background: #3b82f6;
+  background: #5A3825;
   border-radius: 50%;
   cursor: pointer;
   transition: transform 0.1s;
@@ -190,9 +190,9 @@
 }
 
 .typeFilter.active {
-  background-color: #3b82f6;
+  background-color: #5A3825;
   color: white;
-  border-color: #3b82f6;
+  border-color: #5A3825;
 }
 
 /* Amenities Grid */
@@ -221,7 +221,7 @@
 }
 
 .amenityFilter input:checked + .amenityIcon {
-  color: #3b82f6;
+  color: #5A3825;
 }
 
 .amenityIcon {
@@ -257,7 +257,7 @@
 
 .applyButton {
   padding: 0.5rem 1.5rem;
-  background-color: #3b82f6;
+  background-color: #5A3825;
   color: white;
   border: none;
   border-radius: 4px;
@@ -267,7 +267,7 @@
 }
 
 .applyButton:hover {
-  background-color: #2563eb;
+  background-color: #5A3825;
 }
 
 /* Results Header */
@@ -501,7 +501,7 @@
 
 .viewDetails {
   padding: 0.5rem 1rem;
-  background-color: #3b82f6;
+  background-color: #5A3825;
   color: white;
   border: none;
   border-radius: 4px;
@@ -512,7 +512,7 @@
 }
 
 .viewDetails:hover {
-  background-color: #2563eb;
+  background-color: #5A3825;
   color: white;
 }
 
@@ -566,9 +566,9 @@
 }
 
 .pageButton.active {
-  background-color: #3b82f6;
+  background-color: #5A3825;
   color: white;
-  border-color: #3b82f6;
+  border-color: #5A3825;
 }
 
 .pageButton.disabled {

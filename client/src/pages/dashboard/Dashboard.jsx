@@ -219,6 +219,50 @@ const Dashboard = () => {
     }
   };
   
+  // Get page title based on current route
+  const getPageTitle = () => {
+    const path = location.pathname.replace('/dashboard', '');
+    const titles = {
+      '': 'Dashboard',
+      '/properties': 'Properties',
+      '/bookings': 'Bookings',
+      '/users': 'Users',
+      '/settings': 'Settings',
+      '/profile': 'Profile',
+      '/reports': 'Reports',
+      '/hotels': 'Hotels',
+      '/rooms': 'Rooms',
+      '/reservations': 'Reservations'
+    };
+    return titles[path] || 'Dashboard';
+  };
+
+  // Mark all notifications as read
+  const markAllAsRead = () => {
+    setNotifications(notifications.map(n => ({ ...n, read: true })));
+    setUnreadCount(0);
+  };
+
+  // Handle notification click
+  const handleNotificationClick = (activity) => {
+    if (activity.onAction) {
+      activity.onAction();
+    }
+    setNotificationsOpen(false);
+  };
+
+  // Format timestamp as relative time
+  const formatTimeAgo = (timestamp) => {
+    const seconds = Math.floor((Date.now() - new Date(timestamp).getTime()) / 1000);
+    if (seconds < 60) return 'just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} min ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    const days = Math.floor(hours / 24);
+    return `${days} day${days > 1 ? 's' : ''} ago`;
+  };
+
   // Handle logout
   const handleLogout = async () => {
     try {
@@ -595,7 +639,7 @@ const Dashboard = () => {
     // Default fallback
     return (
       <div className={styles.dashboardContent}>
-        <h2>Welcome to Shiats3 Dashboard</h2>
+        <h2>Welcome to 2PJ Reality Dashboard</h2>
         <p>Select an option from the sidebar to get started.</p>
       </div>
     );
@@ -608,7 +652,7 @@ const Dashboard = () => {
         <div className={styles.sidebarHeader}>
           <Link to="/" className={styles.logo}>
             <span className={styles.logoIcon}>🏠</span>
-            <span className={styles.logoText}>Shiats3</span>
+            <span className={styles.logoText}>2PJ Reality</span>
           </Link>
           <button 
             className={styles.closeSidebar} 
@@ -726,7 +770,7 @@ const Dashboard = () => {
                           <div className={styles.notificationContent}>
                             <p className={styles.notificationMessage}>{activity.message}</p>
                             <p className={styles.notificationTime}>
-                              {formatDistanceToNow(activity.timestamp, { addSuffix: true })}
+                              {formatTimeAgo(activity.timestamp)}
                             </p>
                             {activity.action && (
                               <button 

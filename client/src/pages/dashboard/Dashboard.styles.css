@@ -9,7 +9,7 @@
 /* Sidebar Styles */
 .sidebar {
   width: 250px;
-  background: #2c3e50;
+  background: #2E2E2E;
   color: #ecf0f1;
   position: fixed;
   height: 100%;
@@ -70,7 +70,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #3498db;
+  background-color: #228B22;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -151,7 +151,7 @@
   top: 0;
   height: 100%;
   width: 4px;
-  background-color: #3498db;
+  background-color: #228B22;
   border-radius: 0 4px 4px 0;
 }
 
@@ -181,9 +181,9 @@
   justify-content: center;
   width: 100%;
   padding: 10px;
-  background-color: rgba(231, 76, 60, 0.1);
-  color: #e74c3c;
-  border: 1px solid rgba(231, 76, 60, 0.2);
+  background-color: rgba(90, 56, 37, 0.1);
+  color: #5A3825;
+  border: 1px solid rgba(90, 56, 37, 0.2);
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s;
@@ -191,7 +191,7 @@
 }
 
 .logoutButton:hover {
-  background-color: rgba(231, 76, 60, 0.2);
+  background-color: rgba(90, 56, 37, 0.2);
 }
 
 .logoutIcon {
@@ -230,7 +230,7 @@
 .sidebarToggle {
   background: none;
   border: none;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 1.2rem;
   margin-right: 15px;
   cursor: pointer;
@@ -241,7 +241,7 @@
   margin: 0;
   font-size: 1.3rem;
   font-weight: 600;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .navRight {
@@ -269,14 +269,14 @@
 
 .notificationButton:hover {
   background-color: #f5f7fa;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .notificationBadge {
   position: absolute;
   top: 2px;
   right: 2px;
-  background-color: #e74c3c;
+  background-color: #5A3825;
   color: white;
   border-radius: 50%;
   width: 18px;
@@ -321,13 +321,13 @@
 .dropdownHeader h4 {
   margin: 0;
   font-size: 0.9rem;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .markAllRead {
   background: none;
   border: none;
-  color: #3498db;
+  color: #228B22;
   font-size: 0.8rem;
   cursor: pointer;
   padding: 2px 5px;
@@ -368,7 +368,7 @@
   transform: translateY(-50%);
   width: 6px;
   height: 6px;
-  background-color: #3498db;
+  background-color: #228B22;
   border-radius: 50%;
 }
 
@@ -380,7 +380,7 @@
 .notificationMessage {
   margin: 0 0 5px 0;
   font-size: 0.85rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   line-height: 1.4;
 }
 
@@ -403,7 +403,7 @@
 }
 
 .viewAllLink {
-  color: #3498db;
+  color: #228B22;
   text-decoration: none;
   font-size: 0.85rem;
   transition: color 0.2s;
@@ -437,7 +437,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background-color: #3498db;
+  background-color: #228B22;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -490,7 +490,7 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: #3498db;
+  background-color: #228B22;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -522,7 +522,7 @@
   display: flex;
   align-items: center;
   padding: 12px 20px;
-  color: #2c3e50;
+  color: #2E2E2E;
   text-decoration: none;
   font-size: 0.9rem;
   transition: background-color 0.2s;
@@ -540,11 +540,11 @@
 }
 
 .logoutItem {
-  color: #e74c3c;
+  color: #5A3825;
 }
 
 .logoutItem .dropdownIcon {
-  color: #e74c3c;
+  color: #5A3825;
 }
 
 /* Content Wrapper */
@@ -570,7 +570,7 @@
   font-size: 2rem;
   margin-bottom: 1rem;
   animation: spin 1s linear infinite;
-  color: #3498db;
+  color: #228B22;
 }
 
 @keyframes spin {
@@ -590,7 +590,7 @@
 }
 
 .error-container h2 {
-  color: #e74c3c;
+  color: #5A3825;
   margin-bottom: 1rem;
 }
 
@@ -601,7 +601,7 @@
 }
 
 .retry-button {
-  background: #3498db;
+  background: #228B22;
   color: #fff;
   border: none;
   padding: 0.6rem 1.5rem;
@@ -612,7 +612,7 @@
 }
 
 .retry-button:hover {
-  background: #2980b9;
+  background: #228B22;
 }
 
 /* Default Dashboard */
@@ -625,7 +625,7 @@
 }
 
 .default-dashboard h2 {
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 1rem;
 }
 

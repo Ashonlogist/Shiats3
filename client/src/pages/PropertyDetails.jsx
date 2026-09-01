@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt, FaShareAlt, FaHeart, FaChevronLeft, FaChevronRight, FaPhone, FaEnvelope, FaCalendarAlt, FaCheck } from 'react-icons/fa';
 import { FiShare2, FiHeart } from 'react-icons/fi';
+import './PropertyDetail.css';
 
 // Mock data - in a real app, this would come from an API
 const propertyData = {
@@ -29,7 +30,7 @@ const propertyData = {
     name: 'James Kariuki',
     title: 'Senior Real Estate Agent',
     phone: '+254 712 345 678',
-    email: 'james@shiats3.com',
+    email: 'james@2pjreality.com',
     image: 'https://randomuser.me/api/portraits/men/32.jpg',
     rating: 4.9,
     properties: 47,

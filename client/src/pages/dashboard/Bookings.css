@@ -17,7 +17,7 @@
 
 .bookings-header h1 {
   font-size: 1.8rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0;
 }
 
@@ -41,18 +41,18 @@
 }
 
 .btn-primary {
-  background-color: #3498db;
+  background-color: #228B22;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: #228B22;
   transform: translateY(-1px);
 }
 
 .btn-export {
   background-color: #f8f9fa;
-  color: #2c3e50;
+  color: #2E2E2E;
   border: 1px solid #e9ecef;
 }
 
@@ -101,14 +101,14 @@
   color: white;
 }
 
-.stat-icon.total { background-color: #3498db; }
+.stat-icon.total { background-color: #228B22; }
 .stat-icon.confirmed { background-color: #2ecc71; }
 .stat-icon.pending { background-color: #f39c12; }
 .stat-icon.revenue { background-color: #9b59b6; }
 
 .stat-details h3 {
   font-size: 1.5rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0 0 5px 0;
   line-height: 1.2;
 }
@@ -157,7 +157,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #228B22;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -185,7 +185,7 @@
 
 .filter-select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #228B22;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -230,14 +230,14 @@
 
 /* Table Cell Styles */
 .booking-id a {
-  color: #3498db;
+  color: #228B22;
   text-decoration: none;
   font-weight: 600;
   transition: color 0.2s;
 }
 
 .booking-id a:hover {
-  color: #2980b9;
+  color: #228B22;
   text-decoration: underline;
 }
 
@@ -247,7 +247,7 @@
 
 .guest-name {
   font-weight: 600;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 3px;
 }
 
@@ -264,7 +264,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .property-icon {
@@ -278,14 +278,14 @@
 
 .date {
   font-size: 0.95rem;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .guests {
   display: flex;
   align-items: center;
   gap: 5px;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .guest-icon {
@@ -295,7 +295,7 @@
 
 .amount {
   font-weight: 600;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 /* Status Badges */
@@ -388,7 +388,7 @@
 
 .dropdown-toggle:hover {
   background-color: #f8f9fa;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .dropdown-menu {
@@ -421,7 +421,7 @@
   text-align: left;
   background: none;
   border: none;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -434,11 +434,11 @@
 
 .dropdown-item:hover {
   background-color: #f8f9fa;
-  color: #3498db;
+  color: #228B22;
 }
 
 .dropdown-item.text-danger {
-  color: #e74c3c;
+  color: #5A3825;
 }
 
 .dropdown-item.text-danger:hover {
@@ -453,7 +453,7 @@
 }
 
 .no-results h3 {
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 10px;
 }
 
@@ -480,7 +480,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 0.9rem;
   transition: all 0.2s;
 }
@@ -491,9 +491,9 @@
 }
 
 .pagination-btn.active {
-  background: #3498db;
+  background: #228B22;
   color: #fff;
-  border-color: #3498db;
+  border-color: #228B22;
 }
 
 .pagination-btn:disabled {
@@ -521,7 +521,7 @@
   height: 40px;
   border: 3px solid rgba(52, 152, 219, 0.2);
   border-radius: 50%;
-  border-top-color: #3498db;
+  border-top-color: #228B22;
   animation: spin 1s ease-in-out infinite;
   margin-bottom: 15px;
 }

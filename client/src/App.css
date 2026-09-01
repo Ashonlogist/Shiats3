@@ -79,7 +79,7 @@ main {
   font-size: 2.5rem;
   margin-bottom: 2rem;
   text-align: center;
-  color: #2c3e50;
+  color: #2E2E2E;
   position: relative;
   padding-bottom: 1rem;
 }
@@ -92,7 +92,7 @@ main {
   transform: translateX(-50%);
   width: 80px;
   height: 4px;
-  background: #e74c3c;
+  background: #5A3825;
   border-radius: 2px;
 }
 
@@ -104,7 +104,7 @@ header {
 }
 
 h1 {
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 0.5rem;
 }
 
@@ -147,7 +147,7 @@ pre {
 }
 
 h2 {
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 1rem;
   font-size: 1.25rem;
 }

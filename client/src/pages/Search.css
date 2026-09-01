@@ -1,0 +1,362 @@
+.searchPage {
+  min-height: 70vh;
+}
+
+.searchPage .hero {
+  position: relative;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.5) 0%, rgba(0, 0, 0, 0.4) 55%, rgba(0, 0, 0, 0.2) 100%),
+              url('https://images.unsplash.com/photo-1529317079479-8c2cdcc5aa97?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80') no-repeat center center/cover;
+  color: #fff;
+  padding: 5.5rem 1.5rem;
+  text-align: center;
+  min-height: 52vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2.5rem;
+}
+
+.searchPage .heroContent {
+  max-width: 720px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.searchPage .heroContent h1 {
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.4rem;
+  margin: 0 0 0.5rem;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+}
+
+.searchPage .heroContent p {
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.05rem;
+  margin: 0;
+}
+
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.25rem 4rem;
+}
+
+.refineBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.resultsHeader h2 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.5rem;
+  color: #2E2E2E;
+  margin: 0 0 0.25rem;
+}
+
+.resultsHeader p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.refineForm {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.refineInput {
+  padding: 0.6rem 1rem;
+  font-family: 'Calibri', 'Segoe UI', sans-serif;
+  font-size: 0.95rem;
+  color: #2E2E2E;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  min-width: 220px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.refineInput:focus {
+  outline: none;
+  border-color: #5A3825;
+  box-shadow: 0 0 0 3px rgba(90, 56, 37, 0.12);
+}
+
+.refineButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.6rem 1.25rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: #5A3825;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.refineButton:hover {
+  background-color: #4a2e1e;
+  transform: translateY(-1px);
+}
+
+.tabBar {
+  display: flex;
+  gap: 0.4rem;
+  margin-bottom: 1.75rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+}
+
+.tab {
+  padding: 0.5rem 1.4rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #6b7280;
+  background: none;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+.tab:hover {
+  color: #5A3825;
+  background-color: rgba(90, 56, 37, 0.06);
+}
+
+.tab.active {
+  color: #fff;
+  background-color: #5A3825;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #eef0f2;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+.cardImage {
+  position: relative;
+  height: 190px;
+  overflow: hidden;
+}
+
+.cardImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.cardTag {
+  position: absolute;
+  top: 0.9rem;
+  left: 0;
+  background-color: #5A3825;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.8rem;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+.cardBody {
+  padding: 1.1rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.cardTitle {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2E2E2E;
+  margin: 0 0 0.35rem;
+}
+
+.cardLocation {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: #6b7280;
+  font-size: 0.88rem;
+  margin-bottom: 0.85rem;
+}
+
+.cardLocation svg {
+  color: #5A3825;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.metaItem {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.82rem;
+  color: #4b5563;
+}
+
+.metaItem svg {
+  color: #6b7280;
+}
+
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
+}
+
+.ratingStar {
+  color: #DAA520;
+}
+
+.ratingValue {
+  font-weight: 600;
+  color: #2E2E2E;
+}
+
+.ratingCount {
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.cardFooter {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.9rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.price {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  color: #5A3825;
+  font-size: 1.05rem;
+}
+
+.pricePeriod {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #6b7280;
+}
+
+.viewLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #5A3825;
+  text-decoration: none;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid #5A3825;
+  border-radius: 999px;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.viewLink:hover {
+  background-color: #5A3825;
+  color: #fff;
+}
+
+.empty {
+  text-align: center;
+  padding: 4rem 1rem;
+  color: #6b7280;
+}
+
+.emptyIcon {
+  font-size: 3rem;
+  color: #d1d5db;
+  margin-bottom: 1rem;
+}
+
+.empty h3 {
+  color: #2E2E2E;
+  font-family: 'Montserrat', sans-serif;
+  margin: 0 0 0.5rem;
+}
+
+.empty p {
+  margin: 0 0 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .searchPage .hero {
+    padding: 3rem 1rem;
+  }
+
+  .searchPage .heroContent h1 {
+    font-size: 1.8rem;
+  }
+
+  .container {
+    padding: 0 1rem 3rem;
+  }
+
+  .refineBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .refineForm {
+    width: 100%;
+  }
+
+  .refineInput {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .tabBar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tab {
+    white-space: nowrap;
+  }
+}

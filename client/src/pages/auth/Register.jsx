@@ -10,7 +10,7 @@ const Register = () => {
     lastName: '',
     email: '',
     phone: '',
-    userType: 'buyer',
+    userType: 'agent',
     password: '',
     confirmPassword: '',
     agreeTerms: false,
@@ -93,7 +93,7 @@ const Register = () => {
     
     try {
       // Call the registration API endpoint
-      const response = await fetch('http://localhost:8000/api/v1/auth/register/', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/v1/auth/users/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,8 @@ const Register = () => {
           first_name: formData.firstName,
           last_name: formData.lastName,
           phone_number: formData.phone,
-          user_type: formData.userType
+          user_type: formData.userType,
+          re_password: formData.password,
         }),
       });
 
@@ -145,7 +146,7 @@ const Register = () => {
       <div className="auth-card">
         <div className="auth-header">
           <h2>Create an Account</h2>
-          <p>Join Shiats3 to find your dream property</p>
+          <p>Join 2PJ Reality to find your dream property</p>
         </div>
         
         {errors.submit && (
@@ -251,17 +252,29 @@ const Register = () => {
                 <span className="radio-custom"></span>
                 <span className="radio-label">Real Estate Agent</span>
               </label>
-              
-              <label className={`radio-option ${formData.userType === 'owner' ? 'active' : ''}`}>
+
+              <label className={`radio-option ${formData.userType === 'seller' ? 'active' : ''}`}>
                 <input
                   type="radio"
                   name="userType"
-                  value="owner"
-                  checked={formData.userType === 'owner'}
+                  value="seller"
+                  checked={formData.userType === 'seller'}
                   onChange={handleChange}
                 />
                 <span className="radio-custom"></span>
-                <span className="radio-label">Property Owner</span>
+                <span className="radio-label">Property Owner/Seller</span>
+              </label>
+
+              <label className={`radio-option ${formData.userType === 'hotel_manager' ? 'active' : ''}`}>
+                <input
+                  type="radio"
+                  name="userType"
+                  value="hotel_manager"
+                  checked={formData.userType === 'hotel_manager'}
+                  onChange={handleChange}
+                />
+                <span className="radio-custom"></span>
+                <span className="radio-label">Hotel Manager</span>
               </label>
             </div>
           </div>
@@ -426,7 +439,7 @@ const Register = () => {
           
           <div className="testimonial">
             <div className="testimonial-content">
-              "Shiats3 helped me find my dream home in just a few weeks. The process was smooth and the support team was amazing!"
+              "2PJ Reality helped me find my dream home in just a few weeks. The process was smooth and the support team was amazing!"
             </div>
             <div className="testimonial-author">
               <div className="author-avatar">

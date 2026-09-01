@@ -1,8 +1,8 @@
 import React from 'react';
 import { FaUsers, FaBuilding, FaHotel, FaChartLine, FaDollarSign, FaCalendarAlt, FaHome } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import StatCard from '../../components/dashboard/components/StatCard';
-import ActivityFeed from '../../components/dashboard/components/ActivityFeed';
+import StatCard from '../../../components/dashboard/components/StatCard';
+import ActivityFeed from '../../../components/dashboard/components/ActivityFeed';
 import './AdminDashboard.css';
 
 const AdminDashboard = ({ user }) => {

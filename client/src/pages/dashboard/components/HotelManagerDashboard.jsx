@@ -1,8 +1,8 @@
 import React from 'react';
 import { FaHotel, FaBed, FaUsers, FaDollarSign, FaCalendarAlt, FaChartLine, FaPlus } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import StatCard from '../../components/dashboard/components/StatCard';
-import ActivityFeed from '../../components/dashboard/components/ActivityFeed';
+import StatCard from '../../../components/dashboard/components/StatCard';
+import ActivityFeed from '../../../components/dashboard/components/ActivityFeed';
 import './HotelManagerDashboard.css';
 
 const HotelManagerDashboard = ({ user }) => {
@@ -13,7 +13,7 @@ const HotelManagerDashboard = ({ user }) => {
       value: '85',
       change: 2.5,
       icon: <FaBed className="stat-icon" />,
-      color: '#3498db' // Blue
+      color: '#228B22' // Blue
     },
     {
       title: 'Occupancy Rate',
@@ -27,7 +27,7 @@ const HotelManagerDashboard = ({ user }) => {
       value: '12',
       change: -2,
       icon: <FaUsers className="stat-icon" />,
-      color: '#e74c3c' // Red
+      color: '#5A3825' // Red
     },
     {
       title: 'Daily Revenue',

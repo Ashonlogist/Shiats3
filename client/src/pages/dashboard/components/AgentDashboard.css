@@ -16,7 +16,7 @@
 .welcome-message {
   font-size: 1.8rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0 0 8px 0;
 }
 
@@ -32,7 +32,7 @@
 }
 
 .primary-button {
-  background-color: #3498db;
+  background-color: #228B22;
   color: white;
   border: none;
   padding: 10px 20px;
@@ -48,7 +48,7 @@
 }
 
 .primary-button:hover {
-  background-color: #2980b9;
+  background-color: #228B22;
 }
 
 /* Stats Grid */
@@ -89,7 +89,7 @@
 
 .section-title {
   font-size: 1.1rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0 0 15px 0;
   font-weight: 600;
 }
@@ -111,7 +111,7 @@
   justify-content: center;
   text-align: center;
   text-decoration: none;
-  color: #2c3e50;
+  color: #2E2E2E;
   transition: all 0.2s;
 }
 
@@ -124,7 +124,7 @@
 .action-icon {
   font-size: 1.5rem;
   margin-bottom: 8px;
-  color: #3498db;
+  color: #228B22;
 }
 
 /* Performance Overview */
@@ -143,7 +143,7 @@
 .metric-value {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 5px;
 }
 
@@ -158,7 +158,7 @@
 }
 
 .view-details-link {
-  color: #3498db;
+  color: #228B22;
   text-decoration: none;
   font-size: 0.9rem;
   display: inline-flex;
@@ -167,7 +167,7 @@
 }
 
 .view-details-link:hover {
-  color: #2980b9;
+  color: #228B22;
   text-decoration: underline;
 }
 

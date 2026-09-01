@@ -17,14 +17,14 @@ const NotFound = () => {
         </p>
         
         <div className="search-box">
-          <div className="search-input">
+          <div className="notfound-search-input">
             <FaSearch className="search-icon" />
             <input 
               type="text" 
               placeholder="What are you looking for?" 
               className="search-field"
             />
-            <button className="search-button">Search</button>
+            <button className="notfound-search-button">Search</button>
           </div>
         </div>
         

@@ -15,7 +15,7 @@
 
 .properties-header h1 {
   font-size: 1.8rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0;
 }
 
@@ -33,18 +33,18 @@
 }
 
 .btn-primary {
-  background-color: #3498db;
+  background-color: #228B22;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: #228B22;
   transform: translateY(-1px);
 }
 
 .btn-secondary {
   background-color: #f8f9fa;
-  color: #2c3e50;
+  color: #2E2E2E;
   border: 1px solid #e9ecef;
 }
 
@@ -92,7 +92,7 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #228B22;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -120,7 +120,7 @@
 
 .filter-select:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #228B22;
   box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
 }
 
@@ -148,7 +148,7 @@
 
 .stat-card h3 {
   font-size: 1.8rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0 0 5px 0;
 }
 
@@ -218,7 +218,7 @@
 }
 
 .badge-danger {
-  background-color: #e74c3c;
+  background-color: #5A3825;
 }
 
 .badge-secondary {
@@ -269,7 +269,7 @@
 }
 
 .view-btn {
-  background-color: #3498db;
+  background-color: #228B22;
 }
 
 .edit-btn {
@@ -277,7 +277,7 @@
 }
 
 .delete-btn {
-  background-color: #e74c3c;
+  background-color: #5A3825;
 }
 
 .action-btn:hover {
@@ -291,7 +291,7 @@
 .property-details h3 {
   margin: 0 0 10px 0;
   font-size: 1.1rem;
-  color: #2c3e50;
+  color: #2E2E2E;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -331,7 +331,7 @@
 .price {
   font-size: 1.2rem;
   font-weight: 700;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .date {
@@ -350,7 +350,7 @@
 }
 
 .no-results h3 {
-  color: #2c3e50;
+  color: #2E2E2E;
   margin-bottom: 10px;
 }
 
@@ -378,7 +378,7 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 0.9rem;
   transition: all 0.2s;
 }
@@ -389,9 +389,9 @@
 }
 
 .pagination-btn.active {
-  background: #3498db;
+  background: #228B22;
   color: #fff;
-  border-color: #3498db;
+  border-color: #228B22;
 }
 
 .pagination-btn:disabled {
@@ -419,7 +419,7 @@
   height: 40px;
   border: 3px solid rgba(52, 152, 219, 0.2);
   border-radius: 50%;
-  border-top-color: #3498db;
+  border-top-color: #228B22;
   animation: spin 1s ease-in-out infinite;
   margin-bottom: 15px;
 }

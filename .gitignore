@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Build Output
+client/dist/
+dist/
+build/
+
+# Environment files (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# Backend generated files
+server/db.sqlite3
+server/logs/
+server/media/
+__pycache__/
+*.py[cod]
+migrations_backup/
+
+# OS / editor
+.DS_Store
+*.swp
+Thumbs.db
+
+# Logs
+*.log

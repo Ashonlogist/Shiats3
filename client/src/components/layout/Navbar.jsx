@@ -15,7 +15,7 @@ import {
   FaHome,
   FaBuilding,
   FaHotel,
-  FaBlog,
+  FaBriefcase,
   FaUserCog
 } from 'react-icons/fa';
 import './Navbar.css';
@@ -33,6 +33,9 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
   const searchRef = useRef(null);
   const mobileMenuRef = useRef(null);
   const navbarRef = useRef(null);
+
+  // Pages that have a full-bleed hero image behind the navbar
+  const isHeroPage = ['/', '/properties', '/hotels', '/portfolio', '/about', '/contact'].includes(location.pathname);
 
   // Close menus when clicking outside
   useEffect(() => {
@@ -100,13 +103,13 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
     <div className="navbar-wrapper">
       <nav 
         ref={navbarRef}
-        className="navbar"
+        className={`navbar ${scrolled ? 'navbar--solid' : isHeroPage ? 'navbar--transparent' : ''}`}
       >
         <div className="navbar__container">
           {/* Logo */}
-          <Link to="/" className="logo" aria-label="Shiats3 Home">
+          <Link to="/" className="logo" aria-label="2PJ Reality Home">
             <span className="logo__icon">🏠</span>
-            <span className="logo__text">Shiats3</span>
+            <span className="logo__text">2PJ Reality</span>
           </Link>
 
           {/* Mobile Menu Button */}
@@ -170,11 +173,11 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
                 </li>
                 <li className="navbar__item">
                   <Link 
-                    to="/blog" 
-                    className={`navbar__link ${location.pathname.startsWith('/blog') ? 'active' : ''}`}
+                    to="/portfolio" 
+                    className={`navbar__link ${location.pathname.startsWith('/portfolio') ? 'active' : ''}`}
                   >
-                    <FaBlog className="navbar__icon" />
-                    <span>Blog</span>
+                    <FaBriefcase className="navbar__icon" />
+                    <span>Portfolio</span>
                   </Link>
                 </li>
               </ul>
@@ -285,7 +288,10 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
           aria-hidden={!isOpen}
         >
           <div className="mobile-menu__header">
-            <h3 className="mobile-menu__title">Menu</h3>
+            <div className="mobile-menu__brand">
+              <span className="mobile-menu__logo">🏠</span>
+              <span className="mobile-menu__brand-text">2PJ Reality</span>
+            </div>
             <button 
               className="mobile-menu__close"
               onClick={() => setIsOpen(false)}
@@ -293,6 +299,22 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
             >
               <FaTimes />
             </button>
+          </div>
+
+          <div className="mobile-menu__search">
+            <form onSubmit={handleSearch} className="search-form">
+              <input
+                type="text"
+                placeholder="Search properties, hotels..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="search-input"
+                aria-label="Search"
+              />
+              <button type="submit" className="search-button" aria-label="Search">
+                <FaSearch />
+              </button>
+            </form>
           </div>
           
           <nav className="mobile-nav">
@@ -329,12 +351,12 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
               </li>
               <li className="mobile-nav__item">
                 <Link 
-                  to="/blog" 
-                  className={`mobile-nav__link ${location.pathname.startsWith('/blog') ? 'active' : ''}`}
+                  to="/portfolio" 
+                  className={`mobile-nav__link ${location.pathname.startsWith('/portfolio') ? 'active' : ''}`}
                   onClick={() => setIsOpen(false)}
                 >
-                  <FaBlog className="mobile-nav__icon" />
-                  <span>Blog</span>
+                  <FaBriefcase className="mobile-nav__icon" />
+                  <span>Portfolio</span>
                 </Link>
               </li>
               
@@ -413,7 +435,7 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
           </nav>
           
           <div className="mobile-footer">
-            <p>&copy; {new Date().getFullYear()} Shiats3. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} 2PJ Reality. All rights reserved.</p>
           </div>
         </div>
       </nav>

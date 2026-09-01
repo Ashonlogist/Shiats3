@@ -2,48 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBed, FaBath, FaRulerCombined, FaMapMarkerAlt, FaStar, FaArrowRight } from 'react-icons/fa';
 import HomeHero from '../components/home/HomeHero';
-
-// Generate dynamic layout for featured properties
-const generateLayout = (items) => {
-  const layouts = [
-    // Layout 1: One large, two small
-    {
-      gridTemplateAreas: `'big big small1' 'big big small2'`,
-      items: [
-        { ...items[0], size: 'big' },
-        { ...items[1], size: 'small' },
-        { ...items[2], size: 'small' }
-      ]
-    },
-    // Layout 2: Two medium side by side with one below
-    {
-      gridTemplateAreas: `'medium1 medium2' 'large large'`,
-      items: [
-        { ...items[0], size: 'large' },
-        { ...items[1], size: 'medium' },
-        { ...items[2], size: 'medium' }
-      ]
-    },
-    // Layout 3: Three columns with middle one taller
-    {
-      gridTemplateAreas: `'small1 medium small2' 'tall tall tall'`,
-      items: [
-        { ...items[0], size: 'tall' },
-        { ...items[1], size: 'small' },
-        { ...items[2], size: 'medium' }
-      ]
-    }
-  ];
-
-  // Layout that shows all properties in a responsive grid
-  return {
-    gridTemplateAreas: `'big big small1' 'big big small2' 'medium1 medium2 medium3'`,
-    items: items.map((item, index) => ({
-      ...item,
-      size: index === 0 ? 'big' : (index < 3 ? 'small' : 'medium')
-    }))
-  };
-};
+import './Home.css';
 
 // Mock data - in a real app, this would come from an API
 const featuredPropertiesData = [
@@ -104,13 +63,22 @@ const featuredPropertiesData = [
     beds: 3,
     baths: 3,
     sqft: 2800,
-    image: 'https://images.unsplash.com/photo-1484154218962-a1970026899a?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+    image: 'https://images.unsplash.com/photo-1523217582562-09d0def993a6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
+    featured: true
+  },
+  {
+    id: 6,
+    title: 'Serene Townhouse in Runda',
+    location: 'Runda, Nairobi',
+    price: 55000000,
+    type: 'For Sale',
+    beds: 4,
+    baths: 3,
+    sqft: 3600,
+    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     featured: true
   }
 ];
-
-// Generate initial layout for properties
-const initialPropertiesLayout = generateLayout(featuredPropertiesData);
 
 const featuredHotels = [
   {
@@ -147,7 +115,7 @@ const featuredHotels = [
     price: 38000,
     rating: 4.9,
     reviews: 215,
-    image: 'https://images.unsplash.com/photo-1566074208879-1dff3b341da4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+    image: 'https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
   },
   {
     id: 5,
@@ -156,380 +124,134 @@ const featuredHotels = [
     price: 42000,
     rating: 4.8,
     reviews: 187,
-    image: 'https://images.unsplash.com/photo-1520256862855-39804cf61ec5?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+    image: 'https://images.unsplash.com/photo-1521783988139-89397d761dce?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
+  },
+  {
+    id: 6,
+    name: 'Diamonds Dream of Africa',
+    location: 'Diani',
+    price: 28000,
+    rating: 4.6,
+    reviews: 88,
+    image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80'
   }
 ];
 
+// Map index -> CSS grid area name for the featured properties layout
+const gridAreaOf = (index) => {
+  if (index === 0) return 'big';
+  if (index === 1) return 'small1';
+  if (index === 2) return 'small2';
+  return `medium${index - 2}`;
+};
+
+const sizeClassOf = (index) => {
+  if (index === 0) return 'featured-card--big';
+  if (index <= 2) return 'featured-card--small';
+  return 'featured-card--medium';
+};
+
+const formatPrice = (price) => {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'KES',
+    maximumFractionDigits: 0
+  }).format(price);
+};
+
 const Home = () => {
-  const [featuredProperties] = useState(initialPropertiesLayout);
-
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'KES',
-      maximumFractionDigits: 0
-    }).format(price);
-  };
-
-  const renderPropertyCard = (property, index) => {
-    const gridArea = property.size === 'big' ? 'big' : 
-                    property.size === 'large' ? 'large' : 
-                    property.size === 'tall' ? 'tall' : 
-                    property.size === 'medium' ? `medium${index + 1}` : `small${index + 1}`;
-    
-    return (
-      <div 
-        key={property.id}
-        className={`property-card property-card--${property.size}`}
-        style={{
-          gridArea,
-          height: property.size === 'tall' ? '100%' : 'auto',
-          minHeight: property.size === 'big' || property.size === 'large' ? '400px' : '200px',
-          position: 'relative',
-          overflow: 'hidden',
-          borderRadius: '8px',
-          boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
-          transition: 'all 0.3s ease',
-          cursor: 'pointer'
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.transform = 'translateY(-5px)';
-          e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.transform = 'translateY(0)';
-          e.currentTarget.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-        }}
-      >
-        <div 
-          className="property-card__image"
-          style={{
-            width: '100%',
-            height: '100%',
-            backgroundImage: `url(${property.image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            position: 'relative',
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'flex-end',
-            padding: '20px',
-            color: '#fff',
-            textShadow: '0 1px 3px rgba(0,0,0,0.5)'
-          }}
-        >
-          <span 
-            className="property-card__type"
-            style={{
-              position: 'absolute',
-              top: '15px',
-              right: '15px',
-              background: 'rgba(0,0,0,0.7)',
-              color: '#fff',
-              padding: '5px 10px',
-              borderRadius: '4px',
-              fontSize: '12px',
-              fontWeight: '600',
-              textTransform: 'uppercase',
-              letterSpacing: '1px'
-            }}
-          >
-            {property.type}
-          </span>
-          <div className="property-card__content">
-            <h3 style={{ 
-              fontSize: property.size === 'big' || property.size === 'large' ? '1.8rem' : '1.2rem',
-              marginBottom: '10px'
-            }}>
-              {property.title}
-            </h3>
-            <p style={{ 
-              display: 'flex', 
-              alignItems: 'center',
-              marginBottom: '10px',
-              fontSize: '0.9rem'
-            }}>
-              <FaMapMarkerAlt style={{ marginRight: '5px' }} />
-              {property.location}
-            </p>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between',
-              marginBottom: '15px',
-              fontSize: '0.9rem'
-            }}>
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <FaBed style={{ marginRight: '5px' }} />
-                {property.beds} Beds
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <FaBath style={{ marginRight: '5px' }} />
-                {property.baths} Baths
-              </span>
-              <span style={{ display: 'flex', alignItems: 'center' }}>
-                <FaRulerCombined style={{ marginRight: '5px' }} />
-                {property.sqft} sqft
-              </span>
-            </div>
-            <div style={{ 
-              display: 'flex', 
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              fontSize: '1.1rem',
-              fontWeight: '600'
-            }}>
-              <span>{formatPrice(property.price)}</span>
-              <Link 
-                to={`/properties/${property.id}`}
-                style={{
-                  color: '#fff',
-                  textDecoration: 'none',
-                  padding: '5px 15px',
-                  background: 'rgba(0,0,0,0.7)',
-                  borderRadius: '4px',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseOver={(e) => (e.currentTarget.style.background = 'rgba(0,0,0,0.9)')}
-                onMouseOut={(e) => (e.currentTarget.style.background = 'rgba(0,0,0,0.7)')}
-              >
-                View Details
-              </Link>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="home">
       <HomeHero />
 
       {/* Featured Properties Section */}
-      <section className="section" style={{ 
-        padding: '80px 0',
-        backgroundImage: 'linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url(https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed',
-        color: 'white',
-        position: 'relative'
-      }}>
-        <div className="container" style={{ position: 'relative', zIndex: 1 }}>
-          <div className="section__header" style={{ 
-            marginBottom: '50px', 
-            textAlign: 'center',
-            maxWidth: '800px',
-            marginLeft: 'auto',
-            marginRight: 'auto'
-          }}>
-            <h2 className="section__title" style={{ 
-              fontSize: '2.8rem', 
-              marginBottom: '15px', 
-              color: '#fff',
-              fontWeight: '700',
-              textShadow: '0 2px 4px rgba(0,0,0,0.3)'
-            }}>
-              Featured Properties
-            </h2>
-            <p style={{ 
-              fontSize: '1.1rem', 
-              color: 'rgba(255,255,255,0.9)',
-              marginBottom: '20px',
-              lineHeight: '1.6'
-            }}>
-              Discover our handpicked selection of premium properties
+      <section className="home-section home-section--dark">
+        <div className="home-container">
+          <div className="section-header">
+            <span className="section-kicker">Featured Properties</span>
+            <h2 className="section-title section-title--light">Handpicked Homes, Uncompromising Quality</h2>
+            <p className="section-subtitle section-subtitle--light">
+              Discover our handpicked selection of premium properties across East Africa's finest locations.
             </p>
-            <Link 
-              to="/properties" 
-              className="section__link" 
-              style={{ 
-                display: 'inline-flex', 
-                alignItems: 'center',
-                color: '#fff',
-                textDecoration: 'none',
-                fontWeight: '500',
-                padding: '10px 25px',
-                backgroundColor: 'rgba(52, 152, 219, 0.9)',
-                borderRadius: '4px',
-                transition: 'all 0.3s ease',
-                border: '2px solid rgba(255,255,255,0.2)'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(41, 128, 185, 0.9)';
-                e.currentTarget.style.transform = 'translateY(-2px)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = 'rgba(52, 152, 219, 0.9)';
-                e.currentTarget.style.transform = 'translateY(0)';
-              }}
-            >
-              View All Properties <FaArrowRight style={{ marginLeft: '8px' }} />
+            <Link to="/properties" className="section-cta">
+              View All Properties <FaArrowRight />
             </Link>
           </div>
-          
-          <div 
-            className="properties-grid" 
-            style={{
-              display: 'grid',
-              gridTemplateAreas: `'big big small1' 'big big small2' 'medium1 medium2 medium3'`,
-              gap: '25px',
-              gridTemplateColumns: 'repeat(3, 1fr)',
-              gridAutoRows: 'minmax(300px, auto)',
-              marginBottom: '40px',
-              maxWidth: '1400px',
-              margin: '0 auto'
-            }}
-          >
-            {featuredProperties.items.map((property, index) => (
-              renderPropertyCard({ ...property, index })
+
+          <div className="featured-grid">
+            {featuredPropertiesData.map((property, index) => (
+              <div
+                key={property.id}
+                className={`featured-card ${sizeClassOf(index)}`}
+                style={{ gridArea: gridAreaOf(index) }}
+              >
+                <div
+                  className="featured-card__media"
+                  style={{ backgroundImage: `url(${property.image})` }}
+                />
+                <div className="featured-card__overlay" />
+                <span className="featured-card__tag">{property.type}</span>
+
+                <div className="featured-card__content">
+                  <h3 className="featured-card__title">{property.title}</h3>
+                  <p className="featured-card__location">
+                    <FaMapMarkerAlt /> {property.location}
+                  </p>
+                  <div className="featured-card__meta">
+                    <span><FaBed /> {property.beds} Beds</span>
+                    <span><FaBath /> {property.baths} Baths</span>
+                    <span><FaRulerCombined /> {property.sqft} sqft</span>
+                  </div>
+                  <div className="featured-card__footer">
+                    <span className="featured-card__price">{formatPrice(property.price)}</span>
+                    <Link to={`/properties/${property.id}`} className="featured-card__link">
+                      View Details <FaArrowRight />
+                    </Link>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
       {/* Featured Hotels Section */}
-      <section className="section" style={{ padding: '60px 0', backgroundColor: '#f9f9f9' }}>
-        <div className="container">
-          <div className="section__header" style={{ marginBottom: '40px', textAlign: 'center' }}>
-            <h2 className="section__title" style={{ fontSize: '2.5rem', marginBottom: '15px', color: '#2c3e50' }}>Featured Hotels</h2>
-            <Link to="/hotels" className="section__link" style={{ 
-              display: 'inline-flex', 
-              alignItems: 'center',
-              color: '#3498db',
-              textDecoration: 'none',
-              fontWeight: '500',
-              transition: 'all 0.3s ease'
-            }}>
-              View All Hotels <FaArrowRight style={{ marginLeft: '8px' }} />
+      <section className="home-section home-section--light">
+        <div className="home-container">
+          <div className="section-header">
+            <span className="section-kicker">Hotels & Resorts</span>
+            <h2 className="section-title">Stay in Style</h2>
+            <p className="section-subtitle">
+              Premium hospitality experiences from beachfront resorts to safari lodges.
+            </p>
+            <Link to="/hotels" className="section-cta section-cta--ghost">
+              View All Hotels <FaArrowRight />
             </Link>
           </div>
-          
-          <div 
-            className="hotels-grid" 
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: '30px',
-              marginBottom: '40px'
-            }}
-          >
+
+          <div className="hotels-grid">
             {featuredHotels.map(hotel => (
-              <div 
-                key={hotel.id}
-                className="hotel-card"
-                style={{
-                  backgroundColor: '#fff',
-                  borderRadius: '8px',
-                  overflow: 'hidden',
-                  boxShadow: '0 5px 15px rgba(0,0,0,0.1)',
-                  transition: 'all 0.3s ease',
-                  cursor: 'pointer'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 5px 15px rgba(0,0,0,0.1)';
-                }}
-              >
-                <div 
-                  className="hotel-card__image"
-                  style={{
-                    height: '200px',
-                    backgroundImage: `url(${hotel.image})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    position: 'relative'
-                  }}
-                >
-                  <div 
-                    className="hotel-card__rating"
-                    style={{
-                      position: 'absolute',
-                      top: '15px',
-                      right: '15px',
-                      backgroundColor: 'rgba(0,0,0,0.7)',
-                      color: '#fff',
-                      padding: '5px 10px',
-                      borderRadius: '20px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      fontSize: '14px',
-                      fontWeight: '600'
-                    }}
-                  >
-                    <FaStar style={{ color: '#ffc107', marginRight: '5px' }} />
-                    {hotel.rating}
-                  </div>
+              <div key={hotel.id} className="hotel-card">
+                <div className="hotel-card__media" style={{ backgroundImage: `url(${hotel.image})` }}>
+                  <span className="hotel-card__rating">
+                    <FaStar /> {hotel.rating}
+                  </span>
                 </div>
-                <div className="hotel-card__content" style={{ padding: '20px' }}>
-                  <h3 style={{ 
-                    fontSize: '1.3rem',
-                    marginBottom: '10px',
-                    color: '#2c3e50'
-                  }}>
-                    {hotel.name}
-                  </h3>
-                  <p style={{ 
-                    display: 'flex', 
-                    alignItems: 'center',
-                    color: '#7f8c8d',
-                    marginBottom: '15px',
-                    fontSize: '0.9rem'
-                  }}>
-                    <FaMapMarkerAlt style={{ marginRight: '5px' }} />
-                    {hotel.location}
+                <div className="hotel-card__body">
+                  <h3 className="hotel-card__name">{hotel.name}</h3>
+                  <p className="hotel-card__location">
+                    <FaMapMarkerAlt /> {hotel.location}
                   </p>
-                  <div style={{ 
-                    display: 'flex', 
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    paddingTop: '15px',
-                    borderTop: '1px solid #eee'
-                  }}>
+                  <div className="hotel-card__footer">
                     <div>
-                      <span style={{ 
-                        display: 'block',
-                        fontSize: '1.1rem',
-                        fontWeight: '600',
-                        color: '#2c3e50',
-                        marginBottom: '5px'
-                      }}>
+                      <span className="hotel-card__price">
                         {formatPrice(hotel.price)}
-                        <span style={{ 
-                          fontSize: '0.9rem',
-                          fontWeight: '400',
-                          color: '#7f8c8d',
-                          marginLeft: '5px'
-                        }}>
-                          /night
-                        </span>
+                        <span className="hotel-card__price-period"> /night</span>
                       </span>
-                      <span style={{ 
-                        fontSize: '0.9rem',
-                        color: '#7f8c8d'
-                      }}>
-                        {hotel.reviews} reviews
-                      </span>
+                      <span className="hotel-card__reviews">{hotel.reviews} reviews</span>
                     </div>
-                    <Link 
-                      to={`/hotels/${hotel.id}`}
-                      style={{
-                        color: '#3498db',
-                        textDecoration: 'none',
-                        fontWeight: '500',
-                        display: 'flex',
-                        alignItems: 'center',
-                        transition: 'all 0.3s ease'
-                      }}
-                      onMouseOver={(e) => (e.currentTarget.style.color = '#2980b9')}
-                      onMouseOut={(e) => (e.currentTarget.style.color = '#3498db')}
-                    >
-                      View Details
-                      <FaArrowRight style={{ marginLeft: '5px' }} />
+                    <Link to={`/hotels/${hotel.id}`} className="hotel-card__link">
+                      View Details <FaArrowRight />
                     </Link>
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-// Shiats3 Theme Configuration
+// 2PJ Reality Theme Configuration
 export const theme = {
   colors: {
     primary: '#5A3825',    // Earth Brown

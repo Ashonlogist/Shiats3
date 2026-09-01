@@ -73,9 +73,9 @@ const PageHero = ({
 
   const primaryButtonStyle = {
     ...buttonStyle,
-    backgroundColor: '#e74c3c',
+    backgroundColor: '#5A3825',
     color: '#fff',
-    border: '2px solid #e74c3c',
+    border: '2px solid #5A3825',
   };
 
   const secondaryButtonStyle = {

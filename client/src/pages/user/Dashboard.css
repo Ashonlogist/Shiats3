@@ -9,7 +9,7 @@
 /* Sidebar Styles */
 .sidebar {
   width: 250px;
-  background: #2c3e50;
+  background: #2E2E2E;
   color: #fff;
   position: fixed;
   height: 100%;
@@ -191,7 +191,7 @@
 
 .search-bar input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: #228B22;
   box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
 }
 
@@ -228,7 +228,7 @@
   position: absolute;
   top: -5px;
   right: -5px;
-  background: #e74c3c;
+  background: #5A3825;
   color: white;
   border-radius: 50%;
   width: 18px;
@@ -274,7 +274,7 @@
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .profile-role {
@@ -320,7 +320,7 @@
   display: flex;
   align-items: center;
   padding: 10px 15px;
-  color: #2c3e50;
+  color: #2E2E2E;
   text-decoration: none;
   font-size: 13px;
   transition: all 0.2s ease;
@@ -336,11 +336,11 @@
 
 .dropdown-item:hover {
   background: #f8f9fa;
-  color: #e74c3c;
+  color: #5A3825;
 }
 
 .dropdown-item:hover svg {
-  color: #e74c3c;
+  color: #5A3825;
 }
 
 .dropdown-divider {
@@ -360,7 +360,7 @@
 .page-title {
   font-size: 24px;
   font-weight: 700;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0 0 25px 0;
   padding-bottom: 15px;
   border-bottom: 1px solid #eee;
@@ -408,7 +408,7 @@
 .stat-info p {
   font-size: 22px;
   font-weight: 700;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0;
 }
 
@@ -431,12 +431,12 @@
 .section-header h3 {
   font-size: 18px;
   font-weight: 600;
-  color: #2c3e50;
+  color: #2E2E2E;
   margin: 0;
 }
 
 .view-all {
-  color: #3498db;
+  color: #228B22;
   font-size: 13px;
   font-weight: 500;
   text-decoration: none;
@@ -444,7 +444,7 @@
 }
 
 .view-all:hover {
-  color: #2980b9;
+  color: #228B22;
   text-decoration: underline;
 }
 
@@ -468,12 +468,12 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: #f0f7ff;
+  background: #FBF3DE;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-right: 15px;
-  color: #3498db;
+  color: #228B22;
   flex-shrink: 0;
 }
 
@@ -485,7 +485,7 @@
   margin: 0 0 5px 0;
   font-size: 14px;
   line-height: 1.5;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .activity-time {
@@ -514,7 +514,7 @@
   background: #f8f9fa;
   border: 1px solid #e0e0e0;
   border-radius: 6px;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
@@ -610,7 +610,7 @@
     background: none;
     border: none;
     font-size: 20px;
-    color: #2c3e50;
+    color: #2E2E2E;
     cursor: pointer;
     padding: 5px;
   }

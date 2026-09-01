@@ -1,0 +1,199 @@
+/* =============================================
+   2PJ Reality — Design System Tokens
+   Single source of truth for the full site redesign.
+   Loaded in main.jsx after index.css so these win.
+   ============================================= */
+
+:root {
+  /* ---------- Earth palette ---------- */
+  --c-brown: #5A3825;
+  --c-brown-dark: #4a2e1e;
+  --c-brown-tint: rgba(90, 56, 37, 0.08);
+
+  --c-gold: #DAA520;
+  --c-gold-dark: #C9A227;
+  --c-gold-tint: rgba(218, 165, 32, 0.12);
+
+  --c-green: #228B22;
+  --c-green-dark: #1b6e1b;
+
+  --c-charcoal: #2E2E2E;
+  --c-muted: #6b7280;
+  --c-border: #e5e7eb;
+
+  --c-cream: #FBF3DE;
+  --c-cream-2: #FAF8F4;
+  --c-forest: #1f2a22;
+  --c-white: #ffffff;
+
+  /* ---------- Typography ---------- */
+  --fs-display: clamp(2.5rem, 2.4vw + 1.6rem, 3.6rem);
+  --fs-title: clamp(1.75rem, 1.6vw + 1.1rem, 2.5rem);
+  --fs-section: clamp(1.5rem, 1.2vw + 0.9rem, 2rem);
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+  --fs-kicker: 0.78rem;
+
+  --lh-tight: 1.15;
+  --lh-body: 1.65;
+
+  /* ---------- Spacing ---------- */
+  --s-1: 0.25rem;
+  --s-2: 0.5rem;
+  --s-3: 0.75rem;
+  --s-4: 1rem;
+  --s-5: 1.5rem;
+  --s-6: 2rem;
+  --s-7: 3rem;
+  --s-8: 4.5rem;
+
+  /* ---------- Shape / elevation ---------- */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  --sh-card: 0 4px 18px rgba(0, 0, 0, 0.07);
+  --sh-card-hover: 0 16px 36px rgba(0, 0, 0, 0.14);
+  --sh-cta: 0 8px 20px rgba(90, 56, 37, 0.28);
+}
+
+/* ---------- Typography base ---------- */
+body {
+  color: var(--c-charcoal);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Container ---------- */
+.container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* ---------- Section header pattern ----------
+   Use: <div class="section-head"><span class="kicker">…</span>
+             <h2 class="section-title">…</h2><p class="section-sub">…</p></div> */
+.section-head {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto var(--s-7);
+}
+
+.section-head--left {
+  text-align: left;
+  margin-left: 0;
+}
+
+.kicker {
+  display: inline-block;
+  font-family: var(--font-heading);
+  font-size: var(--fs-kicker);
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--c-gold);
+  margin-bottom: var(--s-3);
+}
+
+.section-title {
+  font-size: var(--fs-title);
+  color: var(--c-charcoal);
+}
+
+.section-sub {
+  font-size: 1.05rem;
+  line-height: var(--lh-body);
+  color: var(--c-muted);
+}
+
+/* Light-on-dark variants */
+.section-head--dark .kicker { color: var(--c-gold); }
+.section-head--dark .section-title { color: var(--c-white); }
+.section-head--dark .section-sub { color: rgba(255, 255, 255, 0.82); }
+
+/* ---------- Buttons ---------- */
+.button {
+  border-radius: var(--r-pill);
+  font-size: 0.95rem;
+  padding: 0.7rem 1.5rem;
+}
+
+.button--primary {
+  background-color: var(--c-brown);
+  color: var(--c-white);
+}
+
+.button--primary:hover {
+  background-color: var(--c-brown-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--sh-cta);
+}
+
+.button--secondary {
+  background-color: var(--c-gold);
+  color: var(--c-charcoal);
+}
+
+.button--secondary:hover {
+  background-color: var(--c-gold-dark);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(218, 165, 32, 0.28);
+}
+
+.button--ghost {
+  background-color: transparent;
+  color: var(--c-brown);
+  border: 1px solid var(--c-brown);
+}
+
+.button--ghost:hover {
+  background-color: var(--c-brown-tint);
+  transform: translateY(-2px);
+  box-shadow: none;
+}
+
+.button--ghost-light {
+  background-color: transparent;
+  color: var(--c-white);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.button--ghost-light:hover {
+  background-color: rgba(255, 255, 255, 0.14);
+  transform: translateY(-2px);
+}
+
+.button--sm { font-size: 0.85rem; padding: 0.5rem 1.1rem; }
+.button--lg { font-size: 1.05rem; padding: 0.9rem 2rem; }
+
+/* ---------- Badges / tags ---------- */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-heading);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--c-charcoal);
+  background-color: var(--c-gold);
+  padding: 0.35rem 0.8rem;
+  border-radius: var(--r-pill);
+}
+
+.badge-pill--dark {
+  color: var(--c-white);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 768px) {
+  .section-head { margin-bottom: var(--s-6); }
+  .button { padding: 0.65rem 1.3rem; }
+}

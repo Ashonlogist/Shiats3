@@ -1,8 +1,8 @@
 import React from 'react';
 import { FaHome, FaDollarSign, FaEnvelope, FaCalendarAlt, FaChartLine } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
-import StatCard from '../../components/dashboard/components/StatCard';
-import ActivityFeed from '../../components/dashboard/components/ActivityFeed';
+import StatCard from '../../../components/dashboard/components/StatCard';
+import ActivityFeed from '../../../components/dashboard/components/ActivityFeed';
 import './AgentDashboard.css';
 
 const AgentDashboard = ({ user }) => {
@@ -13,7 +13,7 @@ const AgentDashboard = ({ user }) => {
       value: '24',
       change: 3.2,
       icon: <FaHome className="stat-icon" />,
-      color: '#2c3e50' // Dark Blue
+      color: '#2E2E2E' // Dark Blue
     },
     {
       title: 'Active Listings',

@@ -24,7 +24,7 @@
 
 .lock-icon {
   font-size: 64px;
-  color: #e74c3c;
+  color: #5A3825;
   background: #fde8e8;
   width: 120px;
   height: 120px;
@@ -37,7 +37,7 @@
 }
 
 h1 {
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 2.2rem;
   margin-bottom: 10px;
 }
@@ -71,7 +71,7 @@ h1 {
   display: inline-flex;
   align-items: center;
   padding: 12px 24px;
-  border-radius: 6px;
+  border-radius: 999px;
   font-weight: 600;
   text-decoration: none;
   transition: all 0.2s;
@@ -81,19 +81,19 @@ h1 {
 }
 
 .btn-primary {
-  background-color: #3498db;
+  background-color: #5A3825;
   color: white;
 }
 
 .btn-primary:hover {
-  background-color: #2980b9;
+  background-color: #4a2e1e;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(41, 128, 185, 0.2);
+  box-shadow: 0 4px 12px rgba(90, 56, 37, 0.2);
 }
 
 .btn-secondary {
   background-color: #f8f9fa;
-  color: #2c3e50;
+  color: #2E2E2E;
   border: 1px solid #e9ecef;
 }
 

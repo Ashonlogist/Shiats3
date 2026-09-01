@@ -83,14 +83,14 @@ const Hero = ({ pageType = 'home' }) => {
           secondaryCta: 'Visit Our Office',
           secondaryCtaLink: '/locations'
         };
-      case 'blog':
+      case 'portfolio':
         return {
-          title: 'Latest News & Insights',
-          subtitle: 'Stay updated with the latest trends and tips',
-          cta: 'Read Our Blog',
-          ctaLink: '/blog',
-          secondaryCta: 'Subscribe',
-          secondaryCtaLink: '/subscribe'
+          title: 'Our Development Portfolio',
+          subtitle: 'A showcase of our residential, commercial and hospitality projects',
+          cta: 'View Portfolio',
+          ctaLink: '/portfolio',
+          secondaryCta: 'Partner With Us',
+          secondaryCtaLink: '/contact'
         };
       default: // home
         return {

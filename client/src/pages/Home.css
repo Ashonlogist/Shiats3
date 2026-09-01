@@ -1,0 +1,424 @@
+/* =============================================
+   Home page - 2PJ Reality
+   Cohesive earth-tone design matching the imagery.
+   ============================================= */
+
+.home {
+  width: 100%;
+}
+
+/* ---------- Section shells ---------- */
+.home-section {
+  padding: 5.5rem 0;
+}
+
+.home-section--dark {
+  background-color: #1f2a22;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.65), rgba(0, 0, 0, 0.75)),
+    url(https://images.unsplash.com/photo-1564013799919-ab600027ffc6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.home-section--light {
+  background-color: #faf8f4;
+}
+
+.home-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* Section header */
+.section-header {
+  text-align: center;
+  max-width: 720px;
+  margin: 0 auto 3.25rem;
+}
+
+.section-kicker {
+  display: inline-block;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #DAA520;
+  margin-bottom: 0.75rem;
+}
+
+.section-title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 2.35rem;
+  font-weight: 700;
+  line-height: 1.15;
+  color: #2E2E2E;
+  margin: 0 0 0.85rem;
+}
+
+.section-title--light {
+  color: #ffffff;
+}
+
+.section-subtitle {
+  font-size: 1.05rem;
+  line-height: 1.65;
+  color: #6b7280;
+  margin: 0 0 1.5rem;
+}
+
+.section-subtitle--light {
+  color: rgba(255, 255, 255, 0.82);
+}
+
+.section-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: #5A3825;
+  padding: 0.8rem 1.7rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.section-cta:hover {
+  background-color: #4a2e1e;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(90, 56, 37, 0.28);
+}
+
+.section-cta--ghost {
+  color: #2E2E2E;
+  background-color: transparent;
+  border: 1px solid #5A3825;
+}
+
+.section-cta--ghost:hover {
+  background-color: rgba(90, 56, 37, 0.08);
+  box-shadow: none;
+}
+
+/* ---------- Featured Properties grid ---------- */
+.featured-grid {
+  display: grid;
+  grid-template-areas:
+    'big big small1'
+    'big big small2'
+    'medium1 medium2 medium3';
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: minmax(300px, auto);
+  gap: 1.5rem;
+}
+
+.featured-card {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  min-height: 260px;
+}
+
+.featured-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.28);
+}
+
+.featured-card--big {
+  grid-area: big;
+  min-height: 560px;
+}
+
+.featured-card--small {
+  min-height: 268px;
+}
+
+.featured-card--medium {
+  min-height: 280px;
+}
+
+.featured-card__media {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  transition: transform 0.5s ease;
+}
+
+.featured-card:hover .featured-card__media {
+  transform: scale(1.05);
+}
+
+.featured-card__overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.82) 0%,
+    rgba(0, 0, 0, 0.35) 45%,
+    rgba(0, 0, 0, 0.05) 100%
+  );
+}
+
+.featured-card__tag {
+  position: absolute;
+  top: 1.1rem;
+  left: 1.1rem;
+  background-color: #DAA520;
+  color: #2E2E2E;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  z-index: 2;
+}
+
+.featured-card__content {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  padding: 1.5rem;
+  color: #ffffff;
+}
+
+.featured-card__title {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin: 0 0 0.4rem;
+  line-height: 1.2;
+}
+
+.featured-card__location {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 1rem;
+}
+
+.featured-card__meta {
+  display: flex;
+  gap: 1.1rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 1.1rem;
+}
+
+.featured-card__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.featured-card__meta svg {
+  color: #DAA520;
+}
+
+.featured-card__footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  padding-top: 1rem;
+}
+
+.featured-card__price {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.featured-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.16);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.featured-card__link:hover {
+  background-color: #DAA520;
+  border-color: #DAA520;
+  color: #2E2E2E;
+}
+
+/* ---------- Featured Hotels grid ---------- */
+.hotels-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.75rem;
+}
+
+.hotel-card {
+  background-color: #ffffff;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.07);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.hotel-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.14);
+}
+
+.hotel-card__media {
+  position: relative;
+  height: 210px;
+  background-size: cover;
+  background-position: center;
+}
+
+.hotel-card__rating {
+  position: absolute;
+  top: 0.9rem;
+  right: 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  backdrop-filter: blur(4px);
+}
+
+.hotel-card__rating svg {
+  color: #ffc107;
+}
+
+.hotel-card__body {
+  padding: 1.35rem 1.4rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.hotel-card__name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #2E2E2E;
+  margin: 0 0 0.4rem;
+}
+
+.hotel-card__location {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.88rem;
+  color: #6b7280;
+  margin-bottom: 1.1rem;
+}
+
+.hotel-card__location svg {
+  color: #5A3825;
+}
+
+.hotel-card__footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.hotel-card__price {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #2E2E2E;
+}
+
+.hotel-card__price-period {
+  font-weight: 500;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.hotel-card__reviews {
+  display: block;
+  font-size: 0.82rem;
+  color: #6b7280;
+}
+
+.hotel-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: #5A3825;
+  text-decoration: none;
+  transition: color 0.2s ease, gap 0.2s ease;
+}
+
+.hotel-card__link:hover {
+  color: #4a2e1e;
+  gap: 0.65rem;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .featured-card--big {
+    min-height: 460px;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-section {
+    padding: 3.5rem 0;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .featured-grid {
+    grid-template-areas:
+      'big'
+      'small1'
+      'small2'
+      'medium1'
+      'medium2'
+      'medium3';
+    grid-template-columns: 1fr;
+    grid-auto-rows: auto;
+  }
+
+  .featured-card,
+  .featured-card--big,
+  .featured-card--small,
+  .featured-card--medium {
+    min-height: 320px;
+  }
+}

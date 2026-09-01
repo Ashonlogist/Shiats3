@@ -70,7 +70,7 @@ const Dashboard = () => {
           {showMobileMenu ? <FaTimes /> : <FaBars />}
         </button>
         <Link to="/" className="logo">
-          <span>Shiats3</span>
+          <span>2PJ Reality</span>
         </Link>
         <div className="mobile-actions">
           <button className="notification-btn">
@@ -84,7 +84,7 @@ const Dashboard = () => {
       <aside className={`sidebar ${showMobileMenu ? 'mobile-visible' : ''}`}>
         <div className="sidebar-header">
           <Link to="/dashboard" className="logo">
-            <span>Shiats3</span>
+            <span>2PJ Reality</span>
           </Link>
           <button className="sidebar-toggle" onClick={toggleSidebar}>
             <FaTimes />

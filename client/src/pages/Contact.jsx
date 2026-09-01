@@ -60,8 +60,8 @@ const Contact = () => {
     {
       icon: <FaEnvelope />,
       title: 'Email Address',
-      description: 'info@shiats3.com',
-      link: 'mailto:info@shiats3.com',
+      description: 'info@2pjreality.com',
+      link: 'mailto:info@2pjreality.com',
       linkText: 'Send Email'
     },
     {
@@ -91,7 +91,7 @@ const Contact = () => {
       answer: 'Yes, we provide comprehensive property management services for both residential and commercial properties, including tenant screening, rent collection, and maintenance coordination.'
     },
     {
-      question: 'How can I list my property with Shiats3?',
+      question: 'How can I list my property with 2PJ Reality?',
       answer: 'To list your property, you can call our office, visit us in person, or use the "List Your Property" form on our website. One of our agents will guide you through the process.'
     }
   ];

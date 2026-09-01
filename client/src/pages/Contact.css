@@ -1,6 +1,6 @@
 /* Contact Page Styles */
 .contact-page {
-  color: #333;
+  color: #2E2E2E;
   line-height: 1.6;
 }
 
@@ -17,8 +17,6 @@
   flex-direction: column;
   justify-content: center;
   position: relative;
-  top: -70px;
-  margin-bottom: -70px;
   width: 100%;
   max-width: 100%;
 }
@@ -47,22 +45,23 @@
 
 /* Contact Information */
 .contact-info {
-  background: #f8f9fa;
+  background: #FAF8F4;
+  border: 1px solid #eef0f2;
   padding: 40px 30px;
-  border-radius: 8px;
+  border-radius: 18px;
   height: fit-content;
 }
 
 .contact-info h2 {
   font-size: 1.8rem;
   margin-bottom: 20px;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-family: 'Montserrat', sans-serif;
 }
 
 .contact-intro {
   margin-bottom: 30px;
-  color: #555;
+  color: #4b5563;
   line-height: 1.7;
 }
 
@@ -77,7 +76,7 @@
 }
 
 .contact-icon {
-  background: #e74c3c;
+  background: #5A3825;
   color: white;
   width: 50px;
   height: 50px;
@@ -93,18 +92,18 @@
 .contact-details h3 {
   font-size: 1.1rem;
   margin-bottom: 5px;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .contact-details p {
-  color: #7f8c8d;
+  color: #6b7280;
   margin: 3px 0;
   font-size: 0.95rem;
 }
 
 .contact-link {
   display: inline-block;
-  color: #e74c3c;
+  color: #5A3825;
   text-decoration: none;
   font-weight: 500;
   margin-top: 5px;
@@ -112,7 +111,7 @@
 }
 
 .contact-link:hover {
-  color: #c0392b;
+  color: #4a2e1e;
   text-decoration: underline;
 }
 
@@ -120,7 +119,7 @@
 .social-links h3 {
   font-size: 1.2rem;
   margin-bottom: 15px;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .social-icons {
@@ -134,15 +133,15 @@
   justify-content: center;
   width: 40px;
   height: 40px;
-  background: #e9ecef;
-  color: #2c3e50;
+  background: #e5e7eb;
+  color: #2E2E2E;
   border-radius: 50%;
   font-size: 1.1rem;
   transition: all 0.3s ease;
 }
 
 .social-icons a:hover {
-  background: #e74c3c;
+  background: #5A3825;
   color: white;
   transform: translateY(-3px);
 }
@@ -150,14 +149,15 @@
 /* Form Styles */
 .contact-form-container {
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef0f2;
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
 }
 
 .form-tabs {
   display: flex;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .tab {
@@ -167,7 +167,7 @@
   border: none;
   border-bottom: 3px solid transparent;
   font-weight: 600;
-  color: #7f8c8d;
+  color: #6b7280;
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: center;
@@ -175,9 +175,9 @@
 }
 
 .tab.active {
-  color: #e74c3c;
-  border-bottom-color: #e74c3c;
-  background-color: #fff9f9;
+  color: #5A3825;
+  border-bottom-color: #5A3825;
+  background-color: #FAF8F4;
 }
 
 .contact-form {
@@ -192,7 +192,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .form-group input,
@@ -201,7 +201,7 @@
   width: 100%;
   padding: 12px 15px;
   border: 1px solid #ddd;
-  border-radius: 4px;
+  border-radius: 12px;
   font-size: 1rem;
   transition: border-color 0.3s ease;
 }
@@ -209,9 +209,9 @@
 .form-group input:focus,
 .form-group textarea:focus,
 .form-group select:focus {
-  border-color: #e74c3c;
+  border-color: #5A3825;
   outline: none;
-  box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+  box-shadow: 0 0 0 2px rgba(90, 56, 37, 0.2);
 }
 
 .form-group textarea {
@@ -226,11 +226,11 @@
 }
 
 .submit-button {
-  background: #e74c3c;
+  background: #5A3825;
   color: white;
   border: none;
   padding: 14px 25px;
-  border-radius: 4px;
+  border-radius: 999px;
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -246,9 +246,9 @@
 }
 
 .submit-button:hover {
-  background: #c0392b;
+  background: #4a2e1e;
   transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+  box-shadow: 0 5px 15px rgba(90, 56, 37, 0.3);
 }
 
 /* Success Message */
@@ -273,18 +273,20 @@
 .form-success h3 {
   font-size: 1.5rem;
   margin-bottom: 10px;
-  color: #2c3e50;
+  color: #2E2E2E;
 }
 
 .form-success p {
-  color: #7f8c8d;
+  color: #6b7280;
   max-width: 400px;
   margin: 0 auto;
 }
 
 /* FAQ Section */
 .faq-section {
-  background: #f8f9fa;
+  background: #FAF8F4;
+  border-top: 1px solid #f0eee9;
+  border-bottom: 1px solid #f0eee9;
   padding: 80px 0;
   margin: 80px 0;
 }
@@ -297,12 +299,12 @@
 .section-header h2 {
   font-size: 2.2rem;
   margin-bottom: 10px;
-  color: #2c3e50;
+  color: #2E2E2E;
   font-family: 'Montserrat', sans-serif;
 }
 
 .section-header p {
-  color: #7f8c8d;
+  color: #6b7280;
   font-size: 1.1rem;
   max-width: 700px;
   margin: 0 auto;
@@ -315,7 +317,7 @@
 
 .faq-item {
   background: white;
-  border-radius: 8px;
+  border-radius: 18px;
   padding: 25px 30px;
   margin-bottom: 20px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
@@ -328,7 +330,7 @@
 }
 
 .faq-item h3 {
-  color: #2c3e50;
+  color: #2E2E2E;
   font-size: 1.2rem;
   margin-bottom: 10px;
   display: flex;
@@ -337,13 +339,13 @@
 
 .faq-item h3:before {
   content: 'Q.';
-  color: #e74c3c;
+  color: #5A3825;
   font-weight: bold;
   margin-right: 10px;
 }
 
 .faq-item p {
-  color: #555;
+  color: #4b5563;
   line-height: 1.7;
   margin-left: 25px;
 }

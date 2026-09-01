@@ -108,7 +108,7 @@ const DashboardLayout = () => {
         </button>
         <Link to="/" className={styles.mobileLogo}>
           <FaBuilding className={styles.logoIcon} />
-          <span>Shiats3</span>
+          <span>2PJ Reality</span>
         </Link>
         <div className={styles.mobileHeaderRight}>
           <UserProfile />
@@ -120,7 +120,7 @@ const DashboardLayout = () => {
         <div className={styles.logoContainer}>
           <Link to="/" className={styles.logo}>
             <FaBuilding className={styles.logoIcon} />
-            <span>Shiats3</span>
+            <span>2PJ Reality</span>
           </Link>
         </div>
         

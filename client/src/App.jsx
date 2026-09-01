@@ -19,8 +19,9 @@ import Hotels from './pages/Hotels';
 import HotelDetails from './pages/HotelDetails';
 import About from './pages/About';
 import Contact from './pages/Contact';
-import Blog from './pages/Blog';
-import BlogPost from './pages/BlogPost';
+import Portfolio from './pages/Portfolio';
+import PortfolioDetail from './pages/PortfolioDetail';
+import Search from './pages/Search';
 
 // Auth Pages
 import Login from './pages/auth/Login';
@@ -32,9 +33,15 @@ import AdminDashboard from './pages/dashboard/AdminDashboard';
 import AgentDashboard from './pages/dashboard/AgentDashboard';
 import HotelManagerDashboard from './pages/dashboard/HotelManagerDashboard';
 import DashboardProperties from './pages/dashboard/Properties';
+import DashboardHotels from './pages/dashboard/Hotels';
 import DashboardBookings from './pages/dashboard/Bookings';
 import DashboardUsers from './pages/dashboard/Users';
 import DashboardSettings from './pages/dashboard/Settings';
+import PropertyForm from './pages/dashboard/PropertyForm';
+import HotelForm from './pages/dashboard/HotelForm';
+import UserForm from './pages/dashboard/UserForm';
+import Reports from './pages/dashboard/Reports';
+import UserProfile from './components/dashboard/UserProfile';
 
 // Error Pages
 import NotFound from './pages/NotFound';
@@ -55,7 +62,9 @@ function App() {
 function AppContent() {
   const { user, loading } = useAuth();
   const location = useLocation();
-  const isHomePage = location.pathname === '/';
+
+  // Pages that render a full-bleed hero image - hero runs under the transparent navbar
+  const hasHero = ['/', '/properties', '/hotels', '/portfolio', '/about', '/contact', '/search'].includes(location.pathname);
 
   if (loading) {
     return (
@@ -74,7 +83,7 @@ function AppContent() {
         user={user}
         onLogout={logout}
       />
-      <main className={isHomePage ? 'main--with-hero' : 'main-content'}>
+      <main className={hasHero ? 'main--with-hero' : 'main-content'}>
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
@@ -84,8 +93,9 @@ function AppContent() {
           <Route path="/hotels/:id" element={<HotelDetails />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/portfolio" element={<Portfolio />} />
+          <Route path="/portfolio/:id" element={<PortfolioDetail />} />
+          <Route path="/search" element={<Search />} />
           
           {/* Auth Routes */}
           <Route 
@@ -160,6 +170,54 @@ function AppContent() {
               element={
                 <ProtectedRoute roles={['agent', 'admin']}>
                   <DashboardProperties />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="properties/new" 
+              element={
+                <ProtectedRoute roles={['agent', 'admin']}>
+                  <PropertyForm />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="hotels" 
+              element={
+                <ProtectedRoute roles={['hotel_manager', 'admin']}>
+                  <DashboardHotels />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="hotels/new" 
+              element={
+                <ProtectedRoute roles={['hotel_manager', 'admin']}>
+                  <HotelForm />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="users/new" 
+              element={
+                <ProtectedRoute roles={['admin']}>
+                  <UserForm />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="profile" 
+              element={
+                <ProtectedRoute>
+                  <UserProfile />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="reports" 
+              element={
+                <ProtectedRoute roles={['admin']}>
+                  <Reports />
                 </ProtectedRoute>
               } 
             />

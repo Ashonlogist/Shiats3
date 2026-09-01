@@ -21,15 +21,15 @@ const Footer = () => {
         <div className="footer__content">
           {/* About Section */}
           <div className="footer__section">
-            <h3 className="footer__title">About Shiats3</h3>
+            <h3 className="footer__title">About 2PJ Reality</h3>
             <div className="footer__logo">
               <span className="logo">
                 <span className="logo__icon">🏠</span>
-                <span>Shiats3</span>
+                <span>2PJ Reality</span>
               </span>
             </div>
             <p className="footer__about">
-              Rooted in Culture. Driven by Trust. Shiats3 is your premier destination for real estate and hospitality in Africa, 
+              Rooted in Culture. Driven by Trust. 2PJ Reality is your premier destination for real estate and hospitality in Africa, 
               connecting buyers, renters, and travelers with exceptional properties and accommodations.
             </p>
             <div className="footer__social">
@@ -55,7 +55,7 @@ const Footer = () => {
               <li><Link to="/properties"><FaChevronRight className="link-icon" /> Properties</Link></li>
               <li><Link to="/hotels"><FaChevronRight className="link-icon" /> Hotels</Link></li>
               <li><Link to="/about"><FaChevronRight className="link-icon" /> About Us</Link></li>
-              <li><Link to="/blog"><FaChevronRight className="link-icon" /> Blog</Link></li>
+              <li><Link to="/portfolio"><FaChevronRight className="link-icon" /> Portfolio</Link></li>
               <li><Link to="/contact"><FaChevronRight className="link-icon" /> Contact</Link></li>
             </ul>
           </div>
@@ -74,7 +74,7 @@ const Footer = () => {
               </li>
               <li>
                 <FaEnvelope />
-                <a href="mailto:info@shiats3.com">info@shiats3.com</a>
+                <a href="mailto:info@2pjreality.com">info@2pjreality.com</a>
               </li>
               <li>
                 <FaClock />
@@ -108,7 +108,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="footer__bottom">
         <div className="container">
-          <p>&copy; {currentYear} Shiats3. All rights reserved.</p>
+          <p>&copy; {currentYear} 2PJ Reality. All rights reserved.</p>
           <div className="footer__legal">
             <Link to="/privacy">Privacy Policy</Link>
             <span> | </span>

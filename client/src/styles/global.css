@@ -22,14 +22,7 @@ html, body, #root, .app {
   box-sizing: border-box;
 }
 
-/* Make sure the navbar is flush with the top */
-.navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-}
+/* Navbar styling is handled in components/layout/Navbar.css */
 
 /* Add padding to the top of the main content to account for fixed navbar */
 main {

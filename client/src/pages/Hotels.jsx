@@ -19,6 +19,7 @@ import {
   FaSpinner
 } from 'react-icons/fa';
 import { propertiesAPI } from '../services/api';
+import { sampleHotels } from '../data/sampleData';
 import styles from './Hotels.module.css';
 
 // Available filters
@@ -122,15 +123,10 @@ const Hotels = () => {
           setIsInitialLoad(false);
         }
       } catch (error) {
-        console.error('Error fetching hotels:', error);
-        const errorMsg = error.response?.data?.message || error.message || 'Failed to load hotels. Please try again later.';
-        console.error('Error details:', {
-          status: error.response?.status,
-          statusText: error.response?.statusText,
-          data: error.response?.data,
-          config: error.config
-        });
-        setError(`Error: ${errorMsg}`);
+        console.warn('Error fetching hotels, using sample data:', error.message);
+        setAllHotels(sampleHotels);
+        setFilteredHotels(sampleHotels);
+        setError(null);
         setIsInitialLoad(false);
       } finally {
         setLoading(false);
