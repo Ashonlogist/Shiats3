@@ -199,6 +199,14 @@ export const propertiesAPI = {
   getPropertyStats: () => api.get('/dashboard/property-stats/'),
 };
 
+export const dashboardAPI = {
+  // Server-authoritative dashboard access: each route validates the caller's role via JWT.
+  getAdmin: () => api.get('/dashboard/admin/'),
+  getAgent: () => api.get('/dashboard/agent/'),
+  getHotelManager: () => api.get('/dashboard/hotel-manager/'),
+  getDashboard: () => api.get('/dashboard/'),
+};
+
 export const bookingsAPI = {
   getBookings: (params = {}) => api.get('/bookings/', { params }),
   getBooking: (id) => api.get(`/bookings/${id}/`),

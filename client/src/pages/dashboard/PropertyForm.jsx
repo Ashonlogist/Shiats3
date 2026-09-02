@@ -86,7 +86,7 @@ const PropertyForm = () => {
         <div className="form-grid">
           {field('title', 'Property Title', 'text', true)}
           {field('location', 'Location')}
-          {field('price', 'Price (KES)')}
+          {field('price', 'Price (GH₵)')}
           <div className="form-field">
             <label htmlFor="type">Type</label>
             <select id="type" name="type" value={form.type} onChange={handleChange}>

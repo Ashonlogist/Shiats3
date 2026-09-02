@@ -5,7 +5,7 @@ import { sampleProperties } from '../data/sampleData';
 import { sampleHotels } from '../data/sampleData';
 import './Search.css';
 
-const fmtPrice = (n) => 'Ksh ' + n.toLocaleString('en-KE');
+const fmtPrice = (n) => 'GH₵ ' + n.toLocaleString('en-GH');
 
 function Search() {
   const [searchParams] = useSearchParams();
@@ -37,7 +37,7 @@ function Search() {
       <div className="hero">
         <div className="heroContent">
           <h1>Search 2PJ Reality</h1>
-          <p>Find your next home or stay — browse properties and hotels across Kenya.</p>
+          <p>Find your next home or stay — browse properties and hotels across Ghana.</p>
         </div>
       </div>
 

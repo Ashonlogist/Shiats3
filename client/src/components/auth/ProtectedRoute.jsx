@@ -2,7 +2,7 @@ import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 
 const ProtectedRoute = ({ children, roles = [] }) => {
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -19,8 +19,16 @@ const ProtectedRoute = ({ children, roles = [] }) => {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // If user doesn't have required role, redirect to unauthorized or home
-  if (roles.length > 0 && !roles.includes(user.user_type)) {
+  // Admin access is endpoint-verified (isAdmin from the real /dashboard/admin/ call).
+  // If any role gate requires admin, the server-confirmed isAdmin must be true.
+  const requiresAdmin = roles.includes('admin');
+  if (requiresAdmin && !isAdmin) {
+    return <Navigate to="/unauthorized" state={{ from: location }} replace />;
+  }
+
+  // For non-admin role gates, fall back to the server-returned user_type.
+  const allowedRoles = roles.filter(r => r !== 'admin');
+  if (allowedRoles.length > 0 && !allowedRoles.includes(user.user_type) && !isAdmin) {
     return <Navigate to="/unauthorized" state={{ from: location }} replace />;
   }
 

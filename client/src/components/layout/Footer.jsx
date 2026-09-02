@@ -10,10 +10,14 @@ import {
   FaClock,
   FaChevronRight
 } from 'react-icons/fa';
+import { useContent } from '../../contexts/ContentContext';
 import './Footer.css';
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
+  const { content } = useContent();
+  const brand = content.brand;
+  const footer = content.footer;
 
   return (
     <footer className="footer">
@@ -21,16 +25,19 @@ const Footer = () => {
         <div className="footer__content">
           {/* About Section */}
           <div className="footer__section">
-            <h3 className="footer__title">About 2PJ Reality</h3>
+            <h3 className="footer__title">About {brand.name}</h3>
             <div className="footer__logo">
               <span className="logo">
-                <span className="logo__icon">🏠</span>
-                <span>2PJ Reality</span>
+                {brand.logoImage ? (
+                  <img src={brand.logoImage} alt={brand.name} className="logo__image" />
+                ) : (
+                  <span className="logo__icon">{brand.logoIcon}</span>
+                )}
+                <span>{brand.logoText}</span>
               </span>
             </div>
             <p className="footer__about">
-              Rooted in Culture. Driven by Trust. 2PJ Reality is your premier destination for real estate and hospitality in Africa, 
-              connecting buyers, renters, and travelers with exceptional properties and accommodations.
+              {footer.about}
             </p>
             <div className="footer__social">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="social-link">
@@ -66,15 +73,15 @@ const Footer = () => {
             <ul className="footer__contact-info">
               <li>
                 <FaMapMarkerAlt />
-                <span>123 African Street, City, Country</span>
+                <span>{footer.location}</span>
               </li>
               <li>
                 <FaPhone />
-                <a href="tel:+12345678900">+1 234 567 8900</a>
+                <a href={`tel:${footer.phone.replace(/[^+\d]/g, '')}`}>{footer.phone}</a>
               </li>
               <li>
                 <FaEnvelope />
-                <a href="mailto:info@2pjreality.com">info@2pjreality.com</a>
+                <a href={`mailto:${footer.email}`}>{footer.email}</a>
               </li>
               <li>
                 <FaClock />
@@ -108,7 +115,7 @@ const Footer = () => {
       {/* Copyright */}
       <div className="footer__bottom">
         <div className="container">
-          <p>&copy; {currentYear} 2PJ Reality. All rights reserved.</p>
+          <p>&copy; {currentYear} {brand.name}. All rights reserved.</p>
           <div className="footer__legal">
             <Link to="/privacy">Privacy Policy</Link>
             <span> | </span>

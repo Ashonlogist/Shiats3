@@ -177,7 +177,7 @@ const Properties = () => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'KES',
+      currency: 'GHS',
       maximumFractionDigits: 0
     }).format(price);
   };
@@ -244,8 +244,8 @@ const Properties = () => {
                   }}
                 />
                 <div className={styles.priceRange}>
-                  <span>Ksh 0</span>
-                  <span>Ksh {priceRange[1].toLocaleString()}</span>
+                  <span>GH₵ 0</span>
+                  <span>GH₵ {priceRange[1].toLocaleString()}</span>
                 </div>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import { authAPI } from '../services/api';
+import { authAPI, dashboardAPI } from '../services/api';
 import api from '../services/api';
 import * as authUtils from '../utils/auth';
 
@@ -8,6 +8,7 @@ const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -51,6 +52,15 @@ export const AuthProvider = ({ children }) => {
       setUser(userData);
       authUtils.setUserData(userData);
       setError(null);
+
+      // Verify admin status against the real backend admin endpoint so access is
+      // endpoint-driven, not trusted from a client-supplied user instance.
+      try {
+        await dashboardAPI.getAdmin();
+        setIsAdmin(true);
+      } catch (adminErr) {
+        setIsAdmin(false);
+      }
       
       return userData;
     } catch (err) {
@@ -131,6 +141,7 @@ export const AuthProvider = ({ children }) => {
       
       // Reset user state
       setUser(null);
+      setIsAdmin(false);
       setError(null);
       
       // Optional: Call backend logout endpoint if available
@@ -271,6 +282,7 @@ export const AuthProvider = ({ children }) => {
     loading,
     error,
     isAuthenticated: !!user,
+    isAdmin,
     login,
     logout,
     register,

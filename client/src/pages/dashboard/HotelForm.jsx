@@ -73,7 +73,7 @@ const HotelForm = () => {
         <div className="form-grid">
           {field('name', 'Hotel Name', 'text', true)}
           {field('location', 'Location')}
-          {field('price', 'Price per night (KES)')}
+          {field('price', 'Price per night (GH₵)')}
           <div className="form-field">
             <label htmlFor="stars">Star Rating</label>
             <select id="stars" name="stars" value={form.stars} onChange={handleChange}>

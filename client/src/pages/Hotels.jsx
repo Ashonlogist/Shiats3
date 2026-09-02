@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { 
-  FaSearch, 
   FaStar, 
   FaMapMarkerAlt, 
   FaFilter, 
@@ -16,63 +15,37 @@ import {
   FaCoffee,
   FaArrowLeft,
   FaArrowRight,
-  FaSpinner
+  FaSpinner,
+  FaSearch,
+  FaPlus,
+  FaUsers,
+  FaUmbrellaBeach
 } from 'react-icons/fa';
 import { propertiesAPI } from '../services/api';
 import { sampleHotels } from '../data/sampleData';
-import styles from './Hotels.module.css';
+import PageHero from '../components/ui/PageHero';
+import './Hotels.css';
 
-// Available filters
-const starOptions = [5, 4, 3, 2, 1];
 const amenityOptions = [
   { id: 'wifi', label: 'Free WiFi', icon: <FaWifi /> },
-  { id: 'pool', label: 'Swimming Pool', icon: <FaSwimmingPool /> },
-  { id: 'parking', label: 'Free Parking', icon: <FaParking /> },
+  { id: 'pool', label: 'Pool', icon: <FaSwimmingPool /> },
+  { id: 'parking', label: 'Parking', icon: <FaParking /> },
   { id: 'restaurant', label: 'Restaurant', icon: <FaUtensils /> },
   { id: 'ac', label: 'Air Conditioning', icon: <FaSnowflake /> },
   { id: 'gym', label: 'Gym', icon: <FaDumbbell /> },
   { id: 'bar', label: 'Bar', icon: <FaCocktail /> },
   { id: 'spa', label: 'Spa', icon: <FaConciergeBell /> },
   { id: 'breakfast', label: 'Breakfast', icon: <FaCoffee /> },
-  { id: 'beach', label: 'Beach Access', icon: <FaSwimmingPool /> },
+  { id: 'beach', label: 'Beach Access', icon: <FaUmbrellaBeach /> },
 ];
 
-const locations = [
-  { id: 'all', name: 'All Locations' },
-  { id: 'nairobi', name: 'Nairobi' },
-  { id: 'mombasa', name: 'Mombasa' },
-  { id: 'diani', name: 'Diani' },
-  { id: 'masai-mara', name: 'Maasai Mara' },
-  { id: 'nakuru', name: 'Nakuru' },
-  { id: 'nanyuki', name: 'Nanyuki' },
-  { id: 'kisumu', name: 'Kisumu' }
-];
-
-const starRatings = [
-  { id: 'all', name: 'All Ratings', value: 0 },
-  { id: '5', name: '5 Stars', value: 5 },
-  { id: '4', name: '4 Stars & Up', value: 4 },
-  { id: '3', name: '3 Stars & Up', value: 3 },
-  { id: '2', name: '2 Stars & Up', value: 2 },
-  { id: '1', name: '1 Star & Up', value: 1 }
-];
-
-const amenitiesList = [
-  { id: 'wifi', name: 'Free WiFi', icon: <FaWifi /> },
-  { id: 'pool', name: 'Swimming Pool', icon: <FaSwimmingPool /> },
-  { id: 'restaurant', name: 'Restaurant', icon: <FaUtensils /> },
-  { id: 'parking', name: 'Free Parking', icon: <FaParking /> },
-  { id: 'ac', name: 'Air Conditioning', icon: <FaSnowflake /> },
-  { id: 'gym', name: 'Fitness Center', icon: <FaDumbbell /> }
-];
+const heroImage = 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80';
 
 const Hotels = () => {
-  // State management
   const [allHotels, setAllHotels] = useState([]);
   const [filteredHotels, setFilteredHotels] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [searchParams] = useSearchParams();
   const [searchTerm, setSearchTerm] = useState('');
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedStars, setSelectedStars] = useState([]);
@@ -82,23 +55,13 @@ const Hotels = () => {
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const hotelsPerPage = 6;
 
-  // Fetch hotels from API
   useEffect(() => {
     const fetchHotels = async () => {
-      console.log('Fetching hotels from API...');
       try {
         setLoading(true);
         setError(null);
-        
-        // Log the API call details
-        const apiUrl = `${import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1'}/properties/`;
-        console.log('API URL:', apiUrl);
-        
         const response = await propertiesAPI.getProperties();
-        console.log('API Response:', response);
-        
         if (response && response.data && Array.isArray(response.data)) {
-          // Transform API data to match our frontend format
           const transformedHotels = response.data.map(hotel => ({
             id: hotel.id,
             name: hotel.name || 'Unnamed Hotel',
@@ -108,110 +71,71 @@ const Hotels = () => {
             reviews: hotel.review_count || 0,
             stars: hotel.star_rating || 0,
             amenities: hotel.amenities?.map(a => a.toLowerCase()) || [],
-            image: hotel.images?.[0]?.image || 'https://placehold.co/800x500/EEEEEE/999999?text=No+Image+Available',
+            image: hotel.images?.[0]?.image || 'https://placehold.co/800x500/EEEEEE/999999?text=No+Image',
             featured: hotel.is_featured || false
           }));
-          
-          console.log('Transformed hotels data:', transformedHotels);
           setAllHotels(transformedHotels);
           setFilteredHotels(transformedHotels);
-          setIsInitialLoad(false);
         } else {
-          const errorMsg = response?.data?.message || 'No data received from server';
-          console.error('Unexpected API response format:', response);
-          setError(`Failed to load hotels: ${errorMsg}`);
-          setIsInitialLoad(false);
+          setError('Failed to load hotels');
         }
-      } catch (error) {
-        console.warn('Error fetching hotels, using sample data:', error.message);
+      } catch (err) {
         setAllHotels(sampleHotels);
         setFilteredHotels(sampleHotels);
         setError(null);
-        setIsInitialLoad(false);
       } finally {
         setLoading(false);
+        setIsInitialLoad(false);
       }
     };
-
     fetchHotels();
   }, []);
 
-  // Filter hotels based on search and filters
   useEffect(() => {
     if (!Array.isArray(allHotels) || allHotels.length === 0) {
       setFilteredHotels([]);
       return;
     }
-    
-    try {
-      const filtered = allHotels.filter(hotel => {
-        if (!hotel || typeof hotel !== 'object') return false;
-        
-        // Ensure name and location are strings before calling toLowerCase
-        const safeToLower = (str) => (str || '').toString().toLowerCase();
-        const searchTermLower = safeToLower(searchTerm);
-        
-        // Search term filter with null checks
-        const matchesSearch = searchTerm === '' || 
-          (hotel.name && safeToLower(hotel.name).includes(searchTermLower)) ||
-          (hotel.location && safeToLower(hotel.location).includes(searchTermLower));
-        
-        // Price range filter with null check
-        const price = parseFloat(hotel.price) || 0;
-        const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
-        
-        // Star rating filter with null check
-        const stars = parseInt(hotel.stars) || 0;
-        const matchesStars = selectedStars.length === 0 || selectedStars.includes(stars);
-        
-        // Amenities filter with null check
-        const amenities = Array.isArray(hotel.amenities) ? hotel.amenities : [];
-        const matchesAmenities = selectedAmenities.length === 0 || 
-          selectedAmenities.every(amenity => amenities.includes(amenity));
-        
-        return matchesSearch && matchesPrice && matchesStars && matchesAmenities;
-      });
-      
-      setFilteredHotels(filtered);
-    } catch (err) {
-      console.error('Error filtering hotels:', err);
-      setFilteredHotels([]);
-    }
-    
-    setCurrentPage(1); // Reset to first page when filters change
+    const safeToLower = (str) => (str || '').toString().toLowerCase();
+    const filtered = allHotels.filter(hotel => {
+      const matchesSearch = searchTerm === '' ||
+        safeToLower(hotel.name).includes(safeToLower(searchTerm)) ||
+        safeToLower(hotel.location).includes(safeToLower(searchTerm));
+      const price = parseFloat(hotel.price) || 0;
+      const matchesPrice = price >= priceRange[0] && price <= priceRange[1];
+      const stars = parseInt(hotel.stars) || 0;
+      const matchesStars = selectedStars.length === 0 || selectedStars.includes(stars);
+      const amenities = Array.isArray(hotel.amenities) ? hotel.amenities : [];
+      const matchesAmenities = selectedAmenities.length === 0 ||
+        selectedAmenities.every(a => amenities.includes(a));
+      return matchesSearch && matchesPrice && matchesStars && matchesAmenities;
+    });
+    setFilteredHotels(filtered);
+    setCurrentPage(1);
   }, [allHotels, searchTerm, priceRange, selectedStars, selectedAmenities]);
-  
-  // Get current hotels for pagination
+
   const indexOfLastHotel = currentPage * hotelsPerPage;
   const indexOfFirstHotel = indexOfLastHotel - hotelsPerPage;
   const currentHotels = filteredHotels.slice(indexOfFirstHotel, indexOfLastHotel);
   const totalPages = Math.ceil(filteredHotels.length / hotelsPerPage);
-  
-  // Handle page change
+
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  // Toggle star filter
   const toggleStarFilter = (star) => {
-    setSelectedStars(prev => 
-      prev.includes(star) 
-        ? prev.filter(s => s !== star)
-        : [...prev, star]
+    setSelectedStars(prev =>
+      prev.includes(star) ? prev.filter(s => s !== star) : [...prev, star]
     );
   };
 
-  // Toggle amenity filter
   const toggleAmenityFilter = (amenity) => {
-    setSelectedAmenities(prev => 
-      prev.includes(amenity)
-        ? prev.filter(a => a !== amenity)
-        : [...prev, amenity]
+    setSelectedAmenities(prev =>
+      prev.includes(amenity) ? prev.filter(a => a !== amenity) : [...prev, amenity]
     );
   };
 
-  // Clear all filters
   const clearFilters = () => {
     setSearchTerm('');
     setPriceRange([0, 100000]);
@@ -219,245 +143,208 @@ const Hotels = () => {
     setSelectedAmenities([]);
   };
 
-  // Render loading state
   if (loading && isInitialLoad) {
     return (
-      <div className={styles.loadingContainer}>
-        <div className={styles.loadingSpinner}></div>
-        <p>Loading hotels...</p>
-      </div>
-    );
-  }
-
-  // Render error state
-  if (error) {
-    return (
-      <div className={styles.errorContainer}>
-        <div className={styles.errorIcon}>⚠️</div>
-        <h3>Unable to load hotels</h3>
-        <p>{error}</p>
-        <button 
-          className={styles.retryButton}
-          onClick={() => window.location.reload()}
-        >
-          Try Again
-        </button>
-      </div>
-    );
-  }
-
-  // No results state
-  if (!loading && filteredHotels.length === 0) {
-    return (
-      <div className={styles.noResults}>
-        <h3>No hotels found</h3>
-        <p>Try adjusting your search or filters</p>
-        <button 
-          className={styles.clearFiltersButton}
-          onClick={() => {
-            setSearchTerm('');
-            setSelectedStars([]);
-            setSelectedAmenities([]);
-            setPriceRange([0, 100000]);
-          }}
-        >
-          Clear all filters
-        </button>
+      <div className="hotels-page">
+        <PageHero
+          title="Luxury Stays"
+          subtitle="Discover the finest accommodations in Ghana"
+          backgroundImage={heroImage}
+          height="46vh"
+          minHeight="380px"
+          overlayOpacity={0.5}
+        />
+        <div className="hotels-loading">
+          <FaSpinner className="spin" />
+          <p>Finding the best places to stay...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={styles.hotelsPage}>
-      <div className={styles.header}>
-        <h1>Hotels</h1>
-        <button 
-          className={`${styles.filterButton} ${showFilters ? styles.active : ''}`}
-          onClick={() => setShowFilters(!showFilters)}
-          type="button"
-        >
-          <FaFilter /> {showFilters ? 'Hide Filters' : 'Show Filters'}
-        </button>
-      </div>
+    <div className="hotels-page">
+      <PageHero
+        title="Luxury Stays"
+        subtitle="Curated hotels, resorts and lodges for an unforgettable stay"
+        backgroundImage={heroImage}
+        height="46vh"
+        minHeight="380px"
+        overlayOpacity={0.5}
+      />
 
-      {/* Mobile Filters Toggle */}
-      <div className={styles.mobileFilterToggle}>
-        <button 
-          className={`${styles.filterButton} ${showFilters ? styles.active : ''}`}
-          onClick={() => setShowFilters(!showFilters)}
-          type="button"
-        >
-          <FaFilter /> {showFilters ? 'Hide Filters' : 'Filters'}
-        </button>
-      </div>
+      <div className="hotels-container">
+        {/* Toolbar */}
+        <div className="hotels-toolbar">
+          <div className="hotels-toolbar__search">
+            <FaSearch className="hotels-toolbar__search-icon" />
+            <input
+              type="text"
+              placeholder="Search by name or location..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Search hotels"
+            />
+          </div>
+          <button
+            className={`filter-btn ${showFilters ? 'active' : ''}`}
+            onClick={() => setShowFilters(!showFilters)}
+            type="button"
+          >
+            <FaFilter /> {showFilters ? 'Hide Filters' : 'Filters'}
+          </button>
+        </div>
 
-      {showFilters && (
-        <div className={styles.filters}>
-          <div className={styles.filterSection}>
-            <h3>Price Range</h3>
-            <div className={styles.rangeSlider}>
-              <input
-                type="range"
-                min="0"
-                max="100000"
-                step="1000"
-                value={priceRange[1]}
-                onChange={(e) => {
-                  setPriceRange([priceRange[0], parseInt(e.target.value)]);
-                  setCurrentPage(1);
-                }}
-              />
-              <div className={styles.priceRange}>
-                <span>Ksh 0</span>
-                <span>Ksh {priceRange[1].toLocaleString()}</span>
+        {/* Filters */}
+        {showFilters && (
+          <div className="hotels-filters">
+            <div className="hotels-filters__grid">
+              <div className="filter-group">
+                <h4>Price / night</h4>
+                <div className="range-labels">
+                  <span>GH₵ 0</span>
+                  <span>GH₵ {priceRange[1].toLocaleString()}</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100000"
+                  step="1000"
+                  value={priceRange[1]}
+                  onChange={(e) => setPriceRange([priceRange[0], parseInt(e.target.value)])}
+                />
+              </div>
+
+              <div className="filter-group">
+                <h4>Star Rating</h4>
+                <div className="star-filters">
+                  {[5, 4, 3, 2, 1].map(star => (
+                    <button
+                      key={star}
+                      type="button"
+                      className={`star-filter ${selectedStars.includes(star) ? 'active' : ''}`}
+                      onClick={() => toggleStarFilter(star)}
+                    >
+                      <span className="stars">{'★'.repeat(star)}</span>
+                      <span className="plus">{star}+</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="filter-group filter-group--amenities">
+                <h4>Amenities</h4>
+                <div className="amenity-grid">
+                  {amenityOptions.map(({ id, label, icon }) => (
+                    <label key={id} className={`amenity-chip ${selectedAmenities.includes(id) ? 'active' : ''}`}>
+                      <input
+                        type="checkbox"
+                        checked={selectedAmenities.includes(id)}
+                        onChange={() => toggleAmenityFilter(id)}
+                        style={{ display: 'none' }}
+                      />
+                      <span className="amenity-chip__icon">{icon}</span>
+                      {label}
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className={styles.filterSection}>
-            <h3>Star Rating</h3>
-            <div className={styles.starFilters}>
-              {starOptions.map(star => (
-                <button
-                  key={star}
-                  type="button"
-                  className={`${styles.starFilter} ${selectedStars.includes(star) ? styles.active : ''}`}
-                  onClick={() => toggleStarFilter(star)}
-                >
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar 
-                      key={i} 
-                      className={`${styles.starIcon} ${i < star ? styles.filled : ''}`} 
-                    />
-                  ))}
-                  {star === 5 ? ' 5 Stars' : `${star}+`}
-                </button>
-              ))}
+            <div className="filter-actions">
+              <button className="filter-reset" onClick={clearFilters} type="button">Reset All</button>
+              <button className="filter-apply" onClick={() => setShowFilters(false)} type="button">Show Results</button>
             </div>
           </div>
+        )}
 
-          <div className={styles.filterSection}>
-            <h3>Amenities</h3>
-            <div className={styles.amenityGrid}>
-              {amenityOptions.map(({ id, label, icon }) => (
-                <label key={id} className={styles.amenityFilter}>
-                  <input
-                    type="checkbox"
-                    checked={selectedAmenities.includes(id)}
-                    onChange={() => toggleAmenityFilter(id)}
-                    style={{ display: 'none' }}
-                  />
-                  <span className={styles.amenityIcon}>{icon}</span>
-                  {label}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className={styles.filterActions}>
-            <button 
-              type="button"
-              className={styles.resetButton}
-              onClick={clearFilters}
-            >
-              Reset All Filters
-            </button>
-            <button 
-              type="button"
-              className={styles.applyButton}
-              onClick={() => setShowFilters(false)}
-            >
-              Apply Filters
-            </button>
-          </div>
+        {/* Results count */}
+        <div className="hotels-count">
+          <p>{filteredHotels.length} {filteredHotels.length === 1 ? 'stay' : 'stays'} available</p>
         </div>
-      )}
 
-      <div className={styles.mainContent}>
+        {/* Grid */}
         {filteredHotels.length === 0 ? (
-          <div className={styles.noResults}>
-            <h3>No hotels found matching your criteria</h3>
-            <p>Try adjusting your filters or search term</p>
-            <button 
-              className={styles.clearButton}
-              onClick={clearFilters}
-              type="button"
-            >
+          <div className="hotels-empty">
+            <div className="hotels-empty__icon"><FaSearch /></div>
+            <h3>No stays match your criteria</h3>
+            <p>Try adjusting your filters or search term.</p>
+            <button onClick={clearFilters} className="filter-apply" type="button">
               Clear All Filters
             </button>
           </div>
         ) : (
-          <div className={styles.hotelsGrid}>
-            {currentHotels.map((hotel) => (
-              <div key={hotel.id} className={styles.hotelCard}>
-                <div className={styles.hotelImage}>
-                  <img src={hotel.image} alt={hotel.name} />
-                  {hotel.featured && <span className={styles.featuredBadge}>Featured</span>}
+          <div className="hotels-grid">
+            {currentHotels.map(hotel => (
+              <Link to={`/hotels/${hotel.id}`} key={hotel.id} className="hotel-card">
+                <div className="hotel-card__media">
+                  <img src={hotel.image} alt={hotel.name} loading="lazy" />
+                  {hotel.featured && <span className="hotel-card__badge">Featured</span>}
+                  {hotel.stars > 0 && (
+                    <span className="hotel-card__stars">{'★'.repeat(hotel.stars)}</span>
+                  )}
                 </div>
-                <div className={styles.hotelInfo}>
-                  <div className={styles.hotelHeader}>
-                    <h3>{hotel.name}</h3>
-                    <div className={styles.rating}>
-                      <FaStar className={styles.starIcon} />
-                      <span>{hotel.rating} ({hotel.reviews} reviews)</span>
+                <div className="hotel-card__body">
+                  <div className="hotel-card__top">
+                    <h3 className="hotel-card__name">{hotel.name}</h3>
+                    <div className="hotel-card__rating">
+                      <FaStar /> {hotel.rating}
+                      <span className="hotel-card__reviews">({hotel.reviews})</span>
                     </div>
                   </div>
-                  <div className={styles.location}>
-                    <FaMapMarkerAlt />
-                    <span>{hotel.location}</span>
-                  </div>
-                  <div className={styles.amenities}>
-                    {hotel.amenities.slice(0, 3).map((amenity) => (
-                      <span key={amenity} className={styles.amenity}>
-                        {amenity}
-                      </span>
-                    ))}
-                    {hotel.amenities.length > 3 && (
-                      <span className={styles.moreAmenities}>+{hotel.amenities.length - 3} more</span>
-                    )}
-                  </div>
-                  <div className={styles.priceSection}>
-                    <div>
-                      <span className={styles.price}>KSh {hotel.price.toLocaleString()}</span>
-                      <span className={styles.night}> / night</span>
+                  <p className="hotel-card__location">
+                    <FaMapMarkerAlt /> {hotel.location}
+                  </p>
+                  {hotel.amenities && hotel.amenities.length > 0 && (
+                    <div className="hotel-card__amenities">
+                      {hotel.amenities.slice(0, 4).map((a, i) => (
+                        <span key={i} className="amenity-pill">{a}</span>
+                      ))}
+                      {hotel.amenities.length > 4 && (
+                        <span className="amenity-pill amenity-pill--more">+{hotel.amenities.length - 4}</span>
+                      )}
                     </div>
-                    <Link to={`/hotels/${hotel.id}`} className={styles.viewButton}>
-                      View Details
-                    </Link>
+                  )}
+                  <div className="hotel-card__footer">
+                    <div className="hotel-card__price">
+                      GH₵ {hotel.price.toLocaleString()}
+                      <span>/night</span>
+                    </div>
+                    <span className="hotel-card__view">
+                      View <FaArrowRight />
+                    </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
         )}
 
         {/* Pagination */}
         {filteredHotels.length > hotelsPerPage && (
-          <div className={styles.pagination}>
-            <button 
+          <div className="hotels-pagination">
+            <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className={styles.pageButton}
+              className="page-btn"
               type="button"
             >
               <FaArrowLeft />
             </button>
-            
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map(number => (
               <button
                 key={number}
                 onClick={() => handlePageChange(number)}
-                className={`${styles.pageButton} ${currentPage === number ? styles.active : ''}`}
+                className={`page-btn ${currentPage === number ? 'active' : ''}`}
                 type="button"
               >
                 {number}
               </button>
             ))}
-            
-            <button 
+            <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className={styles.pageButton}
+              className="page-btn"
               type="button"
             >
               <FaArrowRight />

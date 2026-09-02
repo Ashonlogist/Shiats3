@@ -8,8 +8,8 @@ import './Portfolio.css';
 const projects = [
   {
     id: 1,
-    title: 'Karen Skyline Villas',
-    location: 'Karen, Nairobi',
+    title: 'East Legon Skyline Villas',
+    location: 'East Legon, Accra',
     excerpt: 'A gated community of 24 luxury villas with private gardens, a clubhouse and 24/7 security, set on 12 acres of landscaped grounds.',
     image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     date: '2024-06-15',
@@ -17,12 +17,12 @@ const projects = [
     units: '24 Villas',
     area: '12 Acres',
     status: 'Ongoing',
-    tags: ['luxury villas', 'gated community', 'nairobi']
+    tags: ['luxury villas', 'gated community', 'accra']
   },
   {
     id: 2,
-    title: 'Westlands Corporate Tower',
-    location: 'Westlands, Nairobi',
+    title: 'Ridge Corporate Tower',
+    location: 'Ridge, Accra',
     excerpt: 'A 12-storey Grade-A office building with smart building technology, rooftop gardens and ample parking for 400 vehicles.',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     date: '2024-03-28',
@@ -34,9 +34,9 @@ const projects = [
   },
   {
     id: 3,
-    title: 'Diani Palm Residences',
-    location: 'Diani, Mombasa',
-    excerpt: 'Beachfront apartments and penthouses with panoramic Indian Ocean views, infinity pool and direct beach access.',
+    title: 'Labadi Palm Residences',
+    location: 'Labadi, Accra',
+    excerpt: 'Beachfront apartments and penthouses with panoramic Gulf of Guinea views, infinity pool and direct beach access.',
     image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     date: '2024-01-10',
     category: 'Hospitality',
@@ -47,8 +47,8 @@ const projects = [
   },
   {
     id: 4,
-    title: 'Ruaka Upmarket Court',
-    location: 'Ruaka, Kiambu',
+    title: 'Spintex Upmarket Court',
+    location: 'Spintex, Accra',
     excerpt: 'Modern 2 and 3 bedroom apartments with elegant finishes, a fitness centre and a rooftop lounge in a fast-growing corridor.',
     image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     date: '2023-12-05',
@@ -56,13 +56,13 @@ const projects = [
     units: '120 Units',
     area: '3 Acres',
     status: 'Completed',
-    tags: ['apartments', 'modern living', 'kiambu']
+    tags: ['apartments', 'modern living', 'accra']
   },
   {
     id: 5,
-    title: 'Tatu City Industrial Park',
-    location: 'Tatu City, Kiambu',
-    excerpt: 'Warehousing and light manufacturing park with serviced plots, reliable utilities and direct access to the Thika Superhighway.',
+    title: 'Tema Freezone Industrial Park',
+    location: 'Tema, Greater Accra',
+    excerpt: 'Warehousing and light manufacturing park with serviced plots, reliable utilities and direct access to the Tema Motorway.',
     image: 'https://images.unsplash.com/photo-1565043666747-69f6646db940?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     date: '2023-09-22',
     category: 'Commercial',
@@ -73,9 +73,9 @@ const projects = [
   },
   {
     id: 6,
-    title: 'Nanyuki Highland Cottages',
-    location: 'Nanyuki, Laikipia',
-    excerpt: 'Country cottages overlooking Mount Kenya with solar power, rainwater harvesting and expansive gardens for weekend getaways.',
+    title: 'Aburi Highland Cottages',
+    location: 'Aburi, Eastern Region',
+    excerpt: 'Country cottages overlooking the Aburi hills with solar power, rainwater harvesting and expansive gardens for weekend getaways.',
     image: 'https://images.unsplash.com/photo-1564501049412-61c2a3083791?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     date: '2023-06-18',
     category: 'Residential',
@@ -86,8 +86,8 @@ const projects = [
   },
   {
     id: 7,
-    title: 'Nairobi CBD Gateway Plaza',
-    location: 'Nairobi CBD',
+    title: 'Accra CBD Gateway Plaza',
+    location: 'Accra Central',
     excerpt: 'Retail and hospitality centre in the heart of the city with ground-floor shops, restaurants, and serviced hotel suites.',
     image: 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     date: '2023-04-10',
@@ -99,8 +99,8 @@ const projects = [
   },
   {
     id: 8,
-    title: 'Kiambu Road Premium Plots',
-    location: 'Kiambu Road',
+    title: 'Kasoa Road Premium Plots',
+    location: 'Kasoa, Central Region',
     excerpt: 'Serviced residential plots with water, electricity and approved building plans, perfect for own development or investment.',
     image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80',
     date: '2023-02-14',
@@ -307,7 +307,7 @@ const Portfolio = () => {
             {/* About Widget */}
             <div className="sidebar-widget">
               <h3 className="widget-title">About the Developer</h3>
-              <p>2PJ Reality Developments has delivered over 40 residential and commercial projects across Kenya. We build communities, not just buildings, with a focus on quality, sustainability and lasting value.</p>
+              <p>2PJ Reality Developments has delivered over 40 residential and commercial projects across Ghana. We build communities, not just buildings, with a focus on quality, sustainability and lasting value.</p>
             </div>
 
             {/* Featured Projects */}

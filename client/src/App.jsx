@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation, Navigate, Outlet } from 'react-router-dom';
 import { FaSpinner } from 'react-icons/fa';
 import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ContentProvider } from './contexts/ContentContext';
 import './App.css';
 import './styles/global.css';
 
@@ -41,6 +42,7 @@ import PropertyForm from './pages/dashboard/PropertyForm';
 import HotelForm from './pages/dashboard/HotelForm';
 import UserForm from './pages/dashboard/UserForm';
 import Reports from './pages/dashboard/Reports';
+import SiteContent from './pages/dashboard/SiteContent';
 import UserProfile from './components/dashboard/UserProfile';
 
 // Error Pages
@@ -51,16 +53,18 @@ import Unauthorized from './pages/Unauthorized';
 function App() {
   return (
     <AuthProvider>
-      <Router>
-        <AppContent />
-      </Router>
+      <ContentProvider>
+        <Router>
+          <AppContent />
+        </Router>
+      </ContentProvider>
     </AuthProvider>
   );
 }
 
 // AppContent component that uses hooks
 function AppContent() {
-  const { user, loading } = useAuth();
+  const { user, loading, isAdmin } = useAuth();
   const location = useLocation();
 
   // Pages that render a full-bleed hero image - hero runs under the transparent navbar
@@ -131,7 +135,7 @@ function AppContent() {
             <Route 
               index 
               element={
-                user?.user_type === 'admin' ? <AdminDashboard /> :
+                isAdmin ? <AdminDashboard /> :
                 user?.user_type === 'agent' ? <AgentDashboard /> :
                 user?.user_type === 'hotel_manager' ? <HotelManagerDashboard /> :
                 <Navigate to="/" replace />
@@ -202,6 +206,14 @@ function AppContent() {
               element={
                 <ProtectedRoute roles={['admin']}>
                   <UserForm />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="site-content" 
+              element={
+                <ProtectedRoute roles={['admin']}>
+                  <SiteContent />
                 </ProtectedRoute>
               } 
             />

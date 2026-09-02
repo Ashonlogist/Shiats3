@@ -9,14 +9,14 @@ import './HotelDetail.css';
 // Mock data - in a real app, this would come from an API
 const hotelData = {
   id: 1,
-  name: 'Serena Beach Resort',
-  location: 'Mombasa',
-  address: 'Nyali Road, Mombasa, Kenya',
+  name: 'Labadi Beach Hotel',
+  location: 'Labadi, Accra',
+  address: 'La Bonne Auberge, Labadi, Accra, Ghana',
   price: 25000,
   rating: 4.8,
   reviews: 124,
   stars: 5,
-  description: 'Experience luxury and comfort at Serena Beach Resort, a 5-star beachfront property offering world-class amenities and breathtaking views of the Indian Ocean.',
+  description: 'Experience luxury and comfort at Labadi Beach Hotel, a 5-star beachfront property offering world-class amenities and breathtaking views of the Gulf of Guinea.',
   amenities: [
     { id: 'wifi', name: 'Free WiFi', icon: <FaWifi /> },
     { id: 'pool', name: 'Swimming Pool', icon: <FaSwimmingPool /> },
@@ -95,7 +95,7 @@ const HotelDetail = () => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'KES',
+      currency: 'GHS',
       maximumFractionDigits: 0
     }).format(price);
   };
@@ -548,8 +548,8 @@ const HotelDetail = () => {
               <h3>Contact Information</h3>
               <div className="contact-info">
                 <p>📍 {hotelData.address}</p>
-                <p>📞 +254 20 123 4567</p>
-                <p>✉️ info@serenabeach.com</p>
+                <p>📞 +233 30 123 4567</p>
+                <p>✉️ info@labadibeachhotel.com</p>
                 
                 <div className="social-links">
                   <a href="#" className="social-link" aria-label="Facebook">

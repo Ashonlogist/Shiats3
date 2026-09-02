@@ -17,7 +17,8 @@ import {
   FaBell,
   FaEnvelope,
   FaSpinner,
-  FaTachometerAlt
+  FaTachometerAlt,
+  FaShareAlt
 } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
 import DashboardLayout from '../../components/dashboard/DashboardLayout';
@@ -30,7 +31,7 @@ const AgentDashboard = React.lazy(() => import('./components/AgentDashboard'));
 const HotelManagerDashboard = React.lazy(() => import('./components/HotelManagerDashboard'));
 
 const Dashboard = () => {
-  const { user, loading: authLoading, logout } = useAuth();
+  const { user, loading: authLoading, logout, isAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   // State for sidebar and dropdowns
@@ -310,7 +311,7 @@ const Dashboard = () => {
     
     const roleSpecificItems = [];
     
-    if (user?.user_type === 'admin') {
+    if (isAdmin) {
       roleSpecificItems.push(
         { 
           title: 'Users', 
@@ -331,6 +332,11 @@ const Dashboard = () => {
           title: 'Reports', 
           path: '/dashboard/reports', 
           icon: <FaChartLine className={styles.navIcon} />
+        },
+        { 
+          title: 'Site Content', 
+          path: '/dashboard/site-content', 
+          icon: <FaShareAlt className={styles.navIcon} />
         }
       );
     } else if (user?.user_type === 'agent') {
@@ -621,7 +627,7 @@ const Dashboard = () => {
             <Route 
               path="/" 
               element={
-                user?.user_type === 'admin' ? <AdminDashboard user={user} /> :
+                isAdmin ? <AdminDashboard user={user} /> :
                 user?.user_type === 'agent' ? <AgentDashboard user={user} /> :
                 user?.user_type === 'hotel_manager' ? <HotelManagerDashboard user={user} /> :
                 <Navigate to="/unauthorized" replace />

@@ -7,8 +7,8 @@ import './PropertyDetail.css';
 // Mock data - in a real app, this would come from an API
 const propertyData = {
   id: 1,
-  title: 'Luxury Villa in Karen',
-  location: 'Karen, Nairobi',
+  title: 'Luxury Villa in East Legon',
+  location: 'East Legon, Accra',
   price: 45000000,
   type: 'sale',
   category: 'house',
@@ -17,7 +17,7 @@ const propertyData = {
   sqft: 4500,
   yearBuilt: 2018,
   garage: 2,
-  description: 'This stunning luxury villa is located in the prestigious Karen neighborhood. Featuring modern architecture, high-end finishes, and breathtaking views, this property offers the ultimate in sophisticated living.',
+  description: 'This stunning luxury villa is located in the prestigious East Legon neighborhood. Featuring modern architecture, high-end finishes, and breathtaking views, this property offers the ultimate in sophisticated living.',
   features: ['Swimming Pool', 'Garden', 'Security System', 'Backup Generator', 'Water Borehole'],
   amenities: ['Air Conditioning', 'Alarm System', 'Balcony', 'Cable TV', 'Fireplace', 'Gym', 'Laundry', 'Parking'],
   images: [
@@ -27,16 +27,16 @@ const propertyData = {
   ],
   agent: {
     id: 1,
-    name: 'James Kariuki',
+    name: 'Kojo Mensah',
     title: 'Senior Real Estate Agent',
-    phone: '+254 712 345 678',
-    email: 'james@2pjreality.com',
+    phone: '+233 24 123 4567',
+    email: 'kojo@2pjreality.com',
     image: 'https://randomuser.me/api/portraits/men/32.jpg',
     rating: 4.9,
     properties: 47,
     experience: '8 years'
   },
-  locationDescription: 'Located in the prestigious Karen neighborhood, this property is just minutes away from top international schools, shopping centers, and restaurants.'
+  locationDescription: 'Located in the prestigious East Legon neighborhood, this property is just minutes away from top international schools, shopping centers, and restaurants.'
 };
 
 const PropertyDetail = () => {
@@ -58,7 +58,7 @@ const PropertyDetail = () => {
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'KES',
+      currency: 'GHS',
       maximumFractionDigits: 0
     }).format(price);
   };

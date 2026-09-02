@@ -1,8 +1,8 @@
 export const sampleProperties = [
   {
     id: 'sp1',
-    title: 'Luxury Villa in Karen',
-    location: 'Karen, Nairobi',
+    title: 'Luxury Villa in East Legon',
+    location: 'East Legon, Accra',
     price: 45000000,
     rating: 4.8,
     reviews: 42,
@@ -16,8 +16,8 @@ export const sampleProperties = [
   },
   {
     id: 'sp2',
-    title: 'Modern Apartment in Westlands',
-    location: 'Westlands, Nairobi',
+    title: 'Modern Apartment in Cantonments',
+    location: 'Cantonments, Accra',
     price: 25000000,
     rating: 4.6,
     reviews: 28,
@@ -31,8 +31,8 @@ export const sampleProperties = [
   },
   {
     id: 'sp3',
-    title: 'Beachfront Villa in Diani',
-    location: 'Diani, Mombasa',
+    title: 'Beachfront Villa in Labadi',
+    location: 'Labadi, Accra',
     price: 68000000,
     rating: 4.9,
     reviews: 35,
@@ -46,8 +46,8 @@ export const sampleProperties = [
   },
   {
     id: 'sp4',
-    title: 'Mountain View Cottage',
-    location: 'Mount Kenya',
+    title: 'Highland Cottage in Aburi',
+    location: 'Aburi, Eastern Region',
     price: 38000000,
     rating: 4.7,
     reviews: 19,
@@ -62,7 +62,7 @@ export const sampleProperties = [
   {
     id: 'sp5',
     title: 'City Center Penthouse',
-    location: 'Nairobi CBD',
+    location: 'Airport City, Accra',
     price: 82000000,
     rating: 4.8,
     reviews: 26,
@@ -76,8 +76,8 @@ export const sampleProperties = [
   },
   {
     id: 'sp6',
-    title: 'Serene Townhouse in Runda',
-    location: 'Runda, Nairobi',
+    title: 'Serene Townhouse in Roman Ridge',
+    location: 'Roman Ridge, Accra',
     price: 55000000,
     rating: 4.5,
     reviews: 15,
@@ -91,8 +91,8 @@ export const sampleProperties = [
   },
   {
     id: 'sp7',
-    title: 'Spacious Family Home in Lavington',
-    location: 'Lavington, Nairobi',
+    title: 'Spacious Family Home in Airport Residential',
+    location: 'Airport Residential, Accra',
     price: 47000000,
     rating: 4.4,
     reviews: 22,
@@ -106,8 +106,8 @@ export const sampleProperties = [
   },
   {
     id: 'sp8',
-    title: 'Golden Sands Apartment, Nyali',
-    location: 'Nyali, Mombasa',
+    title: 'Golden Sands Apartment, Tema',
+    location: 'Tema',
     price: 18000000,
     rating: 4.3,
     reviews: 31,
@@ -122,7 +122,7 @@ export const sampleProperties = [
   {
     id: 'sp9',
     title: 'Prime Commercial Office Space',
-    location: 'Upper Hill, Nairobi',
+    location: 'Ridge, Accra',
     price: 95000000,
     rating: 4.2,
     reviews: 12,
@@ -136,8 +136,8 @@ export const sampleProperties = [
   },
   {
     id: 'sp10',
-    title: 'Premium Residential Land, Kiambu',
-    location: 'Kiambu Road',
+    title: 'Premium Residential Land, Kasoa',
+    location: 'Kasoa, Central Region',
     price: 12500000,
     rating: 4.1,
     reviews: 9,
@@ -154,8 +154,8 @@ export const sampleProperties = [
 export const sampleHotels = [
   {
     id: 'sh1',
-    name: 'Serena Beach Resort',
-    location: 'Mombasa',
+    name: 'Labadi Beach Hotel',
+    location: 'Labadi, Accra',
     price: 25000,
     rating: 4.8,
     reviews: 124,
@@ -166,8 +166,8 @@ export const sampleHotels = [
   },
   {
     id: 'sh2',
-    name: 'Mount Kenya Safari Club',
-    location: 'Nanyuki',
+    name: 'Kempinski Gold Coast City',
+    location: 'Ridge, Accra',
     price: 32000,
     rating: 4.9,
     reviews: 98,
@@ -178,8 +178,8 @@ export const sampleHotels = [
   },
   {
     id: 'sh3',
-    name: 'Mara Serena Safari Lodge',
-    location: 'Maasai Mara',
+    name: 'Mövenpick Ambassador Hotel',
+    location: 'Independence Avenue, Accra',
     price: 45000,
     rating: 4.7,
     reviews: 156,
@@ -190,8 +190,8 @@ export const sampleHotels = [
   },
   {
     id: 'sh4',
-    name: 'Villa Rosa Kempinski',
-    location: 'Nairobi',
+    name: 'Accra Marriott Hotel',
+    location: 'Airport City, Accra',
     price: 38000,
     rating: 4.9,
     reviews: 215,
@@ -202,8 +202,8 @@ export const sampleHotels = [
   },
   {
     id: 'sh5',
-    name: 'Hemingways Nairobi',
-    location: 'Karen, Nairobi',
+    name: 'Villa Monticello',
+    location: 'Osu, Accra',
     price: 42000,
     rating: 4.8,
     reviews: 187,
@@ -214,8 +214,8 @@ export const sampleHotels = [
   },
   {
     id: 'sh6',
-    name: 'Diamonds Dream of Africa',
-    location: 'Diani',
+    name: 'La Palm Royal Beach Hotel',
+    location: 'La, Accra',
     price: 28000,
     rating: 4.6,
     reviews: 88,
@@ -226,8 +226,8 @@ export const sampleHotels = [
   },
   {
     id: 'sh7',
-    name: 'Best Western Plus Meridian',
-    location: 'Kisumu',
+    name: 'Golden Tulip Kumasi',
+    location: 'Kumasi',
     price: 15000,
     rating: 4.3,
     reviews: 210,
@@ -238,8 +238,8 @@ export const sampleHotels = [
   },
   {
     id: 'sh8',
-    name: 'Sarova Stanley',
-    location: 'Nairobi CBD',
+    name: 'Cavallo Restaurant & Bar (Cape Coast)',
+    location: 'Cape Coast',
     price: 27000,
     rating: 4.5,
     reviews: 340,

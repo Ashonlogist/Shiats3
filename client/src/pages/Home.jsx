@@ -8,8 +8,8 @@ import './Home.css';
 const featuredPropertiesData = [
   {
     id: 1,
-    title: 'Luxury Villa in Karen',
-    location: 'Karen, Nairobi',
+    title: 'Luxury Villa in East Legon',
+    location: 'East Legon, Accra',
     price: 45000000,
     type: 'For Sale',
     beds: 5,
@@ -20,8 +20,8 @@ const featuredPropertiesData = [
   },
   {
     id: 2,
-    title: 'Modern Apartment in Westlands',
-    location: 'Westlands, Nairobi',
+    title: 'Modern Apartment in Cantonments',
+    location: 'Cantonments, Accra',
     price: 25000,
     type: 'For Rent',
     beds: 3,
@@ -32,8 +32,8 @@ const featuredPropertiesData = [
   },
   {
     id: 3,
-    title: 'Beachfront Villa in Diani',
-    location: 'Diani, Mombasa',
+    title: 'Beachfront Villa in Labadi',
+    location: 'Labadi, Accra',
     price: 68000000,
     type: 'For Sale',
     beds: 6,
@@ -44,8 +44,8 @@ const featuredPropertiesData = [
   },
   {
     id: 4,
-    title: 'Mountain View Cottage',
-    location: 'Mount Kenya',
+    title: 'Highland Cottage in Aburi',
+    location: 'Aburi, Eastern Region',
     price: 38000000,
     type: 'For Sale',
     beds: 4,
@@ -57,7 +57,7 @@ const featuredPropertiesData = [
   {
     id: 5,
     title: 'City Center Penthouse',
-    location: 'Nairobi CBD',
+    location: 'Airport City, Accra',
     price: 85000,
     type: 'For Rent',
     beds: 3,
@@ -68,8 +68,8 @@ const featuredPropertiesData = [
   },
   {
     id: 6,
-    title: 'Serene Townhouse in Runda',
-    location: 'Runda, Nairobi',
+    title: 'Serene Townhouse in Roman Ridge',
+    location: 'Roman Ridge, Accra',
     price: 55000000,
     type: 'For Sale',
     beds: 4,
@@ -83,8 +83,8 @@ const featuredPropertiesData = [
 const featuredHotels = [
   {
     id: 1,
-    name: 'Serena Beach Resort',
-    location: 'Mombasa',
+    name: 'Labadi Beach Hotel',
+    location: 'Labadi, Accra',
     price: 25000,
     rating: 4.8,
     reviews: 124,
@@ -92,8 +92,8 @@ const featuredHotels = [
   },
   {
     id: 2,
-    name: 'Mount Kenya Safari Club',
-    location: 'Nanyuki',
+    name: 'Kempinski Gold Coast City',
+    location: 'Ridge, Accra',
     price: 32000,
     rating: 4.9,
     reviews: 98,
@@ -101,8 +101,8 @@ const featuredHotels = [
   },
   {
     id: 3,
-    name: 'Mara Serena Safari Lodge',
-    location: 'Maasai Mara',
+    name: 'Mövenpick Ambassador Hotel',
+    location: 'Independence Avenue, Accra',
     price: 45000,
     rating: 4.7,
     reviews: 156,
@@ -110,8 +110,8 @@ const featuredHotels = [
   },
   {
     id: 4,
-    name: 'Villa Rosa Kempinski',
-    location: 'Nairobi',
+    name: 'Accra Marriott Hotel',
+    location: 'Airport City, Accra',
     price: 38000,
     rating: 4.9,
     reviews: 215,
@@ -119,8 +119,8 @@ const featuredHotels = [
   },
   {
     id: 5,
-    name: 'Hemingways Nairobi',
-    location: 'Karen, Nairobi',
+    name: 'Villa Monticello',
+    location: 'Osu, Accra',
     price: 42000,
     rating: 4.8,
     reviews: 187,
@@ -128,8 +128,8 @@ const featuredHotels = [
   },
   {
     id: 6,
-    name: 'Diamonds Dream of Africa',
-    location: 'Diani',
+    name: 'La Palm Royal Beach Hotel',
+    location: 'La, Accra',
     price: 28000,
     rating: 4.6,
     reviews: 88,
@@ -154,7 +154,7 @@ const sizeClassOf = (index) => {
 const formatPrice = (price) => {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',
-    currency: 'KES',
+    currency: 'GHS',
     maximumFractionDigits: 0
   }).format(price);
 };
@@ -171,7 +171,7 @@ const Home = () => {
             <span className="section-kicker">Featured Properties</span>
             <h2 className="section-title section-title--light">Handpicked Homes, Uncompromising Quality</h2>
             <p className="section-subtitle section-subtitle--light">
-              Discover our handpicked selection of premium properties across East Africa's finest locations.
+              Discover our handpicked selection of premium properties across Ghana's finest locations.
             </p>
             <Link to="/properties" className="section-cta">
               View All Properties <FaArrowRight />
@@ -222,7 +222,7 @@ const Home = () => {
             <span className="section-kicker">Hotels & Resorts</span>
             <h2 className="section-title">Stay in Style</h2>
             <p className="section-subtitle">
-              Premium hospitality experiences from beachfront resorts to safari lodges.
+              Premium hospitality experiences from beachfront resorts to city escapes.
             </p>
             <Link to="/hotels" className="section-cta section-cta--ghost">
               View All Hotels <FaArrowRight />

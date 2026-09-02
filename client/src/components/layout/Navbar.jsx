@@ -18,6 +18,7 @@ import {
   FaBriefcase,
   FaUserCog
 } from 'react-icons/fa';
+import { useContent } from '../../contexts/ContentContext';
 import './Navbar.css';
 
 const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) => {
@@ -26,6 +27,8 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [isTransparent, setIsTransparent] = useState(true);
+  const { content } = useContent();
+  const brand = content.brand;
   
   const navigate = useNavigate();
   const location = useLocation();
@@ -107,9 +110,13 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
       >
         <div className="navbar__container">
           {/* Logo */}
-          <Link to="/" className="logo" aria-label="2PJ Reality Home">
-            <span className="logo__icon">🏠</span>
-            <span className="logo__text">2PJ Reality</span>
+          <Link to="/" className="logo" aria-label={`${brand.name} Home`}>
+            {brand.logoImage ? (
+              <img src={brand.logoImage} alt={brand.name} className="logo__image" />
+            ) : (
+              <span className="logo__icon">{brand.logoIcon}</span>
+            )}
+            <span className="logo__text">{brand.logoText}</span>
           </Link>
 
           {/* Mobile Menu Button */}
@@ -289,8 +296,12 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
         >
           <div className="mobile-menu__header">
             <div className="mobile-menu__brand">
-              <span className="mobile-menu__logo">🏠</span>
-              <span className="mobile-menu__brand-text">2PJ Reality</span>
+              {brand.logoImage ? (
+                <img src={brand.logoImage} alt={brand.name} className="mobile-menu__logo-imagetex" />
+              ) : (
+                <span className="mobile-menu__logo">{brand.logoIcon}</span>
+              )}
+              <span className="mobile-menu__brand-text">{brand.logoText}</span>
             </div>
             <button 
               className="mobile-menu__close"
@@ -435,7 +446,7 @@ const Navbar = ({ isAuthenticated = false, user = null, onLogout = () => {} }) =
           </nav>
           
           <div className="mobile-footer">
-            <p>&copy; {new Date().getFullYear()} 2PJ Reality. All rights reserved.</p>
+            <p>&copy; {new Date().getFullYear()} {brand.name}. All rights reserved.</p>
           </div>
         </div>
       </nav>
